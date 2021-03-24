@@ -24,11 +24,11 @@ const colors: Record<SpellType.Target, Color> = {
   'Person': 'pink',
 };
 
-export function Spell({spell, index, actions, isOwned = false}: { spell: SpellType.Spell, index: number, isOwned?: boolean, actions?: React.ReactNode}) {
+export function Spell({spell, actions, isOwned = false}: { spell: SpellType.Spell, isOwned?: boolean, actions?: React.ReactNode}) {
   const { use } = useSpell();
 
   const costs = pipe(
-    SpellType.getSpellCost(index, spell),
+    SpellType.getSpellCost(spell),
     ({primary, secondary}) => {
       if(spell.primaryElement === spell.secondaryElement) {
         return {[spell.primaryElement]: primary + secondary};

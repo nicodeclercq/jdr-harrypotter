@@ -1,30 +1,31 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { pipe } from "fp-ts/lib/function";
 import { BehaviorSubject } from 'rxjs';
-import { Spell } from "./pages/spells/domain/Spell";
 
-type State = {
-  userSpells: Spell[],
-  uses: Record<string, number>,
-};
+import * as V2 from './store/v2';
 
-const defaultState: State = {
-  userSpells: [],
-  uses: {},
-};
-
-const retrieveState = (): State => {
-  try{
-    const currentState = window.localStorage.getItem('state');
-    return currentState ? JSON.parse(currentState) : defaultState;
-  }catch(e){
+const retrieveState = (): Promise<V2.State> => {
+  try {
+    return pipe(
+      window.localStorage.getItem('state'),
+      currentState => currentState ? JSON.parse(currentState) : V2.defaultState,
+      currentState => {
+        return V2.retrieve(currentState)
+      },
+    );
+  } catch(e) {
     console.error(e);
-    return defaultState;
+    return Promise.resolve(V2.defaultState);
   }
 }
-const subject = new BehaviorSubject<State>(retrieveState());
+
+const subject = new BehaviorSubject<V2.State>(V2.defaultState);
+
+retrieveState()
+  .then((currentState) => subject.next(currentState));
 
 export const useStore = () => {
-  const [state, setState] = useState<State>(subject.value);
+  const [state, setState] = useState<V2.State>(subject.value);
 
   useEffect(() => {
     const subscription = subject.subscribe({next: (value) => {
@@ -35,7 +36,7 @@ export const useStore = () => {
 
   return {
     getState: () => state,
-    setState: (newState: State) => {
+    setState: (newState: V2.State) => {
       window.localStorage.setItem('state', JSON.stringify(newState));
       subject.next(newState);
     }

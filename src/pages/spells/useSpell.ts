@@ -10,31 +10,47 @@ export const useSpell = () => {
     const state = getState();
       setState({
       ...state,
-      userSpells: [...state.userSpells, spell],
-      uses: {
-        ...state.uses,
-        [spell.name]: 0,
-      }
+      userSpells: {...state.userSpells, [spell.id]: {
+        id: spell.id,
+        userPoints: {
+          Air: 0,
+          Corps: 0,
+          Eau: 0,
+          Feu: 0,
+          Terre: 0,
+          Âme: 0,
+        },
+      }},
     });
   }
 
   const remove = (spell: Spell) => {
     const state = getState();
+    const userSpells = Objects.remove(`${spell.id}`, state.userSpells);
 
     setState({
       ...state,
-      userSpells: state.userSpells.filter(s => s.name !== spell.name),
-      uses: Objects.remove(spell.name, state.uses),
+      userSpells,
     });
   }
 
   const use = (spell: Spell, isCritical: boolean) => {
     const state = getState();
-      setState({
+    const userPoints = state.userSpells[spell.id].userPoints;
+
+    userPoints[spell.primaryElement] = userPoints[spell.primaryElement] + 2 * (isCritical ? 2 : 1);
+    userPoints[spell.secondaryElement] = userPoints[spell.secondaryElement] + 1 * (isCritical ? 2 : 1);
+
+    setState({
       ...state,
-      uses: {
-        ...state.uses,
-        [spell.name]: (state.uses[spell.name] ?? 0) + (isCritical ? 2 : 1),
+      userSpells: {
+        ...state.userSpells,
+        [spell.id]: {
+          ...state.userSpells[spell.id],
+          userPoints:{
+            ...userPoints
+          }
+        },
       },
     });
   }
@@ -44,16 +60,10 @@ export const useSpell = () => {
     return state.userSpells;
   }
 
-  const getUsages = () => {
-    const state = getState();
-    return state.uses;
-  }
-
   return {
     add,
     remove,
     getUserSpells,
     use,
-    getUsages,
   }
 }
