@@ -17,3 +17,14 @@ export const merge = <T, U extends string | number | symbol>(obj1: Record<U, T>
       obj2
     );
 }
+
+export const map = <K extends string | number | symbol, A, B>(fn: (a: A) => B, obj: Record<K, A>) => {
+  return entries(obj)
+    .reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: fn(value),
+      }),
+      {} as Record<K, B>
+    )
+}

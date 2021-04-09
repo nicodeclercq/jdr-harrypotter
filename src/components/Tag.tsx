@@ -9,7 +9,7 @@ export function Tag({color, title, children}: {color: Color, title: string, chil
     : `bg-${color}-200 text-${color}-700 border border-${color}-700`
 
   return (
-    <span title={title} className={`rounded-full px-2 border ${tagColor}`}>
+    <span title={title} className={`inline-flex items-center rounded-full px-2 border ${tagColor}`}>
       <Caption>{children}</Caption>
     </span>
   )

@@ -1,10 +1,19 @@
-import React from 'react';
-
+import { pipe } from 'fp-ts/lib/function';
+import React, { useEffect, useState } from 'react';
+import * as RemoteData from '@devexperts/remote-data-ts';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { ElementTag } from '../../components/ElementTag';
 import { EmptyContent } from '../../components/EmptyContent';
+import { Incantation } from '../../components/font/Incantation';
+import { useNotification } from '../../components/Notification';
+import { RollModal } from '../../components/RollModal';
+import { UpgradeRollModal } from '../../components/UpgradeRollModal';
+import { noop } from '../../helpers/function';
+import * as Interaction from '../../helpers/interaction';
+import { fromRemoteData } from '../../helpers/remoteData';
 import * as SpellType from './domain/Spell';
+import { getNextLevelSpells, UserSpells as UserSpellsType } from './domain/UserSpell';
 import { Spell } from './Spell';
 import { spells } from './spells';
 import { useSpell } from './useSpell';
@@ -42,40 +51,117 @@ function ElementsCount({userSpells}: {userSpells: {id: number; userPoints: Recor
   );
 }
 
-export function MySpells() {
-  const { getUserSpells, remove } = useSpell();
+function UserSpells({userSpells}: {userSpells: UserSpellsType}){
+  const [rollModalSpellId, setRollModalSpellId] = useState<number | undefined>(undefined);
+  const [nextLevelSpell, setNextLevelSpell] = useState<number | undefined>(undefined);
+  const { use, remove, upgrade } = useSpell();
+  const { add } = useNotification();
+  const values = Object.values(userSpells);
+      
+  useEffect(() => {
+    const nextLevelSpells = getNextLevelSpells(userSpells);
 
-  const userSpells = Object.values(getUserSpells());
+    if(nextLevelSpells.length) {
+      add({
+        type: 'success',
+        message: `${nextLevelSpells.length} sort peut être amélioré`,
+        action:{
+          run: () => {
+            setNextLevelSpell(nextLevelSpells[0].id);
+          },
+          label: 'Choisir',
+        },
+        showUntil: (remoteState) =>
+          pipe(
+            remoteState,
+            RemoteData.fold(
+              () => false,
+              () => false,
+              () => false,
+              (state) => state.userSpells[nextLevelSpells[0].id].currentLevel === nextLevelSpells[0].currentLevel
+            )
+          ),
+      });
+    }
+  }, [userSpells, add]);
 
+  const onRollEnd = (spell: SpellType.Spell) => (result: Interaction.Interaction<never, number>) => {
+    pipe(
+      result,
+      Interaction.fold({
+        success: (value: number) => use(spell, value <= 5),
+        failure: () => use(spell, false),
+        canceled: noop,
+      }),
+      () => setRollModalSpellId(undefined),
+    );
+  }
+
+  const onUpgradeEnd = (spell: SpellType.Spell) => (result: Interaction.Interaction<never, number>) => {
+    upgrade(spell, result);
+    setNextLevelSpell(undefined);
+  }
+  
   return (
-    <Card useDividers title={(
-      <div className="flex space-x-2">
-        <span className="flex-grow">Mes Sortilèges</span>
-        <ElementsCount userSpells={userSpells} />
-      </div>)}>
+    <>
+      <Card useDividers title={(
+        <div className="flex space-x-2">
+          <span className="flex-grow">Mes Sortilèges</span>
+          <ElementsCount userSpells={values} />
+        </div>)}>
+        {
+          values.length
+            ? values.map((userSpell) => {
+                const spell = spells[userSpell.id];
+                return (
+                  <Spell
+                    key={spell.id}
+                    spell={spell}
+                    actions={(
+                      <Button onClick={() => remove(spell)} type="secondary">Supprimer -</Button>
+                    )}
+                    roll={setRollModalSpellId}
+                    isOwned
+                  />
+                )
+              })
+            : (<EmptyContent>
+                {{
+                  emoji: '📖',
+                  title: 'Tu ne connais encore rien ?',
+                  description: 'Il va falloir te mettre au travail vite fait mon petit gars!'
+                }}
+              </EmptyContent>)
+        }
+      </Card>
       {
-        userSpells.length
-          ? userSpells.map((userSpell) => {
-              const spell = spells[userSpell.id];
-              return (
-                <Spell
-                  key={spell.id}
-                  spell={spell}
-                  actions={(
-                    <Button onClick={() => remove(spell)} type="secondary">Supprimer -</Button>
-                  )}
-                  isOwned
-                />
-              )
-            })
-          : (<EmptyContent>
-              {{
-                emoji: '📖',
-                title: 'Tu ne connais encore rien ?',
-                description: 'Il va falloir te mettre au travail vite fait mon petit gars!'
-              }}
-            </EmptyContent>)
+        rollModalSpellId != null && <RollModal
+          successPercentage={userSpells[rollModalSpellId].currentLevel}
+          title={
+            <span className="space-x-2">
+              <Incantation>{spells[rollModalSpellId].incantation}</Incantation>
+              <span>{spells[rollModalSpellId].name}</span>
+            </span>
+          }
+          onRollEnd={onRollEnd(spells[rollModalSpellId])}
+        />
       }
-    </Card>
+      {
+        nextLevelSpell != null && <UpgradeRollModal
+          successPercentage={userSpells[nextLevelSpell].currentLevel}
+          title={spells[userSpells[nextLevelSpell].id].name}
+          onRollEnd={onUpgradeEnd(spells[userSpells[nextLevelSpell].id])}
+        />
+      }
+    </>
   );
+}
+export function MySpells() {
+  const { getUserSpells } = useSpell();
+
+  const userSpells = getUserSpells();
+
+  return fromRemoteData(
+    userSpells,
+    (userSpells) => <UserSpells userSpells={userSpells} />);
 }

@@ -8,6 +8,7 @@ import './index.css';
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    <div id="portal"></div>
   </React.StrictMode>,
   document.getElementById('root')
 );

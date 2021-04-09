@@ -1,12 +1,23 @@
 import React from 'react';
 
-export function Button({type, onClick, children}: {type: 'primary' | 'secondary', onClick: () => void, children: React.ReactNode}){
+type Props = {
+  type: 'primary' | 'secondary',
+  onClick: 'submit' | (() => void),
+  children: React.ReactNode,
+  disabled?: boolean, 
+  title?: string;
+};
+
+export function Button({type, onClick, title, children, disabled = false}: Props){
   const types = {
-    'primary': 'bg-blue-500 hover:bg-blue-700 text-white',
-    'secondary': 'bg-white border border-blue-700 hover:bg-blue-100 text-blue-700',
+    'primary': `bg-blue-500 ${disabled ? '' : 'hover:bg-blue-700'} text-white`,
+    'secondary': `bg-white border border-blue-700 ${disabled ? '' : 'hover:bg-blue-100'} text-blue-700`,
   } as const;
 
+  const isSubmit = onClick === 'submit';
+  const rest = (isSubmit ? {} :  { onClick }) as {onClick?: () => void};
+
   return (
-    <button onClick={onClick} className={`rounded py-1 px-2 text-s ${types[type]}`}>{children}</button>
+    <button title={title} {...rest} type={isSubmit ? 'submit' : 'button'} disabled={disabled} className={`${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'} rounded py-1 px-2 text-s ${types[type]}`}>{children}</button>
   )
 }

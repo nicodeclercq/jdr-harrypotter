@@ -8,7 +8,6 @@ import { entries } from '../../helpers/object';
 import * as SpellType from './domain/Spell';
 import { ElementTag } from '../../components/ElementTag';
 import { Button } from '../../components/Button';
-import { useSpell } from './useSpell';
 
 const elements: Record<SpellType.Target, string> = {
   'Animal': '🐇',
@@ -24,9 +23,7 @@ const colors: Record<SpellType.Target, Color> = {
   'Person': 'pink',
 };
 
-export function Spell({spell, actions, isOwned = false}: { spell: SpellType.Spell, isOwned?: boolean, actions?: React.ReactNode}) {
-  const { use } = useSpell();
-
+export function Spell({spell, roll, actions, isOwned = false}: {roll: (id: number) => void; spell: SpellType.Spell, isOwned?: boolean, actions?: React.ReactNode}) {
   const costs = pipe(
     SpellType.getSpellCost(spell),
     ({primary, secondary}) => {
@@ -48,7 +45,7 @@ export function Spell({spell, actions, isOwned = false}: { spell: SpellType.Spel
               <Incantation>{spell.incantation}</Incantation>
               <BodyText>{spell.name}</BodyText>
             </div>
-            {!isOwned && (<div className="text-right space-x-1">{costs}</div>)}
+            {!isOwned && (<div className="text-right space-x-1 flex-shrink-0">{costs}</div>)}
           </div>
         ),
         content: (
@@ -65,9 +62,9 @@ export function Spell({spell, actions, isOwned = false}: { spell: SpellType.Spel
           </div>
         ),
         actions: isOwned
-            && (<div className="space-x-2">
-                <Button onClick={() => use(spell, true)} type="secondary">Critique</Button>
-                <Button onClick={() => use(spell, false)} type="primary">Réussite</Button>
+            && (
+                <div className="space-x-2">
+                  <Button onClick={() => roll(spell.id)} type="secondary">🎲</Button>
                 </div>
               )
       }}

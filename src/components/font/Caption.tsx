@@ -1,6 +1,8 @@
 import React from 'react';
 
-export function Caption({children}: {children: React.ReactNode}) {
+type Props = {children: React.ReactNode};
+
+export function Caption({children}: Props) {
   return (
     <span className="text-sm font-light capitalize">{children}</span>
   )

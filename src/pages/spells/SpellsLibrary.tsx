@@ -16,10 +16,10 @@ import { useSpell } from './useSpell';
 import { Input } from '../../components/Input';
 import { Filter } from './Filter';
 import { Tip } from '../../components/Tip';
+import { fromRemoteData } from '../../helpers/remoteData';
 
 type Category = 'Level' | 'Name' | 'Incantation' | 'PrimaryElement' | 'SecondaryElement';
 type Direction = 'Asc' | 'Desc';
-
 
 function sortAndFilter (spells: SpellType.Spell[], search: string, orderCategory: Category,
   orderDirection: Direction): SpellType.Spell[] {
@@ -68,52 +68,56 @@ export function SpellsLibrary() {
     [search, orderCategory, orderDirection]
   );
 
-  return (
-    <Card useDividers title={(
-      <>
-      <div className="flex">
-        <div className="flex-grow">Liste des Sortilèges</div>
-        <Input type="search" onChange={setSearch} placeholder="🔎 Rechercher..."/>
-        <button className="px-2 text-yellow-600" onClick={() => setShowFilters(!showFilters)}>{showFilters ? '▲' : '▼'}</button>
-      </div>
-      {
-        showFilters && (
-          <div className="m-1 p-2 bg-yellow-300 rounded">
-            <Caption>Trier par</Caption>
-            <Filter
-              initialOrderCategory={orderCategory}
-              initialOrderDirection={orderDirection}
-              onChange={(orderCategory, orderDirection) => {
-                setOrderCategory(orderCategory);
-                setOrderDirection(orderDirection);
-              }}
-            />
-            <Tip>
-              Pour une recherche plus précise tu peux rajouter
-              <br />
-              <strong>«nom:»</strong>, <strong>«incantation:»</strong> ou <strong>«élément:»</strong> au début de la recherche:
-              <br />
-              <i>Ex: «élément:feu»</i>
-            </Tip>
-          </div>
-        )
-      }
-      </>
-      )}
-    >
+  return fromRemoteData(
+      userSpells,
+      userSpells => (
+      <Card useDividers title={(
+        <>
+        <div className="flex">
+          <div className="flex-grow">Liste des Sortilèges</div>
+          <Input type="search" theme="yellow" onChange={setSearch} placeholder="🔎 Rechercher..."/>
+          <button className="px-2 text-yellow-600" onClick={() => setShowFilters(!showFilters)}>{showFilters ? '▲' : '▼'}</button>
+        </div>
         {
-          debouncedSearch
-            .map((spell) => (
-              <Spell
-                key={spell.id}
-                spell={spell}
-                actions={
-                  userSpells[spell.id] ? (<></>) : (
-                  <Button onClick={() => add(spell)} type="secondary">Apprendre +</Button>
-                )}
+          showFilters && (
+            <div className="m-1 p-2 bg-yellow-300 rounded">
+              <Caption>Trier par</Caption>
+              <Filter
+                initialOrderCategory={orderCategory}
+                initialOrderDirection={orderDirection}
+                onChange={(orderCategory, orderDirection) => {
+                  setOrderCategory(orderCategory);
+                  setOrderDirection(orderDirection);
+                }}
               />
-            ))
+              <Tip>
+                Pour une recherche plus précise tu peux rajouter
+                <br />
+                <strong>«nom:»</strong>, <strong>«incantation:»</strong> ou <strong>«élément:»</strong> au début de la recherche:
+                <br />
+                <i>Ex: «élément:feu»</i>
+              </Tip>
+            </div>
+          )
         }
-      </Card>
+        </>
+        )}
+      >
+          {
+            debouncedSearch
+              .map((spell) => (
+                <Spell
+                  key={spell.id}
+                  spell={spell}
+                  actions={
+                    userSpells[spell.id] ? (<></>) : (
+                    <Button onClick={() => add(spell)} type="secondary">Apprendre +</Button>
+                  )}
+                  roll={() => {}}
+                />
+              ))
+          }
+        </Card>
+    )
   );
 }

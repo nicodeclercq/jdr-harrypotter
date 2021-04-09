@@ -65,7 +65,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Charme de coussinage",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de rendre un balai plus confortable. Durée : variable (heures) Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -365,7 +365,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Purification",
-    "incantation": "X",
+    "incantation": "",
     "description": "Sépare des substances différentes (permet de trier ses lentilles, de retirer les impuretés d’une poudre, de retirer le sable de ses chaussures) Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -790,7 +790,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 2,
     "name": "Freinage",
-    "incantation": "X",
+    "incantation": "",
     "description": "Enchante les balais pour les aider à freiner. Plus le sortilège est maîtrisé et plus le balai freine avec efficacité. Durée : permanente.Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -815,7 +815,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 2,
     "name": "Inversion",
-    "incantation": "X",
+    "incantation": "",
     "description": "Inverse la position de deux objets sur une distance maximale de POUx2 mètres. Durée : -Formule extrême : distance maximale de POUvoir x3 mètres",
     "targets": {
       "Animal": false,
@@ -1065,7 +1065,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 2,
     "name": "Têtenbulle",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de créer une bulle d’air pur autour de sa tête, permettant de respirer sous l’eau durant 1d4+1 heures ou de ne pas être incommodé par de mauvaises odeurs. Durée : 1d4+1 heuresFormule extrême : Durée +1 heure",
     "targets": {
       "Animal": true,
@@ -1315,7 +1315,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 5,
     "name": "Transplanage",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de se téléporter dans un endroit connu et non protégé. Durée :- Remarque : le déplacement ne peut se faire que sur POUvoir x10 kilomètresFormule extrême : -",
     "targets": {
       "Animal": false,
@@ -1465,7 +1465,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 2,
     "name": "Animal en Animal",
-    "incantation": "X",
+    "incantation": "",
     "description": "Transforme un animal en un autre. Durée : permanenteFormule extrême : -",
     "targets": {
       "Animal": true,
@@ -1515,7 +1515,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 3,
     "name": "Chauve-Furie",
-    "incantation": "X",
+    "incantation": "",
     "description": "Lance POU Chauves-Furies au visage d’un adversaire, qui se voit entravé dans ses mouvements. Les créatures sont capables de griffer et de mordre, mais dès la fin de l’enchantement, toute trace corporelle disparait. Durée : Variable (rounds)Formule extrême : permet de viser 2 adversaires et durée +2 rounds",
     "targets": {
       "Animal": true,
@@ -1590,7 +1590,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 3,
     "name": "Objet en Animal",
-    "incantation": "X",
+    "incantation": "",
     "description": "Transforme un objet en animal. Durée : permanenteFormule extrême : -",
     "targets": {
       "Animal": false,
@@ -1640,7 +1640,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 3,
     "name": "Personne en Animal",
-    "incantation": "X",
+    "incantation": "",
     "description": "Transforme quelqu’un en animal. (Opposition : POU/POU). Durée : permanenteFormule extrême : -",
     "targets": {
       "Animal": false,
@@ -1690,7 +1690,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 4,
     "name": "Séduction",
-    "incantation": "X",
+    "incantation": "",
     "description": "Charme une cible et la rend amoureuse de soi durant 1d6+1 heures. Le sort ne peut plus être lancé pendant une période équivalente à celle passée sous le charme. (Opposition : APP/POU) Formule extrême : durée 2d6+2 heures",
     "targets": {
       "Animal": false,
@@ -1715,7 +1715,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 0,
     "name": "Magie Domestique",
-    "incantation": "X",
+    "incantation": "",
     "description": "Magie employée à la maison qui permet de faire la vaisselle, recoudre un bouton, enlever des taches. Durée : 1d4+1 heures, Remarque : il existe vraisemblablement une multitude de sorts de magie domestique (un pour chaque tâche) mais ceux-ci sont tous réunis sous la même appellation.Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -1790,7 +1790,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Extinction",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet d’éteindre immédiatement un feu : Durée : -Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -1815,7 +1815,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Hydrophobie",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de rendre un objet hydrophobe durant un certain temps. Celui- ci repousse alors tous les liquides qui entrent en contact avec lui. Durée : Variable (heures)Formule extrême : Durée de 1d2 jour(s)",
     "targets": {
       "Animal": false,
@@ -1865,7 +1865,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Liquide vers Liquide",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de métamorphoser un liquide en un autre. Durée : permanente.Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -1990,7 +1990,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 2,
     "name": "Cheveux drus",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de faire pousser les cheveux de manière disproportionnée, gênant la vue de la cible. Jet d’observation = PERx2 (au lieu de PERx5). Durée : permanenteFormule extrême : Cheveux et poils poussent pour gêner le sorcier. JetD’observation PERx1 et malus de 10% aux actions de déplacement",
     "targets": {
       "Animal": false,
@@ -2265,7 +2265,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 4,
     "name": "Gèle-Flamme",
-    "incantation": "X",
+    "incantation": "",
     "description": "Rend les flammes visées inoffensives. Durée : variable (jours) Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -2965,7 +2965,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 4,
     "name": "Faux-Souvenir",
-    "incantation": "X",
+    "incantation": "",
     "description": "Ce sortilège permet de modifier, voir même d’ajouter de faux souvenirs dans la mémoire d’une personne. Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -3090,7 +3090,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 5,
     "name": "Eveil d’objets",
-    "incantation": "X",
+    "incantation": "",
     "description": "Donne vie et une conscience temporaire à un objet qui obtient une valeur d’INTelligence de 6. Celui-ci obéit alors au sorcier. Durée : variable Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -3165,7 +3165,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 6,
     "name": "Guérisons magiques",
-    "incantation": "X",
+    "incantation": "",
     "description": "Regroupe tous les sorts capables de soigner une blessure grave d’origine magique ou non. Provoque une lente régénération du corps ou de l’esprit qui est douloureux et pas toujours efficace. Durée : en fonction des blessures.",
     "targets": {
       "Animal": false,
@@ -3215,7 +3215,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 6,
     "name": "Recherches magiques",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de développer une nouvelle application d’un sortilège existant ou de créer un sort original.",
     "targets": {
       "Animal": true,
@@ -3365,7 +3365,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Flambois",
-    "incantation": "X",
+    "incantation": "",
     "description": "Sortilège faisant jaillir une intense lueur rouge de la baguette permettant de dessiner une marque enflammée.",
     "targets": {
       "Animal": false,
@@ -3390,7 +3390,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Oiseaux de lumière",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de faire jaillir de petits oiseaux de lumière de sa baguette. Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -3440,7 +3440,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Sécheresse",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet d’assécher de petites étendues d’eau. Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -3565,7 +3565,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 2,
     "name": "Cuisant",
-    "incantation": "X",
+    "incantation": "",
     "description": "Ce maléfice provoque une douleur cuisante et gonfle le visage de la cible pour le rendre méconnaissable. Effet : APP-5. Durée : Variable (heures) Formule extrême : APParence -6 et durée +1 heure",
     "targets": {
       "Animal": false,
@@ -3665,7 +3665,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 3,
     "name": "Catapultage",
-    "incantation": "X",
+    "incantation": "",
     "description": "Lancé sur un objet comme un balai magique par exemple, ce sortilège repousse violemment toute personne qui tente de s’en saisir. Opposition : FORx2. Durée : - Formule extrême : Opposition FORce x1",
     "targets": {
       "Animal": false,
@@ -3715,7 +3715,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 3,
     "name": "Désillusion",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de cacher une personne ou une créature à la manière d’un caméléon. L’objet du sortilège se confond avec son environnement. Durée : variable (heures) Formule extrême : Durée + 2d4+2 heures",
     "targets": {
       "Animal": true,
@@ -4115,7 +4115,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 5,
     "name": "Aveuglement",
-    "incantation": "X",
+    "incantation": "",
     "description": "La personne devient invisible. Effet : octroie un bonus de 60% en discrétion. Durée : 1d4+1 heures Formule extrême : bonus de 75% en Discrétion et durée de 2d4+2 heures",
     "targets": {
       "Animal": false,
@@ -4140,7 +4140,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 5,
     "name": "Brasier obscur",
-    "incantation": "X",
+    "incantation": "",
     "description": "L’enchantement de brasier obscur est employé pour protéger une zone en créant une barrière de flammes de couleur noire. Ces flammes empêchent une personne de passer à travers en lui causant de graves brûlures. Seul le lanceur peut retirer cette protection. Les sortilèges de dissipation ne fonctionnent pas sur le brasier obscur. Effet : occasionne 1d4+1 dégâts par round à toute personne tentant de traverser les flammes.Durée : POUvoir jours Sauvegarde : potion de protection contre le feu",
     "targets": {
       "Animal": false,
@@ -4215,7 +4215,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 5,
     "name": "Feu de Sempremais",
-    "incantation": "X",
+    "incantation": "",
     "description": "Les objets ensorcelés par un Feu de Sempremais brûlent pour toujours. Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -4240,7 +4240,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 5,
     "name": "Flagrance",
-    "incantation": "X",
+    "incantation": "",
     "description": "Appliqué sur un objet, ce sortilège sert à le protéger du vol. Quand une personne tente de s’emparer de l’objet sans lever le sort, elle subit une brûlure de l’ordre de 1d4 dégâts. Le sort reste effectif tant qu’il n’est pas levé mais n’endommage pas l’objet. Durée : permanente Formule extrême : 2d4 dégâts infligés",
     "targets": {
       "Animal": false,
@@ -4265,7 +4265,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 5,
     "name": "Voleur",
-    "incantation": "X",
+    "incantation": "",
     "description": "Lancé sur un objet, ce sort punit celui qui le garde trop longtemps sans l'acheter. Les effets peuvent varier en fonction des désirs de celui qui le lance. Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -4315,7 +4315,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 6,
     "name": "Brasier pourpre",
-    "incantation": "X",
+    "incantation": "",
     "description": "Une variation du brasier obscur qui est cependant bien plus compliquée à passer. Comme son homologue obscur, le brasier pourpre ne peut être dissipé que par celui qui a lancé le sortilège. De plus, ce brasier occasionne des dégâts plus importants à ceux et celles qui tente de le traverser soit 1d6+2 dégâts par round. Finalement, la potion de protection contre le feu classique ne fonctionne pas pour cet enchantement. Une potion particulière doit être préparée par le lanceur du sortilège. Durée : POUvoirx3 jours Sauvegarde : potion des flammes violettes",
     "targets": {
       "Animal": false,
@@ -4390,7 +4390,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 0,
     "name": "Création temporaire",
-    "incantation": "X",
+    "incantation": "",
     "description": "Métamorphose mineure, ce sort permet de faire apparaître de petits objets (dés, verre, plume, etc.) qui disparaissent très rapidement. Durée : 2d4 minutes Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -4515,7 +4515,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 1,
     "name": "Objet vers Objet",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de métamorphoser un objet en un autre. Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -4540,7 +4540,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 2,
     "name": "Animal en Objet",
-    "incantation": "X",
+    "incantation": "",
     "description": "Transforme un animal en objet. Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": true,
@@ -4615,7 +4615,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 2,
     "name": "Coupe-Griffes",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de couper les griffes d’une créature magique ou non. Durée : permanente Formule extrême : -",
     "targets": {
       "Animal": true,
@@ -4740,7 +4740,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 3,
     "name": "Création d’objets simples",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de créer des objets à partir d’une matière de base. Ces objets peuvent être des objets simples ou des morceaux d’objets plus volumineux (rouages par exemple). Durée : permanente. Remarque : nécessite une bonne connaissance de l’objet à créer car celui-ci doit être visualisé mentalement avant de lancer le sort. Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -4890,7 +4890,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 4,
     "name": "Création d’objets complexes",
-    "incantation": "X",
+    "incantation": "",
     "description": "Permet de créer des objets complexes à partir d’une matière de base. Durée : permanente. Remarque : nécessite une excellente connaissance de l’objet à créer et de ses caractéristiques internes car celui-ci doit être visualisé mentalement avant de lancer le sort. Formule extrême : -",
     "targets": {
       "Animal": false,
@@ -4940,7 +4940,7 @@ export const spells: Record<string, Spell> = {
     },
     "level": 5,
     "name": "Anti-Transplanage",
-    "incantation": "X",
+    "incantation": "",
     "description": "Empêche une personne de se téléporter en utilisant le transplanage. Durée : Variable (heures) Formule extrême : durée variable (jours)",
     "targets": {
       "Animal": false,

@@ -1,44 +1,49 @@
 import { useEffect, useState } from "react";
 import { pipe } from "fp-ts/lib/function";
 import { BehaviorSubject } from 'rxjs';
+import * as RemoteData from '@devexperts/remote-data-ts';
 
-import * as V2 from './store/v2';
+import { State as CurrentState, retrieve} from './store/v3/v3';
+import { tryCatch } from "./helpers/function";
 
-const retrieveState = (): Promise<V2.State> => {
-  try {
-    return pipe(
-      window.localStorage.getItem('state'),
-      currentState => currentState ? JSON.parse(currentState) : V2.defaultState,
-      currentState => {
-        return V2.retrieve(currentState)
-      },
-    );
-  } catch(e) {
-    console.error(e);
-    return Promise.resolve(V2.defaultState);
-  }
-}
+export type State = CurrentState;
 
-const subject = new BehaviorSubject<V2.State>(V2.defaultState);
+const retrieveState = (): Promise<State> => pipe(
+  window.localStorage.getItem('state'),
+  (currentState) => tryCatch(
+    () => JSON.parse(currentState || ''),
+    () => undefined
+  ),
+  retrieve,
+);
 
-retrieveState()
-  .then((currentState) => subject.next(currentState));
+const subject = new BehaviorSubject<RemoteData.RemoteData<Error, State>>(RemoteData.initial);
 
 export const useStore = () => {
-  const [state, setState] = useState<V2.State>(subject.value);
+  const [state, setState] = useState<RemoteData.RemoteData<Error, State>>(subject.value);
+
+  const setNewState = (newState: RemoteData.RemoteData<Error, State>) => {
+    if(RemoteData.isSuccess(newState)){
+      window.localStorage.setItem('state', JSON.stringify(newState.value));
+    }
+    subject.next(newState);
+  }
 
   useEffect(() => {
     const subscription = subject.subscribe({next: (value) => {
       setState(value);
     }});
+
+    if(RemoteData.isInitial(subject.value)){
+      retrieveState()
+        .then((currentState) => setNewState(RemoteData.success(currentState)));
+    }
+
     return () => subscription.unsubscribe();
   },[]);
 
   return {
     getState: () => state,
-    setState: (newState: V2.State) => {
-      window.localStorage.setItem('state', JSON.stringify(newState));
-      subject.next(newState);
-    }
+    setState: setNewState
   };
 }
