@@ -17,6 +17,7 @@ import { Input } from '../../components/Input';
 import { Filter } from './Filter';
 import { Tip } from '../../components/Tip';
 import { fromRemoteData } from '../../helpers/remoteData';
+import { baseColor } from '../../theme';
 
 type Category = 'Level' | 'Name' | 'Incantation' | 'PrimaryElement' | 'SecondaryElement';
 type Direction = 'Asc' | 'Desc';
@@ -75,12 +76,12 @@ export function SpellsLibrary() {
         <>
         <div className="flex">
           <div className="flex-grow">Liste des Sortilèges</div>
-          <Input type="search" theme="yellow" onChange={setSearch} placeholder="🔎 Rechercher..."/>
-          <button className="px-2 text-yellow-600" onClick={() => setShowFilters(!showFilters)}>{showFilters ? '▲' : '▼'}</button>
+          <Input type="search" theme="base" onChange={setSearch} placeholder="🔎 Rechercher..."/>
+          <button className={`px-2 text-${baseColor}-600`} onClick={() => setShowFilters(!showFilters)}>{showFilters ? '▲' : '▼'}</button>
         </div>
         {
           showFilters && (
-            <div className="m-1 p-2 bg-yellow-300 rounded">
+            <div className={`m-1 p-2 bg-${baseColor}-300 rounded`}>
               <Caption>Trier par</Caption>
               <Filter
                 initialOrderCategory={orderCategory}

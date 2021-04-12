@@ -1,17 +1,18 @@
 import React, { InputHTMLAttributes } from 'react';
+import { baseColor } from '../theme';
 
 type Props = {
   onChange: (value: string) => void;
   type: string;
-  theme: 'yellow' | 'neutral'
+  theme: 'base' | 'neutral'
 }
 
-export function Input ({onChange, theme, placeholder, ...rest}: Props & Omit<
+export function Input ({onChange, theme, ...rest}: Props & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'className' | 'style' | 'onChange'
 >) {
   const styles = {
-    yellow: 'ring-yellow-200 px-1 border border-yellow-500 rounded placeholder-yellow-600 text-yellow-900 bg-yellow-500 bg-opacity-50',
+    base: `ring-${baseColor}-200 px-1 border border-${baseColor}-700 rounded placeholder-${baseColor}-800 text-${baseColor}-900 bg-${baseColor}-500 bg-opacity-50`,
     neutral: 'ring-gray-200 px-1 border border-gray-500 rounded placeholder-gray-600 text-gray-900 bg-gray-200 bg-opacity-50'
   }
 

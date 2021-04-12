@@ -22,7 +22,7 @@ export function D6({value}: {value: number}) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <text  x="5.5" y="19" fontSize="7" fill="black">{`${value}`.padStart(2, '0')}</text>
+      <text  x="7.5" y="19" fontSize="7" fill="black">{value}</text>
     </svg>
   );
 }
