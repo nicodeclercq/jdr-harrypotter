@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/function';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import * as RemoteData from '@devexperts/remote-data-ts';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
@@ -57,33 +57,6 @@ function UserSpells({userSpells}: {userSpells: UserSpellsType}){
   const { use, remove, upgrade } = useSpell();
   const { add } = useNotification();
   const values = Object.values(userSpells);
-      
-  useEffect(() => {
-    const nextLevelSpells = getNextLevelSpells(userSpells);
-
-    if(nextLevelSpells.length) {
-      add({
-        type: 'success',
-        message: `${nextLevelSpells.length} sort peut être amélioré`,
-        action:{
-          run: () => {
-            setNextLevelSpell(nextLevelSpells[0].id);
-          },
-          label: 'Choisir',
-        },
-        showUntil: (remoteState) =>
-          pipe(
-            remoteState,
-            RemoteData.fold(
-              () => false,
-              () => false,
-              () => false,
-              (state) => state.userSpells[nextLevelSpells[0].id].currentLevel === nextLevelSpells[0].currentLevel
-            )
-          ),
-      });
-    }
-  }, [userSpells, add]);
 
   const onRollEnd = (spell: SpellType.Spell) => (result: Interaction.Interaction<never, number>) => {
     pipe(
@@ -94,6 +67,31 @@ function UserSpells({userSpells}: {userSpells: UserSpellsType}){
         canceled: noop,
       }),
       () => setRollModalSpellId(undefined),
+      () => getNextLevelSpells(userSpells),
+      nextLevelSpells => {
+        if(nextLevelSpells.length) {
+          add({
+            type: 'success',
+            message: `${nextLevelSpells.length} sort peut être amélioré`,
+            action:{
+              run: () => {
+                setNextLevelSpell(nextLevelSpells[0].id);
+              },
+              label: 'Choisir',
+            },
+            showUntil: (remoteState) =>
+              pipe(
+                remoteState,
+                RemoteData.fold(
+                  () => false,
+                  () => false,
+                  () => false,
+                  (state) => state.userSpells[nextLevelSpells[0].id].currentLevel === nextLevelSpells[0].currentLevel
+                )
+              ),
+          });
+        }
+      }
     );
   }
 
