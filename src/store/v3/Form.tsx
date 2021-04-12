@@ -22,7 +22,7 @@ const defaultTraits = {
 
 
 export function Form({callback}: {callback: (result: {traits: Record<Trait, number>}) => void}) {
-  const { handleSubmit, setValue, control } = useForm<Record<Trait, number>>({
+  const { handleSubmit, setValue, control, errors } = useForm<Record<Trait, number>>({
     defaultValues: defaultTraits
   })
 
@@ -31,7 +31,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
   }
 
   const rollDice = (trait: Trait) => () => {
-    setValue(trait, roll(3, 'd6'));
+    setValue(trait, roll(2, 'd6') + 6);
   }
 
   return (
@@ -43,9 +43,12 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <Controller
             name="Force"
             control={control}
-            render={({value, onChange}) => <Input id="input-Force" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
+            rules={{ required: true, min: 1, max: 20 }}
+            render={({value, onChange}) => <Input id="input-Force" errors={errors['Force']} value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
-          <Button type="secondary" onClick={rollDice('Force')}>🎲</Button>
+          <div className="">
+            <Button type="secondary" onClick={rollDice('Force')}>🎲</Button>
+          </div>
         </div>
 
         <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
@@ -53,9 +56,12 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <Controller
             name="Constitution"
             control={control}
+            rules={{ required: true, min: 1, max: 20 }}
             render={({value, onChange}) => <Input id="input-Constitution" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
-          <Button type="secondary" onClick={rollDice('Constitution')}>🎲</Button>
+          <div className="">
+            <Button type="secondary" onClick={rollDice('Constitution')}>🎲</Button>
+          </div>
         </div>
 
         <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
@@ -63,9 +69,12 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <Controller
             name="Taille"
             control={control}
+            rules={{ required: true, min: 1, max: 20 }}
             render={({value, onChange}) => <Input id="input-Taille" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
-          <Button type="secondary" onClick={rollDice('Taille')}>🎲</Button>
+          <div className="">
+            <Button type="secondary" onClick={rollDice('Taille')}>🎲</Button>
+          </div>
         </div>
 
         <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
@@ -73,9 +82,12 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <Controller
             name="Perception"
             control={control}
+            rules={{ required: true, min: 1, max: 20 }}
             render={({value, onChange}) => <Input id="input-Perception" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
-          <Button type="secondary" onClick={rollDice('Perception')}>🎲</Button>
+          <div className="">
+            <Button type="secondary" onClick={rollDice('Perception')}>🎲</Button>
+          </div>
         </div>
 
         <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
@@ -83,9 +95,12 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <Controller
             name="Intelligence"
             control={control}
+            rules={{ required: true, min: 1, max: 20 }}
             render={({value, onChange}) => <Input id="input-Intelligence" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
-          <Button type="secondary" onClick={rollDice('Intelligence')}>🎲</Button>
+          <div className="">
+            <Button type="secondary" onClick={rollDice('Intelligence')}>🎲</Button>
+          </div>
         </div>
 
         <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
@@ -93,9 +108,12 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <Controller
             name="Dextérité"
             control={control}
+            rules={{ required: true, min: 1, max: 20 }}
             render={({value, onChange}) => <Input id="input-Dextérité" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
-          <Button type="secondary" onClick={rollDice('Dextérité')}>🎲</Button>
+          <div className="">
+            <Button type="secondary" onClick={rollDice('Dextérité')}>🎲</Button>
+          </div>
         </div>
 
         <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
@@ -103,9 +121,12 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <Controller
             name="Apparence"
             control={control}
+            rules={{ required: true, min: 1, max: 20 }}
             render={({value, onChange}) => <Input id="input-Apparence" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
-          <Button type="secondary" onClick={rollDice('Apparence')}>🎲</Button>
+          <div className="">
+            <Button type="secondary" onClick={rollDice('Apparence')}>🎲</Button>
+          </div>
         </div>
 
         <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
@@ -113,9 +134,12 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <Controller
             name="Pouvoir"
             control={control}
+            rules={{ required: true, min: 1, max: 20 }}
             render={({value, onChange}) => <Input id="input-Pouvoir" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
-          <Button type="secondary" onClick={rollDice('Pouvoir')}>🎲</Button>
+          <div className="">
+            <Button type="secondary" onClick={rollDice('Pouvoir')}>🎲</Button>
+          </div>
         </div>
         <Button onClick="submit" type="primary">Valider</Button>
       </div>

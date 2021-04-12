@@ -1,13 +1,17 @@
 import React, { InputHTMLAttributes } from 'react';
+import { FieldError } from 'react-hook-form';
 import { baseColor } from '../theme';
+import { ErrorMessage } from './ErrorMessage';
 
-type Props = {
+type Props= {
   onChange: (value: string) => void;
   type: string;
-  theme: 'base' | 'neutral'
+  theme: 'base' | 'neutral';
+  errors?: FieldError;
+  messages?: Record<string, string>;
 }
 
-export function Input ({onChange, theme, ...rest}: Props & Omit<
+export function Input ({onChange, theme,errors, messages, ...rest}: Props & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'className' | 'style' | 'onChange'
 >) {
@@ -17,10 +21,13 @@ export function Input ({onChange, theme, ...rest}: Props & Omit<
   }
 
   return (
-    <input
-      {...rest}
-      className={`focus:ring-4 ${styles[theme]}`}
-      onChange={e => onChange(e.target.value)}
-    />
+    <div className="inline-flex flex-col">
+      <input
+        {...rest}
+        className={`focus:ring-4 ${styles[theme]}`}
+        onChange={e => onChange(e.target.value)}
+      />
+      {errors && <ErrorMessage errors={errors} messages={messages} />}
+    </div>
   );
 };
