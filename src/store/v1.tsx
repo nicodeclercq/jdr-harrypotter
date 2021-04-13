@@ -57,7 +57,7 @@ const Welcome = ({callback}: {callback: () => void}) => (
   <div className="flex flex-col space-y-4 p-2">
     <p>
       Avant de commencer sache que tout ce que tu inscris ici est <strong>sauvegardé en cache sur ton navigateur.
-      </strong> Ainsi si tu changes de navigateur, d'ordinateur ou qu'il se passe quoi que ce soit d'imprévue
+      </strong> Ainsi si tu changes de navigateur, d'ordinateur, que tu effaces ton historique de navigation ou qu'il se passe quoi que ce soit d'imprévue
       (les bugs ici n'existant évidemment pas) tu pourras dire avec nous cette magnifique phrases dont la véracité n'a d'égale
       que sa douce simplicité « C’est balot! ».
     </p>
