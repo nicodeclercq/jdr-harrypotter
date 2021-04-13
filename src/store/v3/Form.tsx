@@ -8,16 +8,17 @@ import { Trait } from './v3';
 import { roll } from '../../helpers/number';
 import { Label } from '../../components/font/Label';
 
+const rollTrait = () => roll(2, 'd6') + 6;
 
 const defaultTraits = {
-  Force: 0,
-  Constitution: 0,
-  Taille: 0,
-  Perception: 0,
-  Intelligence: 0,
-  Dextérité: 0,
-  Apparence: 0,
-  Pouvoir: 0,
+  Force: rollTrait(),
+  Constitution: rollTrait(),
+  Taille: rollTrait(),
+  Perception: rollTrait(),
+  Intelligence: rollTrait(),
+  Dextérité: rollTrait(),
+  Apparence: rollTrait(),
+  Pouvoir: rollTrait(),
 };
 
 
@@ -31,7 +32,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
   }
 
   const rollDice = (trait: Trait) => () => {
-    setValue(trait, roll(2, 'd6') + 6);
+    setValue(trait, rollTrait());
   }
 
   return (
