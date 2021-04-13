@@ -56,7 +56,7 @@ function update(promise: Promise<V2.State>): Promise<State> {
   return promise
     .then((state) => prompt<V2.State & {traits: Record<Trait, number>}>((callback) => (
         <Form callback={(traits) => callback({...state, ...traits})} />
-    )))
+    ), <>Définition des caractéristiques du Personnage</>))
     .then((state) => ({
       ...state,
       userSpells: map((spell) => ({

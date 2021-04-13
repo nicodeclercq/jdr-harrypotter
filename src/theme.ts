@@ -1,2 +1,2 @@
-export const baseColor = 'blue';
+export const baseColor = 'yellow';
 export const secondaryColor = 'blue';
