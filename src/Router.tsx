@@ -3,11 +3,17 @@ import {
   BrowserRouter,
   Switch,
   Route,
-  Redirect,
 } from 'react-router-dom';
+import { entries, keys } from './helpers/object';
+import { HomePage } from './pages/home/HomePage';
 import { SpellsPage } from './pages/spells/SpellsPage';
 
 const routes: Record<string, {label: string; icon: string; Component: () => React.ReactElement}> = {
+  '/': {
+    icon: '🧙',
+    label: 'Accueil',
+    Component: HomePage,
+  },
   '/spells': {
     icon: '📖',
     label: 'Sorts',
@@ -16,11 +22,13 @@ const routes: Record<string, {label: string; icon: string; Component: () => Reac
 } as const;
 
 const routesDefOrder: Array<keyof typeof routes> = [
-  '/spells'
+  '/spells', '/'
 ];
 
-export const ROUTES = Object.entries(routes)
+export const ROUTES = entries(routes)
   .map(([path, {label, icon}]) => ({path, label, icon}));
+
+export const ROUTE_NAMES = keys(routes);
 
 export function Router() {
   return (
@@ -35,9 +43,6 @@ export function Router() {
             </Route>
           )})
         }
-        <Route exact path="/">
-          <Redirect to="/spells" />
-        </Route>
       </Switch>
     </BrowserRouter>
   );

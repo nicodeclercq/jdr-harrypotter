@@ -18,6 +18,10 @@ import { Spell } from './Spell';
 import { spells } from './spells';
 import { useSpell } from './useSpell';
 
+type Props = {
+  goTo?: () => void;
+}
+
 function ElementsCount({userSpells}: {userSpells: {id: number; userPoints: Record<SpellType.Element, number>;}[]}){
   const initialCount: Record<SpellType.Element, number>  = {
     Air: 0,
@@ -51,7 +55,7 @@ function ElementsCount({userSpells}: {userSpells: {id: number; userPoints: Recor
   );
 }
 
-function UserSpells({userSpells}: {userSpells: UserSpellsType}){
+function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
   const [rollModalSpellId, setRollModalSpellId] = useState<number | undefined>(undefined);
   const [nextLevelSpell, setNextLevelSpell] = useState<number | undefined>(undefined);
   const { use, remove, upgrade } = useSpell();
@@ -123,7 +127,7 @@ function UserSpells({userSpells}: {userSpells: UserSpellsType}){
                   />
                 )
               })
-            : (<EmptyContent>
+            : (<EmptyContent goTo={goTo}>
                 {{
                   emoji: '📖',
                   title: 'Tu ne connais encore rien ?',
@@ -154,12 +158,13 @@ function UserSpells({userSpells}: {userSpells: UserSpellsType}){
     </>
   );
 }
-export function MySpells() {
+
+export function MySpells({goTo}: Props) {
   const { getUserSpells } = useSpell();
 
   const userSpells = getUserSpells();
 
   return fromRemoteData(
     userSpells,
-    (userSpells) => <UserSpells userSpells={userSpells} />);
+    (userSpells) => <UserSpells goTo={goTo} userSpells={userSpells} />);
 }
