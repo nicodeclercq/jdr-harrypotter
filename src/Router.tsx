@@ -3,6 +3,7 @@ import {
   BrowserRouter,
   Switch,
   Route,
+  Redirect,
 } from 'react-router-dom';
 import { entries } from './helpers/object';
 import { SpellsPage } from './pages/spells/SpellsPage';
@@ -22,6 +23,9 @@ export function Router() {
             </Route>
           ))
         }
+        <Route exact path="/">
+          <Redirect to="/spells" />
+        </Route>
       </Switch>
     </BrowserRouter>
   );
