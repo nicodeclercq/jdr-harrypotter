@@ -27,7 +27,7 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
 
 export function Layout ({ children }: { children: React.ReactNode }) {
   const [hoverable] = useHover((hovered: boolean) => (
-    <div className={` ${getColor('secondary', 800 )} text-white divide-y divide-yellow-500`}>
+    <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-yellow-500`}>
       {
         ROUTES.map(({path, label, icon}) => (
           <NavLink hovered={hovered} key={path} path={path} label={label}  icon={icon}/>
@@ -39,7 +39,7 @@ export function Layout ({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex bg-gray-500 h-screen">
       {hoverable}
-      <div className="flex flex-grow p-6 h-screen space-x-2 justify-center items-center">
+      <div className="ml-16 flex flex-grow p-6 h-screen space-x-2 justify-center items-center">
         {children}
       </div>
     </div>
