@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes } from 'react';
 import { FieldError } from 'react-hook-form';
-import { baseColor } from '../theme';
+import { getColor } from '../theme';
 import { ErrorMessage } from './ErrorMessage';
 
 type Props= {
@@ -16,7 +16,7 @@ export function Input ({onChange, theme,errors, messages, ...rest}: Props & Omit
   'className' | 'style' | 'onChange'
 >) {
   const styles = {
-    base: `ring-${baseColor}-200 px-1 border border-${baseColor}-700 rounded placeholder-${baseColor}-800 text-${baseColor}-900 bg-${baseColor}-500 bg-opacity-50`,
+    base: `${getColor('primary', 200, 'ring')} px-1 border ${getColor('primary', 700, 'border')}  rounded ${getColor('primary', 800, 'placeholder')} ${getColor('primary', 900, 'foreground')} ${getColor('primary', 500)} bg-opacity-50`,
     neutral: 'ring-gray-200 px-1 border border-gray-500 rounded placeholder-gray-600 text-gray-900 bg-gray-200 bg-opacity-50'
   }
 

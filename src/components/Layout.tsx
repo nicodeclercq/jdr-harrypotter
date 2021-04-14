@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import {useHover} from 'react-use';
 import { ROUTES } from '../Router';
-import { secondaryColor } from '../theme';
+import { getColor } from '../theme';
 
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: string;}) {
   let match = useRouteMatch({
@@ -11,8 +11,8 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
   });
 
   const style = {
-    active: `bg-gradient-to-r from-${secondaryColor}-700 to-${secondaryColor}-600 hover:bg-${secondaryColor}-600 border-r-2 border-white`,
-    inactive: `bg-${secondaryColor}-800  hover:bg-${secondaryColor}-700`,
+    active: `bg-gradient-to-r ${getColor('secondary', 700, 'from:background')} ${getColor('secondary', 600, 'from:background')} ${getColor('secondary', 700, 'hover:background')} border-r-2 border-white`,
+    inactive: `${getColor('secondary', 800)}  ${getColor('secondary', 700, 'hover:background')}`,
   };
 
   return (
@@ -27,7 +27,7 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
 
 export function Layout ({ children }: { children: React.ReactNode }) {
   const [hoverable] = useHover((hovered: boolean) => (
-    <div className={`bg-${secondaryColor}-800 text-white divide-y divide-yellow-500`}>
+    <div className={` ${getColor('secondary', 800 )} text-white divide-y divide-yellow-500`}>
       {
         ROUTES.map(({path, label, icon}) => (
           <NavLink hovered={hovered} key={path} path={path} label={label}  icon={icon}/>
