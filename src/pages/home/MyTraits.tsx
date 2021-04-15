@@ -14,7 +14,7 @@ type Props = {
 type Caracteristics = 'Idée' | 'Chance';
 function UserTraits({userTraits}: Props) {
   const [rollModalCaracteristic, setRollModalCaracteristic] = useState<Caracteristics | undefined>(undefined);
-  const [rollModalTrait, setRollModalTrait] = useState<{key: Trait, multiplier: number} | undefined>(undefined);
+  const [rollModalTrait, setRollModalTrait] = useState<Trait | undefined>(undefined);
 
   const caracteristics = {
     Idée: userTraits.Intelligence * 5,
@@ -35,12 +35,7 @@ function UserTraits({userTraits}: Props) {
                 {key} ({value})
               </div>
               <div className="flex items-center justify-evenly space-x-2">
-                <span>🎲</span>
-                <Button onClick={() => setRollModalTrait({key, multiplier: 5})} type="secondary">Très facile</Button>
-                <Button onClick={() => setRollModalTrait({key, multiplier: 4})} type="secondary">Facile</Button>
-                <Button onClick={() => setRollModalTrait({key, multiplier: 3})} type="secondary">Normal</Button>
-                <Button onClick={() => setRollModalTrait({key, multiplier: 2})} type="secondary">Difficile</Button>
-                <Button onClick={() => setRollModalTrait({key, multiplier: 1})} type="secondary">Très Difficile</Button>
+                <Button onClick={() => setRollModalTrait(key)} type="secondary">🎲</Button>
               </div>
             </div>
           ))
@@ -66,17 +61,25 @@ function UserTraits({userTraits}: Props) {
               {rollModalCaracteristic}
             </span>
           }
+          isCancellable={false}
           onRollEnd={() => { setRollModalCaracteristic(undefined)}}
         />
       }
       {
         rollModalTrait != null && <RollModal
-          successPercentage={userTraits[rollModalTrait.key] * rollModalTrait.multiplier }
+          successPercentage={{
+            veryEasy: userTraits[rollModalTrait] * 5,
+            easy: userTraits[rollModalTrait] * 4,
+            normal: userTraits[rollModalTrait] * 3,
+            hard: userTraits[rollModalTrait] * 2,
+            veryHard: userTraits[rollModalTrait] * 1,
+          }}
           title={
             <span className="space-x-2">
-              {rollModalCaracteristic}
+              {rollModalTrait}
             </span>
           }
+          isCancellable={false}
           onRollEnd={() => { setRollModalTrait(undefined)}}
         />
       }
