@@ -5,6 +5,7 @@ import { State, useStore } from '../useStore';
 import { Button } from './Button';
 
 type NotificationType = {
+  id: string;
   type: 'success' | 'failure' | 'warning';
   message: string;
   action?: {
@@ -14,10 +15,9 @@ type NotificationType = {
   showUntil?: (state: RemoteData<Error, State>) => boolean;
 };
 
-const subject = new BehaviorSubject<Array<{id: number} & NotificationType>>([]);
-let count = 0;
+const subject = new BehaviorSubject<Array<NotificationType>>([]);
 
-function Notification({ id, action, message, type }: NotificationType & {id: number}) {
+function Notification({ action, message, type }: NotificationType) {
   const icons: Record<NotificationType['type'], React.ReactNode> = {
     success: <div className="shadow-inner p-2 flex justify-center items-center bg-green-500 w-10 h-10 rounded-full">🎉</div>,
     failure: <div className="shadow-inner p-2 flex justify-center items-center bg-red-500 w-10 h-10 rounded-full">😈</div>,
@@ -36,8 +36,11 @@ function Notification({ id, action, message, type }: NotificationType & {id: num
 }
 
 export const useNotification = () => {
-  const add = ({ action, ...rest }: NotificationType) => {
-    const id = count++;
+  const add = ({ id, action, ...rest }: NotificationType) => {
+    if(subject.value.filter(notification => notification.id === id).length > 0) {
+      return;
+    }
+
     const notification = {
       id,
       ...rest,
@@ -68,7 +71,7 @@ export const useNotification = () => {
     return id;
   };
 
-  const remove = (id: number) => {
+  const remove = (id: string) => {
     const newValue = subject.value.filter(({id: currentId}) => currentId !== id);
     subject.next(newValue);
   }

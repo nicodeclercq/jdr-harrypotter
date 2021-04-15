@@ -75,6 +75,7 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
       nextLevelSpells => {
         if(nextLevelSpells.length) {
           add({
+            id: `spellUpdate_${nextLevelSpells[0].id}`,
             type: 'success',
             message: `${nextLevelSpells.length} sort peut être amélioré`,
             action:{
