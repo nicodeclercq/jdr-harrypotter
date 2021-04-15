@@ -1,9 +1,9 @@
 import * as React from "react";
 
-export function D6({value}: {value: number}) {
+export function D6({value, size = 5}: {value: number, size?: number}) {
   return (
     <svg
-      style={{width: '5rem', height: '5rem'}}
+      style={{width: `${size}rem`, height: `${size}rem`}}
       viewBox="0 0 26 27"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

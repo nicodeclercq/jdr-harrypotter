@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import {useHover} from 'react-use';
 import { ROUTES } from '../Router';
 import { getColor } from '../theme';
+import { D10 } from './dice/D10';
+import { D100 } from './dice/D100';
+import { D6 } from './dice/D6';
+import { RollModal } from './RollModal';
 
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: string;}) {
   let match = useRouteMatch({
@@ -26,22 +30,55 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
 }
 
 export function Layout ({ children }: { children: React.ReactNode }) {
+  const [rollModal, setRollModal] = useState<Array<'d100' | 'd10' | 'd6'> | undefined>(undefined);
   const [hoverable] = useHover((hovered: boolean) => (
-    <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-yellow-500`}>
-      {
-        ROUTES.map(({path, label, icon}) => (
-          <NavLink hovered={hovered} key={path} path={path} label={label}  icon={icon}/>
-        ))
-      }
+    <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-yellow-500 flex flex-col`}>
+      <div className="flex-grow divide-y divide-yellow-500">
+        {
+          ROUTES.map(({path, label, icon}) => (
+            <div>
+              <NavLink hovered={hovered} key={path} path={path} label={label}  icon={icon}/>
+            </div>
+          ))
+        }
+      </div>
+      <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d6'])}}>
+          <D6 value={0} size={2} />
+      </button>
+      <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d6', 'd6'])}}>
+          <D6 value={0} size={1.5} />
+          <D6 value={0} size={1.5} />
+      </button>
+      <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d10'])}}>
+          <D10 value={0} size={2} />
+      </button>
+      <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d100', 'd10'])}}>
+          <D100 value={0} size={1.5} />
+          <D10 value={0} size={1.5} />
+      </button>
     </div>
   ));
 
   return (
-    <div className="flex bg-gray-500 h-screen">
-      {hoverable}
-      <div className="ml-16 flex flex-grow p-6 h-screen space-x-2 justify-center items-center">
-        {children}
+    <>
+      <div className="flex bg-gray-500 h-screen">
+        {hoverable}
+        <div className="ml-16 flex flex-grow p-6 h-screen space-x-2 justify-center items-center">
+          {children}
+        </div>
       </div>
-    </div>
+      {
+        rollModal && <RollModal
+          title={
+            <span className="space-x-2">
+              Lancé libre
+            </span>
+          }
+          isCancellable={false}
+          onRollEnd={() => { setRollModal(undefined)}}
+          dices={rollModal}
+        />
+      }
+    </>
   );
 }

@@ -13,10 +13,11 @@ type SuccessPercentages = {
   veryHard: number;
 }
 type Props = {
-  successPercentage: number | SuccessPercentages,
+  successPercentage?: number | SuccessPercentages,
   title: React.ReactNode,
   onRollEnd: (result: Interaction.Interaction<never, number>) => void;
   isCancellable?: boolean;
+  dices?: Array<'d100' | 'd10' | 'd6'>;
 }
 
 function DifficultySelection ({successPercentages, onSelection}: {successPercentages: SuccessPercentages, onSelection: (value: number) => void}) {
@@ -33,7 +34,7 @@ function DifficultySelection ({successPercentages, onSelection}: {successPercent
 }
 
 
-export function RollModal ({successPercentage, title, onRollEnd, isCancellable = true}: Props){
+export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, onRollEnd, isCancellable = true}: Props){
   const [value, setValue] = useState(NaN);
   const [percentage, setPercentage] = useState(typeof successPercentage === 'number' ? successPercentage : NaN);
 
@@ -42,14 +43,16 @@ export function RollModal ({successPercentage, title, onRollEnd, isCancellable =
       header={title}
     >
       {
-        isNaN(percentage)
+        (isNaN(percentage) && successPercentage)
           ? <DifficultySelection successPercentages={successPercentage as SuccessPercentages}  onSelection={value => {setPercentage(value)}} />
           : (<>
-            <span className="text-m text-center">
-              Niveau actuel: {percentage}%
-            </span>
+            { !isNaN(percentage) &&
+              <span className="text-m text-center">
+                Niveau actuel: {percentage}%
+              </span>
+            }
             <div className="flex justify-center">
-              <Roll dices={['d100', 'd10']} concat={([tens, units]: number[]) => tens + units || 100} onRollEnd={(val) => setValue(val)}/>
+              <Roll dices={dices} concat={([tens, units]: number[]) => tens + units || 100} onRollEnd={(val) => setValue(val)}/>
             </div>
             <div className="flex flex-col space-y-4 items-center justify-center mb-2">
             {
@@ -58,14 +61,17 @@ export function RollModal ({successPercentage, title, onRollEnd, isCancellable =
                     <span className="text-4xl">
                       {value}
                     </span>
-                    <div className="flex flex-col space-y-1 items-center justify-center">
-                      {
-                          value <= 5                ? <><span className="text-m">👑</span><span>🎉 Réussite critique 🎉</span></>
-                        : value >= 95               ? <><span className="text-m">😈</span><span>Échec critique</span></>
-                        : value < percentage        ? <><span className="text-m">😀</span><span>Succés</span></>
-                        :                             <><span className="text-m">🙁</span><span>Échec</span></>
-                      }
-                    </div>
+                    {
+                      !isNaN(percentage) && (
+                        <div className="flex flex-col space-y-1 items-center justify-center">
+                          {
+                              value <= 5                        ? <><span className="text-m">👑</span><span>🎉 Réussite critique 🎉</span></>
+                            : value >= 95                       ? <><span className="text-m">😈</span><span>Échec critique</span></>
+                            : value < percentage                ? <><span className="text-m">😀</span><span>Succés</span></>
+                            :                                     <><span className="text-m">🙁</span><span>Échec</span></>
+                          }
+                        </div>
+                    )}
                   </>
                 )
               }
@@ -85,6 +91,9 @@ export function RollModal ({successPercentage, title, onRollEnd, isCancellable =
                 type="primary"
                 title="En validant tes jets de dés tu enregistres une utilisation qui te permet d'améliorer tes sorts ou compétences petit à petit"
                 onClick={() => {
+                  if(!percentage) {
+                    onRollEnd(Interaction.canceled())
+                  }
                   value < percentage
                     ? onRollEnd(Interaction.success(value))
                     : onRollEnd(Interaction.emptyFailure())
