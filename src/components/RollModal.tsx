@@ -38,6 +38,12 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
   const [value, setValue] = useState(NaN);
   const [percentage, setPercentage] = useState(typeof successPercentage === 'number' ? successPercentage : NaN);
 
+  const isD100 = (dices: Array<'d100' | 'd10' | 'd6'>): dices is ['d100', 'd10'] => {
+    return dices.length === 2 && dices[0] === 'd100' && dices[1] === 'd10';
+  }
+  const concatD100 = ([tens, units]: number[]) => tens + units || 100;
+  const concat = (values: number[]) => values.reduce((a, b) => a + b, 0);
+
   return (
     <Modal
       header={title}
@@ -52,7 +58,7 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
               </span>
             }
             <div className="flex justify-center">
-              <Roll dices={dices} concat={([tens, units]: number[]) => tens + units || 100} onRollEnd={(val) => setValue(val)}/>
+              <Roll dices={dices} concat={isD100(dices) ? concatD100 : concat} onRollEnd={(val) => setValue(val)}/>
             </div>
             <div className="flex flex-col space-y-4 items-center justify-center mb-2">
             {
