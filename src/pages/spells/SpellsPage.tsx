@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTitle } from 'react-use';
 
 import { Layout } from '../../components/Layout';
 import { fromRemoteData } from '../../helpers/remoteData';
@@ -8,6 +9,7 @@ import { SpellsLibrary } from './SpellsLibrary';
 
 
 export function SpellsPage() {
+  useTitle('Sorts');
   const { getState } = useStore();
 
   return fromRemoteData(
