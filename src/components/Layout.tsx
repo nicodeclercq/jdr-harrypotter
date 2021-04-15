@@ -11,7 +11,7 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
   });
 
   const style = {
-    active: `bg-gradient-to-r ${getColor('secondary', 700, 'from:background')} ${getColor('secondary', 600, 'from:background')} ${getColor('secondary', 700, 'hover:background')} border-r-2 border-white`,
+    active: `bg-gradient-to-r ${getColor('secondary', 600, 'from:background')} ${getColor('secondary', 400, 'to:background')} ${getColor('secondary', 700, 'hover:background')} border-r-2 border-white`,
     inactive: `${getColor('secondary', 800)}  ${getColor('secondary', 700, 'hover:background')}`,
   };
 
