@@ -3,6 +3,7 @@ import { Button } from './Button';
 import { Modal } from './Modal';
 import { Roll } from './Roll';
 import * as Interaction from '../helpers/interaction';
+import { Dice } from './dice/dice';
 
 
 type SuccessPercentages = {
@@ -17,7 +18,7 @@ type Props = {
   title: React.ReactNode,
   onRollEnd: (result: Interaction.Interaction<never, number>) => void;
   isCancellable?: boolean;
-  dices?: Array<'d100' | 'd10' | 'd6'>;
+  dices?: Dice[];
 }
 
 function DifficultySelection ({successPercentages, onSelection}: {successPercentages: SuccessPercentages, onSelection: (value: number) => void}) {
@@ -38,7 +39,7 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
   const [value, setValue] = useState(NaN);
   const [percentage, setPercentage] = useState(typeof successPercentage === 'number' ? successPercentage : NaN);
 
-  const isD100 = (dices: Array<'d100' | 'd10' | 'd6'>): dices is ['d100', 'd10'] => {
+  const isD100 = (dices: Dice[]): dices is ['d100', 'd10'] => {
     return dices.length === 2 && dices[0] === 'd100' && dices[1] === 'd10';
   }
   const concatD100 = ([tens, units]: number[]) => tens + units || 100;

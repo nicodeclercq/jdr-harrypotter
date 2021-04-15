@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useInterval } from '../hooks/useInteval';
 import { D10 } from './dice/D10';
 import { D100 } from './dice/D100';
+import { D4 } from './dice/D4';
 import { D6 } from './dice/D6';
 import * as Dice from './dice/dice';
 
@@ -16,6 +17,7 @@ const DoRoll = ({dices}: {dices: {type: Dice.Dice, value: number}[]}) => {
     {
       dices.map(
         (current, index) => Dice.fold({
+          onD4: () => <D4 key={index} value={current.value}/>,
           onD6: () => <D6 key={index} value={current.value}/>,
           onD10: () => <D10 key={index} value={current.value}/>,
           onD100: () => <D100 key={index} value={current.value}/>,
