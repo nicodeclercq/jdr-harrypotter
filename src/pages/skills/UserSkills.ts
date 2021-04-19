@@ -1,0 +1,1 @@
+export type UserSkills = Record<string, {currentLevel: number; max: number; }>;
