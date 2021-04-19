@@ -7,6 +7,7 @@ import { Input } from '../../components/Input';
 import { Trait } from './v3';
 import { roll } from '../../helpers/number';
 import { Label } from '../../components/font/Label';
+import { Icon } from '../../components/Icon';
 
 const rollTrait = () => roll(2, 'd6') + 6;
 
@@ -48,7 +49,9 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
             render={({value, onChange}) => <Input id="input-Force" errors={errors['Force']} value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
           <div className="">
-            <Button type="secondary" onClick={rollDice('Force')}>🎲</Button>
+            <Button type="secondary" onClick={rollDice('Force')}>
+              <Icon name="DICE" />
+            </Button>
           </div>
         </div>
 
@@ -61,7 +64,9 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
             render={({value, onChange}) => <Input id="input-Constitution" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
           <div className="">
-            <Button type="secondary" onClick={rollDice('Constitution')}>🎲</Button>
+            <Button type="secondary" onClick={rollDice('Constitution')}>
+              <Icon name="DICE" />
+            </Button>
           </div>
         </div>
 
@@ -74,7 +79,9 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
             render={({value, onChange}) => <Input id="input-Taille" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
           <div className="">
-            <Button type="secondary" onClick={rollDice('Taille')}>🎲</Button>
+            <Button type="secondary" onClick={rollDice('Taille')}>
+              <Icon name="DICE" />
+            </Button>
           </div>
         </div>
 
@@ -87,7 +94,9 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
             render={({value, onChange}) => <Input id="input-Perception" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
           <div className="">
-            <Button type="secondary" onClick={rollDice('Perception')}>🎲</Button>
+            <Button type="secondary" onClick={rollDice('Perception')}>
+              <Icon name="DICE" />
+            </Button>
           </div>
         </div>
 
@@ -100,7 +109,9 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
             render={({value, onChange}) => <Input id="input-Intelligence" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
           <div className="">
-            <Button type="secondary" onClick={rollDice('Intelligence')}>🎲</Button>
+            <Button type="secondary" onClick={rollDice('Intelligence')}>
+              <Icon name="DICE" />
+            </Button>
           </div>
         </div>
 
@@ -113,7 +124,9 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
             render={({value, onChange}) => <Input id="input-Dextérité" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
           <div className="">
-            <Button type="secondary" onClick={rollDice('Dextérité')}>🎲</Button>
+            <Button type="secondary" onClick={rollDice('Dextérité')}>
+              <Icon name="DICE" />
+            </Button>
           </div>
         </div>
 
@@ -126,7 +139,9 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
             render={({value, onChange}) => <Input id="input-Apparence" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
           <div className="">
-            <Button type="secondary" onClick={rollDice('Apparence')}>🎲</Button>
+            <Button type="secondary" onClick={rollDice('Apparence')}>
+              <Icon name="DICE" />
+            </Button>
           </div>
         </div>
 
@@ -139,7 +154,9 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
             render={({value, onChange}) => <Input id="input-Pouvoir" value={value} type="number" theme="neutral" max="100" min="0" onChange={onChange} />}
           />
           <div className="">
-            <Button type="secondary" onClick={rollDice('Pouvoir')}>🎲</Button>
+            <Button type="secondary" onClick={rollDice('Pouvoir')}>
+              <Icon name="DICE" />
+            </Button>
           </div>
         </div>
         <Button onClick="submit" type="primary">Valider</Button>

@@ -3,14 +3,16 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import {useHover} from 'react-use';
 import { ROUTES } from '../Router';
 import { getColor } from '../theme';
+import { Button } from './Button';
 import { D10 } from './dice/D10';
 import { D100 } from './dice/D100';
 import { D4 } from './dice/D4';
 import { D6 } from './dice/D6';
 import { Dice } from './dice/dice';
 import { RollModal } from './RollModal';
+import { Icon, IconName } from '../components/Icon';
 
-function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: string;}) {
+function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName;}) {
   let match = useRouteMatch({
     path,
     exact: true,
@@ -24,7 +26,7 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
   return (
     <Link to={path}>
       <div className={`flex text-4xl flex-row space-x-2 p-4 items-center ${match ? style.active : style.inactive}`}>
-        <span aria-label={label}>{icon}</span>
+        <span aria-label={label}><Icon name={icon} /></span>
         {hovered && <span className="text-xl">{label}</span>}
       </div>
     </Link>

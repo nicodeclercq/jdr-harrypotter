@@ -130,7 +130,7 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
               })
             : (<EmptyContent goTo={goTo}>
                 {{
-                  emoji: '📖',
+                  emoji: 'BOOK',
                   title: 'Tu ne connais encore rien ?',
                   description: 'Il va falloir te mettre au travail vite fait mon petit gars!'
                 }}

@@ -4,18 +4,19 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import { IconName } from './components/Icon';
 import { entries, keys } from './helpers/object';
 import { HomePage } from './pages/home/HomePage';
 import { SpellsPage } from './pages/spells/SpellsPage';
 
-const routes: Record<string, {label: string; icon: string; Component: () => React.ReactElement}> = {
+const routes: Record<string, {label: string; icon: IconName; Component: () => React.ReactElement}> = {
   '/': {
-    icon: '🧙',
+    icon: 'SORCERER',
     label: 'Accueil',
     Component: HomePage,
   },
   '/spells': {
-    icon: '📖',
+    icon: 'BOOK',
     label: 'Sorts',
     Component: SpellsPage
   },

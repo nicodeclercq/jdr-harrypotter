@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
+import { Icon } from '../../components/Icon';
 import { RollModal } from '../../components/RollModal';
 import { entries } from '../../helpers/object';
 import { fromRemoteData } from '../../helpers/remoteData';
@@ -35,7 +36,9 @@ function UserTraits({userTraits}: Props) {
                 {key} ({value})
               </div>
               <div className="flex items-center justify-evenly space-x-2">
-                <Button onClick={() => setRollModalTrait(key)} type="secondary">🎲</Button>
+                <Button onClick={() => setRollModalTrait(key)} type="secondary">
+                  <Icon name="DICE" />
+                </Button>
               </div>
             </div>
           ))
@@ -47,7 +50,9 @@ function UserTraits({userTraits}: Props) {
                 <div className="flex-grow">{key}</div>
                 <div>{value}%</div>
                 <div>
-                  <Button onClick={() => setRollModalCaracteristic(key)} type="secondary">🎲</Button>
+                  <Button onClick={() => setRollModalCaracteristic(key)} type="secondary">
+                    <Icon name="DICE" />
+                  </Button>
                 </div>
               </div>
             ))

@@ -8,6 +8,7 @@ import { entries } from '../../helpers/object';
 import * as SpellType from './domain/Spell';
 import { ElementTag } from '../../components/ElementTag';
 import { Button } from '../../components/Button';
+import { Icon } from '../../components/Icon';
 
 const elements: Record<SpellType.Target, string> = {
   'Animal': '🐇',
@@ -64,7 +65,9 @@ export function Spell({spell, roll, actions, isOwned = false}: {roll: (id: numbe
         actions: isOwned
             && (
                 <div className="space-x-2">
-                  <Button onClick={() => roll(spell.id)} type="secondary">🎲</Button>
+                  <Button onClick={() => roll(spell.id)} type="secondary">
+                    <Icon name="DICE" />
+                  </Button>
                 </div>
               )
       }}

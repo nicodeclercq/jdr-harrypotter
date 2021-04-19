@@ -2,11 +2,12 @@ import React from 'react';
 import { getColor } from '../theme';
 import { Button } from './Button';
 import { Comment } from './font/Comment';
+import { Icon, IconName } from './Icon';
 
 type Props = {
   goTo?: () => void;
   children: {
-    emoji: string;
+    emoji: IconName;
     title: string;
     description: string;
   }
@@ -15,7 +16,7 @@ type Props = {
 export function EmptyContent({goTo, children:{emoji, title, description}}: Props) {
   return (
   <div className={`border rounded border-dashed ${getColor('secondary', 50 )} p-2 ${getColor('secondary', 500, 'border' )} m-3 text-center`}>
-    <div className="text-7xl mb-2">{emoji}</div>
+    <div className="text-7xl mb-2"><Icon name={emoji} /></div>
     <Comment>
       <strong>{title}</strong>
       <br />
