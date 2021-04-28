@@ -70,8 +70,15 @@ export function Layout ({ children }: { children: React.ReactNode }) {
     <>
       <div className="flex bg-gray-500 h-screen">
         {hoverable}
-        <div className="ml-16 flex flex-grow p-6 h-screen space-x-2 justify-center items-center">
-          {children}
+        <div className="ml-16 h-screen w-full">
+          <div className="bg-white p-1 flex flex-row justify-end">
+            <Button type="secondary" onClick={() => console.log('ok')}>
+              <Icon name="IMPORT" />
+            </Button>
+          </div>
+          <div className="flex flex-grow p-6 h-full space-x-2 justify-center items-center">
+            {children}
+          </div>
         </div>
       </div>
       {
