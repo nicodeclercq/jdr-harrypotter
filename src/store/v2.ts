@@ -4,6 +4,7 @@ import { merge } from '../helpers/object';
 
 import { getSpellPoints } from './../pages/spells/domain/Spell';
 import { spells } from './../pages/spells/spells';
+import { retrieveFromVersion } from './helper';
 import * as V1 from './v1';
 
 export const elementDecoder = V1.elementDecoder;
@@ -58,13 +59,14 @@ function update(promise: Promise<V1.State>): Promise<State> {
 }
 
 export function retrieve(currentState: unknown): Promise<State> {
-  return stateDecoder.is(currentState)
-    ? Promise.resolve(currentState).then((state) => new Promise((resolve) => {
-      setTimeout(() => resolve(state), 5000);
-    }))
-    : pipe(
-        currentState,
-        V1.retrieve,
-        update
-      );
+  return retrieveFromVersion(
+    'V2',
+    currentState,
+    stateDecoder,
+    () => pipe(
+      currentState,
+      V1.retrieve,
+      update
+    )
+  );
 }

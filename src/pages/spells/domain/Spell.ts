@@ -51,8 +51,8 @@ export const getSpellCost = ({level, primaryElement, secondaryElement, modifiers
     : 1;
 
   return {
-    primary: ((level+1)**2) * elementFactor(primaryElement) * 5 + first,
-    secondary: ((level+1)**2) * elementFactor(secondaryElement) * 5 + second,
+    primary: ((level+1)**2) * elementFactor(primaryElement) * 2 + first,
+    secondary: ((level+1)**2) * elementFactor(secondaryElement) * 1 + second,
   }
 };
 
@@ -63,8 +63,8 @@ export const getSpellPoints = ({level, primaryElement, secondaryElement, modifie
 
 
   const points = {
-    primary: ((level+1)**2) * elementFactor(primaryElement) * 3 + first,
-    secondary: ((level+1)**2) * elementFactor(secondaryElement) * 5 + second,
+    primary: (level+1) * elementFactor(primaryElement),
+    secondary: (level+1) * elementFactor(secondaryElement),
   };
 
   return {

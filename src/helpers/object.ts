@@ -6,7 +6,7 @@ export const remove = <U extends string | number | symbol, V, T extends Record<
   .reduce((acc, [k, v]) =>
     k === key
       ? acc
-      : {acc, [k]: v} as unknown as Omit<T, keyof T>
+      : {...acc, [k]: v} as Omit<T, keyof T>
   ,{} as Omit<T, keyof T>);
 
 export const merge = <T, U extends string | number | symbol>(obj1: Record<U, T>, obj2: Record<U, T>, concat: (a: T, b: T) => T) => {

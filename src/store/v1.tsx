@@ -1,6 +1,8 @@
 import * as IO from 'io-ts';
 import { prompt } from '../helpers/io';
 import { Button } from '../components/Button';
+import { retrieveFromVersion } from './helper';
+import { pipe } from 'fp-ts/pipeable';
 
 export type Target = 'Animal' | 'Object' | 'Person' | 'Plant';
 export type Element = 'Feu' | 'Air' | 'Eau' | 'Terre' | 'Âme' | 'Corps';
@@ -83,7 +85,13 @@ function update(_currentState: unknown): Promise<State> {
 }
 
 export function retrieve(currentState: unknown): Promise<State> {
-  return stateDecoder.is(currentState)
-    ? Promise.resolve(currentState)
-    : update(currentState);
+  return retrieveFromVersion(
+    'V1',
+    currentState,
+    stateDecoder,
+    () => pipe(
+      currentState,
+      update
+    )
+  );
 }

@@ -1,10 +1,11 @@
-import { pipe } from 'fp-ts/lib/function';
+import { pipe } from 'fp-ts/function';
 import * as IO from 'io-ts';
 
 import { prompt } from '../../helpers/io';
 import { map } from '../../helpers/object';
 import * as V2 from '../v2';
 import { Form } from './Form';
+import { retrieveFromVersion } from '../helper';
 
 const elementDecoder = V2.elementDecoder;
 
@@ -68,11 +69,14 @@ function update(promise: Promise<V2.State>): Promise<State> {
 }
 
 export function retrieve(currentState: unknown): Promise<State> {
-  return stateDecoder.is(currentState)
-    ? Promise.resolve(currentState)
-    : pipe(
-        currentState,
-        V2.retrieve,
-        update
-      );
+  return retrieveFromVersion(
+    'V3',
+    currentState,
+    stateDecoder,
+    () => pipe(
+      currentState,
+      V2.retrieve,
+      update
+    )
+  );
 }

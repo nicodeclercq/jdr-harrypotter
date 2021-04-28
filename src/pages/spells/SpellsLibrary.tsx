@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDebounce } from 'react-use';
+import * as RemoteData from '@devexperts/remote-data-ts';
 import { sortBy, filter } from 'fp-ts/Array'
 import { Ord } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/function';
@@ -23,8 +24,8 @@ import { Icon } from '../../components/Icon';
 type Category = 'Level' | 'Name' | 'Incantation' | 'PrimaryElement' | 'SecondaryElement';
 type Direction = 'Asc' | 'Desc';
 
-function sortAndFilter (spells: SpellType.Spell[], search: string, orderCategory: Category,
-  orderDirection: Direction): SpellType.Spell[] {
+function sortAndFilter (spells: SpellType.Spell[], userSpells: Record<string, unknown>, search: string, orderCategory: Category,
+  orderDirection: Direction, showKnown: boolean): SpellType.Spell[] {
   const sorters: Record<Category, Ord<SpellType.Spell>> = {
     Level: SpellType.byLevel,
     Incantation: SpellType.byIncantation,
@@ -42,6 +43,7 @@ function sortAndFilter (spells: SpellType.Spell[], search: string, orderCategory
       }
       return true;
     }),
+    filter((spell) => showKnown ? true : userSpells[spell.id] == null),
     sortBy([sorters[orderCategory]]),
     (arr) =>  orderDirection === 'Asc'
       ? arr
@@ -52,22 +54,39 @@ function sortAndFilter (spells: SpellType.Spell[], search: string, orderCategory
 export function SpellsLibrary() {
   const [showFilters, setShowFilters] = useState(false);
   const [orderCategory, setOrderCategory] = useState<Category>('Level');
+  const [showKnown, setShowKnown] = useState<boolean>(false);
   const [orderDirection, setOrderDirection] = useState<'Asc' | 'Desc'>('Asc');
   const [search, setSearch] = useState('');
   const { add, getUserSpells } = useSpell();
   const userSpells = getUserSpells();
 
   const [debouncedSearch, setDebouncedValue] = useState<SpellType.Spell[]>(
-    sortAndFilter(Object.values(spells), search, orderCategory, orderDirection)
+    pipe(
+      userSpells,
+      RemoteData.fold(
+        () => [],
+        () => [],
+        () => [],
+        (userSpells) => sortAndFilter(Object.values(spells), userSpells, search, orderCategory, orderDirection, showKnown),
+      )
+    )
   );
 
   useDebounce(
     () => {
-      const result = sortAndFilter(Object.values(spells), search, orderCategory, orderDirection);
+      const result = pipe(
+        userSpells,
+        RemoteData.fold(
+          () => [],
+          () => [],
+          () => [],
+          (userSpells) => sortAndFilter(Object.values(spells), userSpells, search, orderCategory, orderDirection, showKnown),
+        )
+      );
       setDebouncedValue(result);
     },
     200,
-    [search, orderCategory, orderDirection]
+    [search, orderCategory, orderDirection, showKnown, userSpells]
   );
 
   return fromRemoteData(
@@ -87,9 +106,12 @@ export function SpellsLibrary() {
               <Filter
                 initialOrderCategory={orderCategory}
                 initialOrderDirection={orderDirection}
-                onChange={(orderCategory, orderDirection) => {
+                initialShowKnown={showKnown}
+                onChange={(orderCategory, orderDirection, showKnown) => {
                   setOrderCategory(orderCategory);
                   setOrderDirection(orderDirection);
+                  setShowKnown(showKnown);
+                  console.log(showKnown)
                 }}
               />
               <Tip>
