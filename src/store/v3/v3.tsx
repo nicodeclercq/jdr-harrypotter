@@ -11,16 +11,17 @@ const elementDecoder = V2.elementDecoder;
 
 export type Trait = 'Force' | 'Constitution' | 'Taille' | 'Perception' | 'Intelligence' | 'Dextérité' | 'Apparence' | 'Pouvoir';
 
+export type UserSpell = {
+  id: number;
+  userPoints: V2.UserPoints;
+  currentLevel: number;
+  uses: number;
+};
 
 export type State = {
   userSpells: Record<
     string,
-    {
-      id: number;
-      userPoints: V2.UserPoints;
-      currentLevel: number;
-      uses: number;
-    }
+    UserSpell
   >,
   traits: Record<
     Trait,

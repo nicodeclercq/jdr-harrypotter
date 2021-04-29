@@ -1,16 +1,100 @@
 import * as RemoteData from '@devexperts/remote-data-ts';
 
-import { useStore } from './../../useStore';
-import { Spell } from './domain/Spell';
+import { State, UserSpell, useStore } from './../../useStore';
+import { Spell, getSpellCost, Element } from './domain/Spell';
 import * as Objects from '../../helpers/object';
 import * as Interaction from '../../helpers/interaction';
 import { pipe } from 'fp-ts/lib/function';
 
+const rawElementPoints = {
+  Air: 0,
+  Corps: 0,
+  Eau: 0,
+  Feu: 0,
+  Terre: 0,
+  Âme: 0,
+} as const;
+
+
+const hasSufficiantPoints = (cost: Record<Element, number>, state: State) => Objects
+  .entries(cost)
+  .filter(([element, value]) => value > 0 && hasRemainingPoints(state, element))
+  .length > 0;
+const hasRemainingPoints = (state: State, element: Element) => Objects
+  .entries(state.userSpells)
+  .filter(([,userSpell]) => userSpell.userPoints[element] > 0)
+  .length > 0;
+
+const hasRemainingCost = (cost: Record<Element, number>) => Objects
+  .entries(cost)
+  .filter(([,c]) => c > 0)
+  .length > 0;
+
+const removeSpellPoints = (cost: Record<Element, number>, userSpell: UserSpell): {cost: Record<Element, number>, userSpell: UserSpell} => {
+  if(!hasRemainingCost(cost)){
+    return {cost, userSpell};
+  }
+
+  const {newCost, newPoints} = Object.entries(userSpell.userPoints)
+    .reduce(
+      ({newCost, newPoints}, [element, points]) => {
+        const diff = points > cost[element as Element]
+          ? cost[element as Element]
+          : points;
+        return {
+          newCost: {
+            ...newCost,
+            [element as Element]: cost[element as Element] - diff,
+          },
+          newPoints: {
+            ...newPoints,
+            [element as Element]: points - diff,
+          }
+        }
+      },
+      {newCost: cost, newPoints: rawElementPoints}, 
+    );
+
+  return {
+    cost: newCost,
+    userSpell: {
+      ...userSpell,
+      userPoints: newPoints
+    }
+  };
+};
+
+const removeSpellsPoints = (cost: Record<Element, number>, state: State): State => {
+  if(!hasRemainingCost(cost) || !hasSufficiantPoints(cost, state)) {
+    return state;
+  }
+  const {newCost, userSpells} = Objects.entries(state.userSpells)
+    .reduce(({newCost: cost, userSpells}, [,userSpell]) => {
+      const { cost: newCost, userSpell: newUserSpell } = removeSpellPoints(cost, userSpell);
+
+      return {
+        newCost,
+        userSpells: {
+          ...userSpells,
+          [newUserSpell.id] : newUserSpell,
+        }
+      }
+  }, {newCost: cost, userSpells: {} as Record<string, UserSpell>});
+
+  return removeSpellsPoints(
+    newCost,
+    {
+      ...state,
+      userSpells
+    });
+}
 
 export const useSpell = () => {
   const { getState, setState } = useStore();
 
   const add = (spell: Spell) => {
+    const cost = getSpellCost(spell);
+
     pipe(
       getState(),
       RemoteData.map(
@@ -20,16 +104,23 @@ export const useSpell = () => {
             id: spell.id,
             currentLevel: state.traits.Pouvoir * 2,
             uses: 0,
-            userPoints: {
-              Air: 0,
-              Corps: 0,
-              Eau: 0,
-              Feu: 0,
-              Terre: 0,
-              Âme: 0,
-            },
+            userPoints: rawElementPoints,
           }},
         })
+      ),
+      RemoteData.map(
+        state => {
+          const { userSpells } = removeSpellsPoints({
+            ...rawElementPoints,
+            [spell.primaryElement]: cost.primary,
+            [spell.secondaryElement]: cost.secondary,
+          }, state);
+
+          return {
+            ...state,
+            userSpells
+          };
+        }
       ),
       setState,
     );

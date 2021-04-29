@@ -3,10 +3,11 @@ import { pipe } from "fp-ts/lib/function";
 import { BehaviorSubject } from 'rxjs';
 import * as RemoteData from '@devexperts/remote-data-ts';
 
-import { State as CurrentState, retrieve, Trait as CurrentTrait} from './store/v3/v3';
+import { State as CurrentState, retrieve, Trait as CurrentTrait, UserSpell as CurrentUserSpell } from './store/v3/v3';
 import { tryCatch } from "./helpers/function";
 
 export type State = CurrentState;
+export type UserSpell = CurrentUserSpell;
 export type Trait = CurrentTrait;
 
 const retrieveState = (): Promise<State> => pipe(

@@ -1,5 +1,6 @@
 import { pipe } from 'fp-ts/lib/function';
 import * as Ord from 'fp-ts/Ord';
+import { spells } from '../spells';
 
 export type Target = 'Animal' | 'Object' | 'Person' | 'Plant';
 
@@ -44,6 +45,30 @@ export const bySecondaryElement = pipe(
   Ord.ordString,
   Ord.contramap(get('secondaryElement'))
 );
+
+export const getTotalPoints = (userSpells: {id: number; userPoints: Record<Element, number>;}[]) => {
+  const initialCount: Record<Element, number>  = {
+    Air: 0,
+    Corps: 0,
+    Eau: 0,
+    Feu: 0,
+    Terre: 0,
+    Âme: 0,
+  };
+
+  return userSpells.reduce((acc, { id, userPoints }) => {
+    const points = getSpellPoints(spells[id]);
+
+    return {
+      Air: acc.Air + points.Air + userPoints.Air,
+      Corps: acc.Corps + points.Corps + userPoints.Corps,
+      Eau: acc.Eau + points.Eau + userPoints.Eau,
+      Feu: acc.Feu + points.Feu + userPoints.Feu,
+      Terre: acc.Terre + points.Terre + userPoints.Terre,
+      Âme: acc.Âme + points.Âme + userPoints.Âme,
+    }
+  }, initialCount);
+};
 
 export const getSpellCost = ({level, primaryElement, secondaryElement, modifiers:{primary: [first, second]}}: Spell) => {
   const elementFactor = (element: Element) => element === 'Âme' || element === 'Corps'

@@ -17,38 +17,19 @@ import { getNextLevelSpells, UserSpells as UserSpellsType } from './domain/UserS
 import { Spell } from './Spell';
 import { spells } from './spells';
 import { useSpell } from './useSpell';
+import { entries } from '../../helpers/object';
 
 type Props = {
   goTo?: () => void;
 }
 
 function ElementsCount({userSpells}: {userSpells: {id: number; userPoints: Record<SpellType.Element, number>;}[]}){
-  const initialCount: Record<SpellType.Element, number>  = {
-    Air: 0,
-    Corps: 0,
-    Eau: 0,
-    Feu: 0,
-    Terre: 0,
-    Âme: 0,
-  };
-
-  const result = userSpells.reduce((acc, { id, userPoints }) => {
-    const points = SpellType.getSpellPoints(spells[id]);
-
-    return {
-      Air: acc.Air + points.Air + userPoints.Air,
-      Corps: acc.Corps + points.Corps + userPoints.Corps,
-      Eau: acc.Eau + points.Eau + userPoints.Eau,
-      Feu: acc.Feu + points.Feu + userPoints.Feu,
-      Terre: acc.Terre + points.Terre + userPoints.Terre,
-      Âme: acc.Âme + points.Âme + userPoints.Âme,
-    }
-  }, initialCount);
+  const result = SpellType.getTotalPoints(userSpells);
 
   return (
     <div className="space-x-2">
     {
-      Object.entries(result)
+      entries(result)
         .filter(([, value]) => value !==0)
         .map(([name, value]) => <ElementTag key={name} points={value} title={`${value} points ${name}`} element={name as SpellType.Element} />)
     }</div>
