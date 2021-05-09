@@ -6,11 +6,11 @@ import * as V3 from '../v3/v3';
 import { Form } from './Form';
 
 export type Trait = V3.Trait;
+export type UserSpell = V3.UserSpell;
 
 const skillsDecoder = IO.record(
   IO.string,
   IO.strict({
-    max: IO.number,
     currentLevel: IO.number,
   })
 );
