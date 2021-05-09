@@ -8,7 +8,7 @@ import { entries } from '../../helpers/object';
 import * as SpellType from './domain/Spell';
 import { ElementTag } from '../../components/ElementTag';
 import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon';
+import { Icon } from '../../components/icons/Icon';
 
 const elements: Record<SpellType.Target, string> = {
   'Animal': '🐇',

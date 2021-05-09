@@ -10,7 +10,7 @@ import { D4 } from './dice/D4';
 import { D6 } from './dice/D6';
 import { Dice } from './dice/dice';
 import { RollModal } from './RollModal';
-import { Icon, IconName } from '../components/Icon';
+import { Icon, IconName } from './icons/Icon';
 
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName;}) {
   let match = useRouteMatch({

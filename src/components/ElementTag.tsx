@@ -1,6 +1,6 @@
 import React from 'react';
 import { Element } from '../pages/spells/domain/Spell';
-import { Icon, IconName } from './Icon';
+import { Icon, IconName } from './icons/Icon';
 import { Color, Tag } from './Tag';
 
 const elements: Record<Element, IconName> = {

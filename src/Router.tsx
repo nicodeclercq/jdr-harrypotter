@@ -4,7 +4,7 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
-import { IconName } from './components/Icon';
+import { IconName } from './components/icons/Icon';
 import { entries, keys } from './helpers/object';
 import { HomePage } from './pages/home/HomePage';
 import { SpellsPage } from './pages/spells/SpellsPage';

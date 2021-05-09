@@ -7,7 +7,7 @@ import { Input } from '../../components/Input';
 import { Trait } from './v3';
 import { roll } from '../../helpers/number';
 import { Label } from '../../components/font/Label';
-import { Icon } from '../../components/Icon';
+import { Icon } from '../../components/icons/Icon';
 
 const rollTrait = () => roll(2, 'd6') + 6;
 
