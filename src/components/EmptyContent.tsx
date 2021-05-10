@@ -2,7 +2,7 @@ import React from 'react';
 import { getColor } from '../theme';
 import { Button } from './Button';
 import { Comment } from './font/Comment';
-import { Icon, IconName } from './Icon';
+import { Icon, IconName } from './icons/Icon';
 
 type Props = {
   goTo?: () => void;

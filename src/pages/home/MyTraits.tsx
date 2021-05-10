@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
-import { Icon } from '../../components/Icon';
+import { Icon } from '../../components/icons/Icon';
 import { RollModal } from '../../components/RollModal';
 import { entries } from '../../helpers/object';
 import { fromRemoteData } from '../../helpers/remoteData';

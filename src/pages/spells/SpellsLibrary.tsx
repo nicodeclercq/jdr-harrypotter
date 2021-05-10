@@ -19,7 +19,7 @@ import { Filter } from './Filter';
 import { Tip } from '../../components/Tip';
 import { fromRemoteData } from '../../helpers/remoteData';
 import { getColor } from '../../theme';
-import { Icon } from '../../components/Icon';
+import { Icon } from '../../components/icons/Icon';
 
 type Category = 'Level' | 'Name' | 'Incantation' | 'PrimaryElement' | 'SecondaryElement';
 type Direction = 'Asc' | 'Desc';
