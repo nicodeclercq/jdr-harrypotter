@@ -8,13 +8,13 @@ import { entries } from '../../helpers/object';
 import * as SpellType from './domain/Spell';
 import { ElementTag } from '../../components/ElementTag';
 import { Button } from '../../components/Button';
-import { Icon } from '../../components/icons/Icon';
+import { Icon, IconName } from '../../components/icons/Icon';
 
-const elements: Record<SpellType.Target, string> = {
-  'Animal': '🐇',
-  'Object': '📦',
-  'Plant': '🍁',
-  'Person': '🧙',
+const elements: Record<SpellType.Target, IconName> = {
+  'Animal': 'ANIMAL',
+  'Object': 'OBJECT',
+  'Plant': 'PLANT',
+  'Person': 'CHARACTER',
 };
 
 const colors: Record<SpellType.Target, Color> = {
@@ -54,10 +54,10 @@ export function Spell({spell, roll, actions, isOwned = false}: {roll: (id: numbe
             <hr className="border-y"/>
             <BodyText>{spell.description}</BodyText>
             <div className="space-x-2">
-              {spell.targets.Animal && <Tag title={'Cible Animale'} color={colors.Animal}>{elements.Animal}</Tag>}
-              {spell.targets.Plant && <Tag title={'Cible Végétale'} color={colors.Plant}>{elements.Plant}</Tag>}
-              {spell.targets.Person && <Tag title={'Cible Personne'} color={colors.Person}>{elements.Person}</Tag>}
-              {spell.targets.Object && <Tag title={'Cible Objet'} color={colors.Object}>{elements.Object}</Tag>}
+              {spell.targets.Animal && <Tag title={'Cible Animale'} color={colors.Animal}><Icon name={elements.Animal} /></Tag>}
+              {spell.targets.Plant && <Tag title={'Cible Végétale'} color={colors.Plant}><Icon name={elements.Plant} /></Tag>}
+              {spell.targets.Person && <Tag title={'Cible Personne'} color={colors.Person}><Icon name={elements.Person} /></Tag>}
+              {spell.targets.Object && <Tag title={'Cible Objet'} color={colors.Object}><Icon name={elements.Object} /></Tag>}
             </div>
             {actions && <div className="m-2 flex space-x-2 flex-row-reverse">{actions}</div>}
           </div>
