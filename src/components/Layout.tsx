@@ -3,7 +3,6 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import {useHover} from 'react-use';
 import { ROUTES } from '../Router';
 import { getColor } from '../theme';
-import { Button } from './Button';
 import { D10 } from './dice/D10';
 import { D100 } from './dice/D100';
 import { D4 } from './dice/D4';

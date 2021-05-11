@@ -13,9 +13,13 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "dice-roller-3d": "^1.0.4",
+    "eslint": "^7.26.0",
     "fp-ts": "^2.9.5",
     "io-ts": "^2.2.16",
     "io-ts-reporters": "^1.2.2",
+    "io-ts-types": "^0.5.16",
+    "monocle-ts": "^2.3.10",
+    "newtype-ts": "^0.3.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hook-form": "^6.15.5",
@@ -40,18 +44,18 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
+      ">5%",
       "not dead",
       "not op_mini all"
     ],
     "development": [
       "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      "last 1 firefox version"
     ]
   },
   "devDependencies": {
     "@tailwindcss/postcss7-compat": "^2.0.3",
+    "@testing-library/dom": "^7.31.0",
     "@types/react-router-dom": "^5.1.7",
     "autoprefixer": "^9",
     "postcss": "^7",
