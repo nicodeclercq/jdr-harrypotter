@@ -31,7 +31,7 @@ function UserTraits({userTraits}: Props) {
         {
           entries(userTraits)
           .map(([key, value]) => (
-            <div key={`traits_${key}`} className="flex items-center justify-evenly space-x-2 p-2">
+            <div key={`traits_${key}`} className="flex items-center p-2 justify-evenly space-x-2">
               <div className="flex-grow text-sm">
                 {key} ({value})
               </div>
@@ -46,7 +46,7 @@ function UserTraits({userTraits}: Props) {
         {
           entries(caracteristics)
             .map(([key, value]) => (
-              <div key={`caracteristics_${key}`} className="flex space-x-2 p-2">
+              <div key={`caracteristics_${key}`} className="flex p-2 space-x-2">
                 <div className="flex-grow">{key}</div>
                 <div>{value}%</div>
                 <div>

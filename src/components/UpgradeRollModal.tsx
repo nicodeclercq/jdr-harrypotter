@@ -21,20 +21,20 @@ function FirstRoll({successPercentage, title, onRollEnd}: Props) {
     <Modal
       header={<>{title}<span>(Test de montée de compétence)</span></>}
     >
-      <span className="text-m text-center">
+      <span className="text-center text-m">
         Score minimum: {successPercentage}
       </span>
       <div className="flex justify-center">
         <Dices />
       </div>
-      <div className="flex flex-col space-y-4 items-center justify-center mb-2">
+      <div className="flex flex-col items-center justify-center mb-2 space-y-4">
       {
           !isNaN(value) && (
             <>
               <span className="text-4xl">
                 {value}
               </span>
-              <div className="flex flex-col space-y-1 items-center justify-center">
+              <div className="flex flex-col items-center justify-center space-y-1">
                 {
                   value >= successPercentage ? <><span className="text-m">😀</span><span>Succés</span></>
                   :                           <><span className="text-m">🙁</span><span>Échec</span></>
@@ -81,14 +81,14 @@ function SecondRoll({successPercentage, title, onRollEnd}: Props) {
       <div className="flex justify-center">
         <Dices />
       </div>
-      <div className="flex flex-col space-y-4 items-center justify-center mb-2">
+      <div className="flex flex-col items-center justify-center mb-2 space-y-4">
       {
           !isNaN(value) && (
             <>
               <span className="text-4xl">
                 +{value}%
               </span>
-              <div className="flex flex-col space-y-1 items-center justify-center">
+              <div className="flex flex-col items-center justify-center space-y-1">
                 <span className="text-m">👑</span>
                 <span className="text-m">Tu as maintenant {getUpgradeValue()}% de chances de réussir ce jet</span>
               </div>

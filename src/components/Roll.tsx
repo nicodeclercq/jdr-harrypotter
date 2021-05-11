@@ -13,7 +13,7 @@ type Props<T extends Dice.Dice[]> = {
 };
 
 const DoRoll = ({dices}: {dices: {type: Dice.Dice, value: number}[]}) => {
-  return <div className="flex items-center space-x-2 p-4">
+  return <div className="flex items-center p-4 space-x-2">
     {
       dices.map(
         (current, index) => Dice.fold({

@@ -16,7 +16,7 @@ type Props = {
 export function EmptyContent({goTo, children:{emoji, title, description}}: Props) {
   return (
   <div className={`border rounded border-dashed ${getColor('secondary', 50 )} p-2 ${getColor('secondary', 500, 'border' )} m-3 text-center`}>
-    <div className="text-7xl mb-2"><Icon name={emoji} /></div>
+    <div className="mb-2 text-7xl"><Icon name={emoji} /></div>
     <Comment>
       <strong>{title}</strong>
       <br />

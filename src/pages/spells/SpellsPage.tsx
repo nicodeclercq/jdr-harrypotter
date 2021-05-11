@@ -16,10 +16,10 @@ export function SpellsPage() {
     getState(),
     () => (
       <Layout>
-        <div className="m-3 w-1/2 h-full">
+        <div className="w-1/2 h-full m-3">
           <SpellsLibrary />
         </div>
-        <div className="m-3 w-1/2 h-full">
+        <div className="w-1/2 h-full m-3">
           <MySpells />
         </div>
       </Layout>

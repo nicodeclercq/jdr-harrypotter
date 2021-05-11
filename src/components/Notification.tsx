@@ -19,13 +19,13 @@ const subject = new BehaviorSubject<Array<NotificationType>>([]);
 
 function Notification({ action, message, type }: NotificationType) {
   const icons: Record<NotificationType['type'], React.ReactNode> = {
-    success: <div className="shadow-inner p-2 flex justify-center items-center bg-green-500 w-10 h-10 rounded-full">🎉</div>,
-    failure: <div className="shadow-inner p-2 flex justify-center items-center bg-red-500 w-10 h-10 rounded-full">😈</div>,
-    warning: <div className="shadow-inner p-2 flex justify-center items-center bg-yellow-500 w-10 h-10 rounded-full">⚠️</div>,
+    success: <div className="flex items-center justify-center w-10 h-10 p-2 bg-green-500 rounded-full shadow-inner">🎉</div>,
+    failure: <div className="flex items-center justify-center w-10 h-10 p-2 bg-red-500 rounded-full shadow-inner">😈</div>,
+    warning: <div className="flex items-center justify-center w-10 h-10 p-2 bg-yellow-500 rounded-full shadow-inner">⚠️</div>,
   }
 
   return (
-    <div className="flex flex-row p-4 rounded bg-white shadow-md items-center space-x-2">
+    <div className="flex flex-row items-center p-4 bg-white rounded shadow-md space-x-2">
       {icons[type]}
       <span className="flex-grow text-left">{message}</span>
       {
@@ -105,7 +105,7 @@ export function NotificationStack(){
   }, [remove, stack, state]);
 
   return (
-    <div className="fixed bottom-0 w-1/3 right-0 m-2 space-y-2">
+    <div className="fixed bottom-0 right-0 w-1/3 m-2 space-y-2">
       {
         stack.map((notification) => (
           <Notification key={notification.id} id={notification.id} message={notification.message} type={notification.type} action={notification.action} />)

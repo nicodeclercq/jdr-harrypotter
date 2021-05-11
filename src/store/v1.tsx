@@ -56,7 +56,7 @@ export const stateDecoder = IO.strict({
 });
 
 const Welcome = ({callback}: {callback: () => void}) => (
-  <div className="flex flex-col space-y-4 p-2">
+  <div className="flex flex-col p-2 space-y-4">
     <p>
       Avant de commencer sache que tout ce que tu inscris ici est <strong>sauvegardé en cache sur ton navigateur.
       </strong> Ainsi si tu changes de navigateur, d'ordinateur, que tu effaces ton historique de navigation ou qu'il se passe quoi que ce soit d'imprévue
@@ -64,7 +64,7 @@ const Welcome = ({callback}: {callback: () => void}) => (
       que sa douce simplicité « C’est balot! ».
     </p>
     <div>
-      <div className="flex flex-row space-x-4 p-2">
+      <div className="flex flex-row p-2 space-x-4">
         <input id="🙈" type="checkbox"/><label htmlFor="🙈">J'accepte l'inacceptable *</label>
       </div>
     </div>

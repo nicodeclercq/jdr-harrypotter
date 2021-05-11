@@ -5,7 +5,7 @@ import { pipe } from "fp-ts/lib/function";
 import { Loader } from "../components/Loader";
 
 const Load = () => (
-  <div className="flex justify-center align-center h-full w-full">
+  <div className="flex justify-center w-full h-full align-center">
     <Loader />
   </div>
 );

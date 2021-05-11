@@ -46,7 +46,7 @@ export function Spell({spell, roll, actions, isOwned = false}: {roll: (id: numbe
               <Incantation>{spell.incantation}</Incantation>
               <BodyText>{spell.name}</BodyText>
             </div>
-            {!isOwned && (<div className="text-right space-x-1 flex-shrink-0">{costs}</div>)}
+            {!isOwned && (<div className="flex-shrink-0 text-right space-x-1">{costs}</div>)}
           </div>
         ),
         content: (
@@ -59,7 +59,7 @@ export function Spell({spell, roll, actions, isOwned = false}: {roll: (id: numbe
               {spell.targets.Person && <Tag title={'Cible Personne'} color={colors.Person}><Icon name={elements.Person} /></Tag>}
               {spell.targets.Object && <Tag title={'Cible Objet'} color={colors.Object}><Icon name={elements.Object} /></Tag>}
             </div>
-            {actions && <div className="m-2 flex space-x-2 flex-row-reverse">{actions}</div>}
+            {actions && <div className="flex flex-row-reverse m-2 space-x-2">{actions}</div>}
           </div>
         ),
         actions: isOwned

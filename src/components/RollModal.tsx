@@ -54,14 +54,14 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
           ? <DifficultySelection successPercentages={successPercentage as SuccessPercentages}  onSelection={value => {setPercentage(value)}} />
           : (<>
             { !isNaN(percentage) &&
-              <span className="text-m text-center">
+              <span className="text-center text-m">
                 Niveau actuel: {percentage}%
               </span>
             }
             <div className="flex justify-center">
               <Roll dices={dices} concat={isD100(dices) ? concatD100 : concat} onRollEnd={(val) => setValue(val)}/>
             </div>
-            <div className="flex flex-col space-y-4 items-center justify-center mb-2">
+            <div className="flex flex-col items-center justify-center mb-2 space-y-4">
             {
                 !isNaN(value) && (
                   <>
@@ -70,7 +70,7 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
                     </span>
                     {
                       !isNaN(percentage) && (
-                        <div className="flex flex-col space-y-1 items-center justify-center">
+                        <div className="flex flex-col items-center justify-center space-y-1">
                           {
                               value <= 5                        ? <><span className="text-m">👑</span><span>🎉 Réussite critique 🎉</span></>
                             : value >= 95                       ? <><span className="text-m">😈</span><span>Échec critique</span></>

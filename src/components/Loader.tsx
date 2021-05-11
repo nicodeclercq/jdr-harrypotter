@@ -21,7 +21,7 @@ const LoaderContent = () => {
   }, 500);
 
   return (
-    <div className="flex text-xl items-center justify-center p-4">
+    <div className="flex items-center justify-center p-4 text-xl">
       Loading{renderers[index]()}
     </div>
   );

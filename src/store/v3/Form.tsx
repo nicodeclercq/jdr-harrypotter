@@ -40,7 +40,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
     <form  onSubmit={handleSubmit(onSubmit)}>
       <div className="w-full">
 
-        <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
+        <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
           <Label htmlFor="input-Force">Force</Label>
           <Controller
             name="Force"
@@ -55,7 +55,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           </div>
         </div>
 
-        <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
+        <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
           <Label htmlFor="input-Constitution">Constitution</Label>
           <Controller
             name="Constitution"
@@ -70,7 +70,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           </div>
         </div>
 
-        <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
+        <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
           <Label htmlFor="input-Taille">Taille</Label>
           <Controller
             name="Taille"
@@ -85,7 +85,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           </div>
         </div>
 
-        <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
+        <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
           <Label htmlFor="input-Perception">Perception</Label>
           <Controller
             name="Perception"
@@ -100,7 +100,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           </div>
         </div>
 
-        <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
+        <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
           <Label htmlFor="input-Intelligence">Intelligence</Label>
           <Controller
             name="Intelligence"
@@ -115,7 +115,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           </div>
         </div>
 
-        <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
+        <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
           <Label htmlFor="input-Dextérité">Dextérité</Label>
           <Controller
             name="Dextérité"
@@ -130,7 +130,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           </div>
         </div>
 
-        <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
+        <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
           <Label htmlFor="input-Apparence">Apparence</Label>
           <Controller
             name="Apparence"
@@ -145,7 +145,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           </div>
         </div>
 
-        <div className="flex flex-row p-2 space-x-3 border-b-1 border-gray-100">
+        <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
           <Label htmlFor="input-Pouvoir">Pouvoir</Label>
           <Controller
             name="Pouvoir"

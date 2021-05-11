@@ -10,10 +10,10 @@ export function HomePage(){
   const { goTo } = useRouter();
   return (
     <Layout>
-      <div className="m-3 w-1/2 h-full">
+      <div className="w-1/2 h-full m-3">
         <MyTraits />
       </div>
-      <div className="m-3 w-1/2 h-full">
+      <div className="w-1/2 h-full m-3">
         <MySpells goTo={() => goTo('/spells')} />
       </div>
     </Layout>

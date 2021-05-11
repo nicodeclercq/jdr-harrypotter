@@ -5,7 +5,7 @@ export function Accordion({children: {header, content, actions}}: {children: {he
 
   return (
     <div className="flex flex-col">
-      <div className="flex py-2 px-6">
+      <div className="flex px-6 py-2">
         <button className="flex-grow" onClick={() => setIsCollapsed(!isCollapsed)}>{header}</button>
         {actions}
       </div>

@@ -67,9 +67,9 @@ export function Layout ({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="flex bg-gray-500 h-screen">
+      <div className="flex h-screen bg-gray-500">
         {hoverable}
-        <div className="ml-16 flex flex-grow p-6 h-screen space-x-2 justify-center items-center">
+        <div className="flex items-center justify-center flex-grow h-screen p-6 ml-16 space-x-2">
           {children}
         </div>
       </div>
