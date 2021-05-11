@@ -13,7 +13,7 @@ const LoaderContent = () => {
   ];
 
   useInterval(() => {
-    if(index < renderers.length - 2){
+    if(index < renderers.length - 1){
       setIndex(index + 1);
     } else {
       setIndex(0);

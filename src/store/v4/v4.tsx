@@ -27,7 +27,7 @@ export type Skills = IO.TypeOf<typeof skillsDecoder>;
 function update(promise: Promise<V3.State>): Promise<State> {
   return promise
     .then((state) => prompt<State>((callback) => (
-        <Form callback={(skills) => callback({...state, ...skills})} />
+        <Form state={state} callback={(skills) => callback({...state, ...skills})} />
     ), <>Compétences de mon Personnage</>))
     .then((state) => ({
       ...state,

@@ -7,6 +7,7 @@ import {
 import { IconName } from './components/icons/Icon';
 import { entries, keys } from './helpers/object';
 import { HomePage } from './pages/home/HomePage';
+import { SkillsPage } from './pages/skills/SkillsPage';
 import { SpellsPage } from './pages/spells/SpellsPage';
 
 const routes: Record<string, {label: string; icon: IconName; Component: () => React.ReactElement}> = {
@@ -14,6 +15,11 @@ const routes: Record<string, {label: string; icon: IconName; Component: () => Re
     icon: 'SORCERER',
     label: 'Accueil',
     Component: HomePage,
+  },
+  '/skills': {
+    icon: 'SKILLS',
+    label: 'Compétences',
+    Component: SkillsPage
   },
   '/spells': {
     icon: 'BOOK',
@@ -23,7 +29,7 @@ const routes: Record<string, {label: string; icon: IconName; Component: () => Re
 } as const;
 
 const routesDefOrder: Array<keyof typeof routes> = [
-  '/spells', '/'
+  '/spells', '/skills', '/'
 ];
 
 export const ROUTES = entries(routes)
