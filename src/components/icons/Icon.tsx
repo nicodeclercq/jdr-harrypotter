@@ -15,6 +15,7 @@ import { Up } from './components/up';
 import { Water } from './components/water';
 import { Wind } from './components/wind';
 import { Character } from './components/character';
+import { Skills } from './components/skills';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -34,6 +35,7 @@ export const ICONS = {
   OBJECT: <Objects />,
   PLANT: <Plant />,
   CHARACTER: <Character />,
+  SKILLS: <Skills />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

@@ -3,7 +3,7 @@ import { pipe } from "fp-ts/lib/function";
 import { BehaviorSubject } from 'rxjs';
 import * as RemoteData from '@devexperts/remote-data-ts';
 
-import { State as CurrentState, retrieve, Trait as CurrentTrait, UserSpell as CurrentUserSpell } from './store/v3/v3';
+import { State as CurrentState, retrieve, Trait as CurrentTrait, UserSpell as CurrentUserSpell } from './store/v4/v4';
 import { tryCatch } from "./helpers/function";
 
 export type State = CurrentState;

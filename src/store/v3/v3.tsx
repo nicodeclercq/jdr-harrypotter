@@ -7,9 +7,26 @@ import * as V2 from '../v2';
 import { Form } from './Form';
 import { retrieveFromVersion } from '../helper';
 
-const elementDecoder = V2.elementDecoder;
+export const userSpellsDecoder = IO.record(
+  IO.string,
+  IO.strict({
+    id: IO.number,
+    userPoints: IO.record(V2.elementDecoder, IO.number),
+    currentLevel: IO.number,
+    uses: IO.number,
+  })
+);
 
-export type Trait = 'Force' | 'Constitution' | 'Taille' | 'Perception' | 'Intelligence' | 'Dextérité' | 'Apparence' | 'Pouvoir';
+const traitDecoder = IO.union([
+  IO.literal('Force'),
+  IO.literal('Constitution'),
+  IO.literal('Taille'),
+  IO.literal('Perception'),
+  IO.literal('Intelligence'),
+  IO.literal('Dextérité'),
+  IO.literal('Apparence'),
+  IO.literal('Pouvoir'),
+]);
 
 export type UserSpell = {
   id: number;
@@ -18,41 +35,19 @@ export type UserSpell = {
   uses: number;
 };
 
-export type State = {
-  userSpells: Record<
-    string,
-    UserSpell
-  >,
-  traits: Record<
-    Trait,
-    number
-  >
-};
+export type Trait = IO.TypeOf<typeof traitDecoder>;
+
+export const traitsDecoder = IO.record(
+  traitDecoder,
+  IO.number,
+);
 
 const stateDecoder = IO.strict({
-  userSpells: IO.record(
-    IO.string,
-    IO.strict({
-      id: IO.number,
-      userPoints: IO.record(elementDecoder, IO.number),
-      currentLevel: IO.number,
-      uses: IO.number,
-    })
-  ),
-  traits: IO.record(
-    IO.union([
-      IO.literal('Force'),
-      IO.literal('Constitution'),
-      IO.literal('Taille'),
-      IO.literal('Perception'),
-      IO.literal('Intelligence'),
-      IO.literal('Dextérité'),
-      IO.literal('Apparence'),
-      IO.literal('Pouvoir'),
-    ]),
-    IO.number,
-  )
+  userSpells: userSpellsDecoder,
+  traits: traitsDecoder,
 });
+
+export type State = IO.TypeOf<typeof stateDecoder>;
 
 function update(promise: Promise<V2.State>): Promise<State> {
   return promise

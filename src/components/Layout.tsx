@@ -40,7 +40,7 @@ export function Layout ({ children }: { children: React.ReactNode }) {
         {
           ROUTES.map(({path, label, icon}) => (
             <div>
-              <NavLink hovered={hovered} key={path} path={path} label={label}  icon={icon}/>
+              <NavLink hovered={hovered} key={`${path}_${label}`} path={path} label={label}  icon={icon}/>
             </div>
           ))
         }

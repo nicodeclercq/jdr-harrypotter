@@ -37,7 +37,10 @@
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**\""
   },
-  "eslintIgnore": ["App.css", "src/index.css"],
+  "eslintIgnore": [
+    "App.css",
+    "src/index.css"
+  ],
   "browserslist": {
     "production": [
       ">5%",
