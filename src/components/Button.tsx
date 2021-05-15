@@ -18,6 +18,6 @@ export function Button({type, onClick, title, children, disabled = false}: Props
   const rest = (isSubmit ? {} :  { onClick }) as {onClick?: () => void};
 
   return (
-    <button title={title} {...rest} type={isSubmit ? 'submit' : 'button'} disabled={disabled} className={`${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'} flex justify-center align-center rounded py-1 px-2 text-s ${types[type]}`}>{children}</button>
+    <button title={title} {...rest} type={isSubmit ? 'submit' : 'button'} disabled={disabled} className={`${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'} inline-flex justify-center align-center rounded py-1 px-2 text-s ${types[type]}`}>{children}</button>
   )
 }
