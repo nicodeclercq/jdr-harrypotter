@@ -1,30 +1,20 @@
 import { pipe } from 'fp-ts/lib/function';
 import * as IO from 'io-ts';
-import { merge } from '../helpers/object';
+import { merge } from '../../helpers/object';
 
-import { getSpellPoints } from './../pages/spells/domain/Spell';
-import { spells } from './../pages/spells/spells';
-import { retrieveFromVersion } from './helper';
-import * as V1 from './v1';
+import { getSpellPoints } from '../../pages/spells/domain/Spell';
+import { spells } from '../../pages/spells/spells';
+import { retrieveFromVersion } from '../helper';
+import * as V1 from '../v1/v1';
+
+const version = 'V2';
 
 export const elementDecoder = V1.elementDecoder;
+export const userDecoder = V1.userDecoder;
 export type UserPoints = Record<V1.Element, number>;
 
-export type State = {
-  userSpells: Record<
-    string,
-    {
-      id: number;
-      userPoints: Record<V1.Element, number>;
-    }
-  >
-};
-
-export const defaultState: State = {
-  userSpells: {}
-};
-
-const stateDecoder = IO.strict({
+export const stateDecoder = IO.type({
+  user: V1.userDecoder,
   userSpells: IO.record(
     IO.string,
     IO.strict({
@@ -33,6 +23,10 @@ const stateDecoder = IO.strict({
     })
   ),
 });
+
+export type State = IO.TypeOf<typeof stateDecoder>;
+
+export const defaultUserSpells: State['userSpells'] = {};
 
 function update(promise: Promise<V1.State>): Promise<State> {
   return promise.then((state) => {
@@ -53,20 +47,20 @@ function update(promise: Promise<V1.State>): Promise<State> {
             [id]: {id, usePoints},
           };
         },
-        defaultState
+        {...state, userSpells: defaultUserSpells}
       );
     });
 }
 
-export function retrieve(currentState: unknown): Promise<State> {
+export function retrieve(currentState: unknown, name: string | undefined) {
   return retrieveFromVersion(
-    'V2',
+    version,
     currentState,
     stateDecoder,
     () => pipe(
       currentState,
-      V1.retrieve,
-      update
+      s => V1.retrieve(s, name),
+      update,
     )
   );
 }

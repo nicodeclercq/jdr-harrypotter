@@ -1,6 +1,6 @@
 import * as RemoteData from '@devexperts/remote-data-ts';
 
-import { useStore } from '../../useStore';
+import { useStore } from '../../store/useStore';
 import { pipe } from 'fp-ts/lib/function';
 
 

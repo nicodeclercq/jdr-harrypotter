@@ -1,10 +1,11 @@
 import * as RemoteData from '@devexperts/remote-data-ts';
+import { pipe } from 'fp-ts/function';
 
-import { State, UserSpell, useStore } from './../../useStore';
+import { State, UserSpell } from '../../store/State';
+import { useStore } from '../../store/useStore';
 import { Spell, getSpellCost, Element } from './domain/Spell';
 import * as Objects from '../../helpers/object';
 import * as Interaction from '../../helpers/interaction';
-import { pipe } from 'fp-ts/lib/function';
 
 const rawElementPoints = {
   Air: 0,

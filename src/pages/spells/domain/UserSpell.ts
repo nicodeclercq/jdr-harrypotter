@@ -1,5 +1,5 @@
 import { entries } from '../../../helpers/object';
-import { State } from './../../../useStore';
+import { State } from '../../../store/State';
 
 export type UserSpells = State['userSpells'];
 
