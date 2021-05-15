@@ -3,7 +3,12 @@ import * as Either from 'fp-ts/Either';
 import { Decoder } from "io-ts";
 import { formatValidationErrors } from 'io-ts-reporters';
 
-export function retrieveFromVersion<U>(version: string, currentState: unknown, decoder: Decoder<unknown, U>, lowerVersionRetrieve: () => Promise<U>): Promise<U> {
+export function retrieveFromVersion<U>(
+  version: string,
+  currentState: unknown,
+  decoder: Decoder<unknown, U>,
+  lowerVersionRetrieve: () => Promise<U>
+): Promise<U> {
   return pipe(
     currentState,
     decoder.decode,
@@ -16,7 +21,10 @@ export function retrieveFromVersion<U>(version: string, currentState: unknown, d
 
         return lowerVersionRetrieve()
       },
-      (result) => Promise.resolve(result),
+      (state) => Promise.resolve(state),
     )
   );
 }
+
+export const encode = btoa;
+export const decode = atob;

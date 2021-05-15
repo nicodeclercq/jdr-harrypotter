@@ -5,7 +5,7 @@ import { Icon } from '../../components/icons/Icon';
 import { RollModal } from '../../components/RollModal';
 import { entries } from '../../helpers/object';
 import { fromRemoteData } from '../../helpers/remoteData';
-import { Trait } from '../../useStore';
+import { Trait } from '../../store/State';
 import { useTraits } from './useTraits';
 
 type Props = {

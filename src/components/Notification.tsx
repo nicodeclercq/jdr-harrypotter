@@ -1,21 +1,7 @@
-import { RemoteData } from '@devexperts/remote-data-ts';
 import React, { useEffect, useState } from 'react';
-import { BehaviorSubject } from 'rxjs';
-import { State, useStore } from '../useStore';
+import { NotificationService, NotificationType } from '../NotificationService';
+import { useStore } from '../store/useStore';
 import { Button } from './Button';
-
-type NotificationType = {
-  id: string;
-  type: 'success' | 'failure' | 'warning';
-  message: string;
-  action?: {
-    run: () => void;
-    label: string;
-  },
-  showUntil?: (state: RemoteData<Error, State>) => boolean;
-};
-
-const subject = new BehaviorSubject<Array<NotificationType>>([]);
 
 function Notification({ action, message, type }: NotificationType) {
   const icons: Record<NotificationType['type'], React.ReactNode> = {
@@ -36,54 +22,11 @@ function Notification({ action, message, type }: NotificationType) {
 }
 
 export const useNotification = () => {
-  const add = ({ id, action, ...rest }: NotificationType) => {
-    if(subject.value.filter(notification => notification.id === id).length > 0) {
-      return;
-    }
-
-    const notification = {
-      id,
-      ...rest,
-      ...(
-        action
-          ? {
-              action: {
-                ...action,
-                run: () => {
-                  remove(id);
-                  action?.run();
-                },
-              }
-            }
-          : {}
-      ),
-    };
-
-    subject.next([
-      ...subject.value,
-      notification
-    ]);
-
-    if (!action) {
-      setTimeout(() => remove(id), 10000);
-    }
-
-    return id;
-  };
-
-  const remove = (id: string) => {
-    const newValue = subject.value.filter(({id: currentId}) => currentId !== id);
-    subject.next(newValue);
-  }
-
-  return {
-    add,
-    remove,
-  }
+  return NotificationService;
 };
 
 export function NotificationStack(){
-  const { remove } = useNotification();
+  const { remove, subject } = NotificationService;
   const [stack, setStack] = useState(subject.value);
   const { getState } = useStore();
 
@@ -94,7 +37,7 @@ export function NotificationStack(){
       setStack(value);
     });
     return () => subscription.unsubscribe();
-  },[]);
+  },[subject]);
 
   useEffect(() => {
     stack.forEach((notification) => {

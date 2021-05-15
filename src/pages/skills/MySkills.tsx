@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useTitle } from 'react-use';
+
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icons/Icon';
-
 import { RollModal } from '../../components/RollModal';
 import { entries } from '../../helpers/object';
-import { State } from '../../useStore';
+import { State } from '../../store/State';
 
 type Props = {
   skills: State['skills'];
@@ -14,7 +13,6 @@ type Props = {
 
 export function MySkills({ skills, showInColumns }: Props) {
   const [rollModalSkill, setRollModalSkill] = useState<{skill: string, currentLevel: number} | undefined>(undefined);
-  useTitle('Compétences');
 
   return (
       <>

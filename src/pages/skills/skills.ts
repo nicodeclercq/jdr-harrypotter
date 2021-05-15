@@ -1,4 +1,4 @@
-import { Trait } from "../../useStore";
+import { Trait } from "../../store/State";
 
 type SkillValue = {
   min: number;

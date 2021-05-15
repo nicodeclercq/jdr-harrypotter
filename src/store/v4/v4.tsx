@@ -2,30 +2,47 @@ import { pipe } from 'fp-ts/lib/function';
 import * as IO from 'io-ts';
 
 import { prompt } from '../../helpers/io';
+import { retrieveFromVersion } from '../helper';
 import * as V3 from '../v3/v3';
 import { Form } from './Form';
 
 export type Trait = V3.Trait;
 export type UserSpell = V3.UserSpell;
 
+const version = 'V4';
+
 const skillsDecoder = IO.record(
   IO.string,
-  IO.strict({
+  IO.type({
     currentLevel: IO.number,
   })
 );
 
-const stateDecoder = IO.strict({
-  userSpells: V3.userSpellsDecoder,
-  traits: V3.traitsDecoder,
-  skills: skillsDecoder,
-});
+const stateDecoder = IO.intersection([
+  V3.stateDecoder,
+  IO.type({
+    skills: skillsDecoder,
+  }),
+  IO.type({
+    life: IO.type({
+      current: IO.number,
+      max: IO.number,
+    })
+  })
+]);
 
 export type State = IO.TypeOf<typeof stateDecoder>;
 export type Skills = IO.TypeOf<typeof skillsDecoder>;
 
 function update(promise: Promise<V3.State>): Promise<State> {
   return promise
+    .then((state) => ({
+      ...state,
+      life: {
+        current: Math.round((state.traits.Taille + state.traits.Constitution) / 2),
+        max: Math.round((state.traits.Taille + state.traits.Constitution) / 2),
+      }
+    }))
     .then((state) => prompt<State>((callback) => (
         <Form state={state} callback={(skills) => callback({...state, ...skills})} />
     ), <>Compétences de mon Personnage</>))
@@ -34,12 +51,15 @@ function update(promise: Promise<V3.State>): Promise<State> {
     }));
 }
 
-export function retrieve(currentState: unknown): Promise<State> {
-  return stateDecoder.is(currentState)
-    ? Promise.resolve(currentState)
-    : pipe(
-        currentState,
-        V3.retrieve,
-        update
-      );
+export function retrieve(currentState: unknown, name: string | undefined) {
+  return retrieveFromVersion(
+    version,
+    currentState,
+    stateDecoder,
+    () => pipe(
+      currentState,
+      s => V3.retrieve(s, name),
+      update,
+    )
+  );
 }

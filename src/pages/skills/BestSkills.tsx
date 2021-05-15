@@ -1,17 +1,16 @@
 import React from 'react';
-import { useTitle } from 'react-use';
 import { flow } from 'fp-ts/function';
 import * as Record from 'fp-ts/Record';
 
 import { fromRemoteData } from '../../helpers/remoteData';
-import { State, useStore } from '../../useStore';
+import { State } from '../../store/State';
+import { useStore } from '../../store/useStore';
 import { MySkills } from './MySkills';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { useRouter } from '../../useRouter';
 
 export function BestSkills() {
-  useTitle('Compétences');
   const { goTo } = useRouter();
   const { getState } = useStore();
 

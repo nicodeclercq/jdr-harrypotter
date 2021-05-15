@@ -3,7 +3,7 @@ import { useTitle } from 'react-use';
 import { Card } from '../../components/Card';
 import { Layout } from '../../components/Layout';
 import { fromRemoteData } from '../../helpers/remoteData';
-import { useStore } from '../../useStore';
+import { useStore } from '../../store/useStore';
 import { MySkills } from './MySkills';
 
 export function SkillsPage() {

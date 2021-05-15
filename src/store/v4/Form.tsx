@@ -98,14 +98,18 @@ export function Form({state: { traits }, callback}: {state: State,callback: (res
             }
           </div>
           <div className="space-x-2">
-            <Button onClick="submit" type="primary">Valider</Button>
+            <Button onClick="submit" disabled={remainingPoints !== 0} type="primary">Valider</Button>
             <span className={
               remainingPoints < 0
                 ? 'text-red-500'
-                : remainingPoints === 0
-                  ? 'text-green-500'
-                  : ''
-            }>{remainingPoints}/{repartitionPoints} points à répartir</span>
+                : ''
+            }>{
+              remainingPoints === 0  
+                ? ''
+                : remainingPoints > 0
+                ? `Il reste ${remainingPoints} point${remainingPoints === 1 ? '' : 's'} à répartir`
+                : `Tu as utilisé ${remainingPoints * -1} point${remainingPoints === -1 ? '' : 's'} de trop`
+            }</span>
           </div>
       </div>
     </form>
