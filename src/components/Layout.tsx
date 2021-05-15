@@ -51,16 +51,9 @@ export function Layout ({ children }: { children: React.ReactNode }) {
       <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d6'])}}>
           <D6 value={6} size={2} />
       </button>
-      <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d6', 'd6'])}}>
-          <D6 value={6} size={1.5} />
-          <D6 value={6} size={1.5} />
-      </button>
-      <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d10'])}}>
-          <D10 value={0} size={2} />
-      </button>
       <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d100', 'd10'])}}>
-          <D100 value={0} size={1.5} />
-          <D10 value={0} size={1.5} />
+          <D100 value={40} size={1.5} />
+          <D10 value={2} size={1.5} />
       </button>
     </div>
   ));
