@@ -9,27 +9,21 @@ import { MyTraits } from './MyTraits';
 import { fromRemoteData } from '../../helpers/remoteData';
 import { State } from '../../store/State';
 import { useStore } from '../../store/useStore';
-import { Icon } from '../../components/icons/Icon';
+import { Identity } from './Identity';
 
 function Home ({state}: { state: State}) {
   const { goTo } = useRouter();
-  const getLife = () => `${state.life.current} / ${state.life.max}`;
-  useTitle(`${state.user.name} - ${state.life.current} ♥`);
+  useTitle(`${state.user.name} - ${state.life.current}/${state.life.max} ♥`);
 
   return (
     <Layout>
       <div className="w-1/2 h-full m-3 space-y-4">
+        <Identity state={state} />
         <MyTraits />
         <BestSkills />
       </div>
       <div className="w-1/2 h-full m-3 space-y-4">
         <MySpells goTo={() => goTo('/spells')} />
-      </div>
-      <div className="fixed text-red-500 text-xxl bottom-2 right-2">
-        <span>
-        {getLife()}
-        </span>
-        <Icon name="HEART" />
       </div>
     </Layout>
   );
