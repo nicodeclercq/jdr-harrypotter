@@ -9,9 +9,10 @@ type Props= {
   theme: 'base' | 'neutral';
   errors?: FieldError;
   messages?: Record<string, string>;
+  width?: string;
 }
 
-export function Input ({onChange, theme,errors, messages, ...rest}: Props & Omit<
+export function Input ({onChange, theme,errors, messages, width, ...rest}: Props & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'className' | 'style' | 'onChange'
 >) {
@@ -26,6 +27,7 @@ export function Input ({onChange, theme,errors, messages, ...rest}: Props & Omit
         {...rest}
         className={`focus:ring-4 ${styles[theme]}`}
         onChange={e => onChange(e.target.value)}
+        style={width ? {width} : {}}
       />
       {errors && <ErrorMessage errors={errors} messages={messages} />}
     </div>

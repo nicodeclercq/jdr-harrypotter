@@ -13,12 +13,13 @@ export const userDecoder = V2.userDecoder;
 
 export const userSpellsDecoder = IO.record(
   IO.string,
-  IO.strict({
-    id: IO.number,
-    userPoints: IO.record(V2.elementDecoder, IO.number),
-    currentLevel: IO.number,
-    uses: IO.number,
-  })
+  IO.intersection([
+    V2.userSpellDecoder,
+    IO.type({
+      currentLevel: IO.number,
+      uses: IO.number,
+    })
+  ])
 );
 
 const traitDecoder = IO.union([
@@ -47,7 +48,9 @@ export const traitsDecoder = IO.record(
 );
 
 export const stateDecoder = IO.intersection([
-  V2.stateDecoder,
+  IO.type({
+    user: V2.userDecoder
+  }),
   IO.type({
     userSpells: userSpellsDecoder,
     traits: traitsDecoder,

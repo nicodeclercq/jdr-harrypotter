@@ -13,14 +13,16 @@ export const elementDecoder = V1.elementDecoder;
 export const userDecoder = V1.userDecoder;
 export type UserPoints = Record<V1.Element, number>;
 
+export const userSpellDecoder = IO.type({
+  id: IO.number,
+  userPoints: IO.record(elementDecoder, IO.number),
+});
+
 export const stateDecoder = IO.type({
   user: V1.userDecoder,
   userSpells: IO.record(
     IO.string,
-    IO.strict({
-      id: IO.number,
-      userPoints: IO.record(elementDecoder, IO.number),
-    })
+    userSpellDecoder,
   ),
 });
 

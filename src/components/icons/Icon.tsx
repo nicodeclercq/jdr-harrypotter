@@ -17,6 +17,8 @@ import { Wind } from './components/wind';
 import { Character } from './components/character';
 import { Skills } from './components/skills';
 import { Heart } from './components/heart';
+import { Rune } from './components/rune';
+import { Card } from './components/card';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -38,6 +40,8 @@ export const ICONS = {
   CHARACTER: <Character />,
   SKILLS: <Skills />,
   HEART: <Heart />,
+  RUNE: <Rune />,
+  CARD: <Card />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

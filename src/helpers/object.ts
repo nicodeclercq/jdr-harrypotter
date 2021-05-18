@@ -1,3 +1,5 @@
+export const hasKey = <T extends string | number | symbol, U>(name: string | number | symbol, object: Record<T,U>): name is T => name in object;
+
 export const entries = <T extends string | number | symbol, U>(object: Record<T,U>) => Object.entries(object) as [T, U][];
 
 export const keys = <T extends string | number | symbol>(object: Record<T, unknown>) => Object.keys(object) as T[];
@@ -20,12 +22,12 @@ export const merge = <T, U extends string | number | symbol>(obj1: Record<U, T>
     );
 }
 
-export const map = <K extends string | number | symbol, A, B>(fn: (a: A) => B, obj: Record<K, A>) => {
+export const map = <K extends string | number | symbol, A, B>(fn: (a: A, key: K, obj: Record<K, A>) => B, obj: Record<K, A>) => {
   return entries(obj)
     .reduce(
       (acc, [key, value]) => ({
         ...acc,
-        [key]: fn(value),
+        [key]: fn(value, key, obj),
       }),
       {} as Record<K, B>
     )

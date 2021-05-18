@@ -11,24 +11,28 @@ export type UserSpell = V3.UserSpell;
 
 const version = 'V4';
 
-const skillsDecoder = IO.record(
+export const skillDecoder = IO.type({
+  currentLevel: IO.number,
+});
+
+export const skillsDecoder = IO.record(
   IO.string,
-  IO.type({
-    currentLevel: IO.number,
-  })
+  skillDecoder,
 );
 
-const stateDecoder = IO.intersection([
+export const lifeDecoder = IO.type({
+  life: IO.type({
+    current: IO.number,
+    max: IO.number,
+  })
+});
+
+export const stateDecoder = IO.intersection([
   V3.stateDecoder,
   IO.type({
     skills: skillsDecoder,
   }),
-  IO.type({
-    life: IO.type({
-      current: IO.number,
-      max: IO.number,
-    })
-  })
+  lifeDecoder,
 ]);
 
 export type State = IO.TypeOf<typeof stateDecoder>;
