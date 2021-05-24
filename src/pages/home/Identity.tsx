@@ -23,8 +23,8 @@ function LifeForm({current, max}: State['life']) {
     defaultValues: {current, max},
   });
 
-  const onSubmit = (life: State['life']) => {
-    setUserLife(life);
+  const onSubmit = ({current, max}: State['life']) => {
+    setUserLife({current: current * 1, max: max * 1});
   };
 
   return (
