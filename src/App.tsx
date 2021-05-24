@@ -4,6 +4,7 @@ import { Router } from './Router';
 import { NotificationStack } from './components/Notification';
 import { useRune } from './pages/runes/useRune';
 import { useLocks } from './useLocks';
+import { ExternalStore } from './store/ExternalStore';
 
 function App() {
   const { setKnownRunes } = useRune();
@@ -14,6 +15,13 @@ function App() {
     window.app = {
       setKeys,
       setKnownRunes,
+      getUserList: ExternalStore.getEntries,
+      deleteUser: ExternalStore.delete,
+      clear: () => {
+        window.localStorage.removeItem('state');
+        // eslint-disable-next-line no-restricted-globals
+        location.reload();
+      }
     }
   }, [setKeys, setKnownRunes]);
 

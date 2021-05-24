@@ -40,8 +40,9 @@ export function Form({state: { traits }, callback}: {state: State,callback: (res
   });
 
   const onSkillChange = (skill: string, callback: (value: number) => void) => (value: string) => {
-    const currentValue = getValues()[skill];
+    const currentValue = getValues()[skill] * 1;
     const v = parseInt(value, 10);
+
     setRemainingPoints(remainingPoints - v + currentValue);
     callback(v);
   };

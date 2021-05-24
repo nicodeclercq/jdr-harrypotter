@@ -57,7 +57,6 @@ export const ExternalStore = {
       headers,
     };
 
-    return fetch(`${ROOT}/basket/${encode(name)}`, requestOptions)
-      .then(response => response.json());
+    return fetch(`${ROOT}/basket/${encode(name)}`, requestOptions);
   }
 }

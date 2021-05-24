@@ -8,6 +8,7 @@ import { Trait } from './v3';
 import { roll } from '../../helpers/number';
 import { Label } from '../../components/font/Label';
 import { Icon } from '../../components/icons/Icon';
+import { map } from '../../helpers/object';
 
 const rollTrait = () => roll(2, 'd6') + 6;
 
@@ -29,7 +30,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
   })
 
   const onSubmit = (traits: Record<Trait, number>) => {
-    callback({traits});
+    callback({traits: map((trait) => trait * 1, traits)});
   }
 
   const rollDice = (trait: Trait) => () => {
