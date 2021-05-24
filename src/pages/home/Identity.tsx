@@ -3,23 +3,90 @@ import { State } from '../../store/State';
 import { Icon } from '../../components/icons/Icon';
 import { Card } from '../../components/Card';
 import { Title } from '../../components/font/Title';
+import { useLife } from './useLife';
+import { fromRemoteData } from '../../helpers/remoteData';
+import { Controller, useForm } from 'react-hook-form';
+import { Input } from '../../components/Input';
+
+type FormType = {
+  current: number;
+  max: number;
+};
 
 type Props = {
   state: State;
 }
 
-export function Identity({state}: Props){
+function LifeForm({current, max}: State['life']) {
+  const {setUserLife} = useLife();
+  const { handleSubmit, control, errors } = useForm<FormType>({
+    defaultValues: {current, max},
+  });
+
+  const onSubmit = (life: State['life']) => {
+    setUserLife(life);
+  };
+
   return (
-    <Card>
+    <form  className="space-x-2" onSubmit={handleSubmit(onSubmit)}>
+      <Controller
+        name="current"
+        control={control}
+        rules={{ required: true, min: 1, max: 30 }}
+        render={({value, onChange}) => 
+          <Input
+            id="input-life_current"
+            errors={errors['current']}
+            value={value}
+            type="number"
+            min="0"
+            max="30"
+            theme="neutral"
+            onChange={onChange}
+            onBlur={handleSubmit(onSubmit)}
+            size={1}
+          />
+        }
+      />
+      <span>/</span>
+      <Controller
+        name="max"
+        control={control}
+        rules={{ required: true, min: 1, max: 30 }}
+        render={({value, onChange}) => 
+          <Input
+            id="input-life_max"
+            errors={errors['max']}
+            value={value}
+            type="number"
+            min="0"
+            max="30"
+            theme="neutral"
+            onChange={onChange}
+            onBlur={handleSubmit(onSubmit)}
+            size={1}
+          />
+        }
+      />
+      <span className="text-red-400">
+        <Icon name="HEART" />
+      </span>
+    </form>
+  )
+}
+
+export function Identity({state}: Props){
+  const {getUserLife} = useLife();
+
+  return fromRemoteData(
+    getUserLife(),
+    (life) => <Card>
       <div className="flex p-2 flex-column space-y-4">
         <div className="flex flex-row items-center w-full space-x-2">
           <span className="flex-grow">
             <Title>{state.user.name}</Title>
           </span>
-          <span>
-          {state.life.current} / {state.life.max}
-          </span>
-          <Icon name="HEART" />
+          <LifeForm current={life.current} max={life.max} />
         </div>
       </div>
     </Card>

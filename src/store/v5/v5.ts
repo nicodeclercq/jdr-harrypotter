@@ -33,6 +33,7 @@ const stateDecoder = IO.intersection([
   }),
   IO.type({
     runesDefinition: runesDefinitionDecoder,
+    knownRunes: IO.array(IO.string),
   })
 ]);
 
@@ -48,6 +49,7 @@ function update(promise: Promise<V4.State>): Promise<State> {
       ...state,
       lockKeys: [],
       runesDefinition: {},
+      knownRunes: [],
     }));
 }
 

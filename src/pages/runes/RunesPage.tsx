@@ -1,11 +1,15 @@
+import { remoteData } from '@devexperts/remote-data-ts';
+import { sequenceS } from 'fp-ts/lib/Apply';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Input } from '../../components/Input';
 import { Layout } from '../../components/Layout';
-import { RUNES, Rune, RuneName } from '../../components/Runes';
-import { entries } from '../../helpers/object';
+import { Rune, RuneName } from '../../components/Runes';
 import { fromRemoteData } from '../../helpers/remoteData';
 import { useRune } from './useRune';
+
+
+const sequence = sequenceS(remoteData);
 
 function RuneForm({name, signification, addRune}: {name: RuneName; signification: string; addRune: () => void;}) {
   const { setSignification } = useRune();
@@ -45,7 +49,8 @@ function RuneForm({name, signification, addRune}: {name: RuneName; signification
 
 export function RunesPage(){
   const [usedRunes, setUsedRunes] = useState<RuneName[]>([]);
-  const { getRunesSignification } = useRune();
+  const { getRunesSignification, getKnownRunes } = useRune();
+
 
   const addRune = (name: RuneName) => {
     setUsedRunes([...usedRunes, name]);
@@ -55,8 +60,11 @@ export function RunesPage(){
   }
 
   return fromRemoteData(
-    getRunesSignification(),
-    (runesSignification) => (
+    sequence({
+      runesSignification: getRunesSignification(),
+      knownRunes: getKnownRunes(),
+    }),
+    ({runesSignification, knownRunes}) => (
       <Layout>
         <div className="p-2 space-y-2">
           <div className="items-center w-full p-2 bg-gray-600 rounded grid grid-flow-col auto-cols-max gap-2" style={{minHeight: '25vh'}}>
@@ -72,9 +80,9 @@ export function RunesPage(){
           </div>
           <div className="overflow-y-scroll grid grid-cols-8 gap-4" style={{maxHeight: '70vh'}}>
             {
-              entries(RUNES)
-                .map(([rune]) => (
-                  <RuneForm key={rune} addRune={() => addRune(rune)} name={rune} signification={runesSignification[rune] ?? ''} />
+              knownRunes
+                .map((rune) => (
+                  <RuneForm key={rune} addRune={() => addRune(rune as RuneName)} name={rune as RuneName} signification={runesSignification[rune] ?? ''} />
                 ))
             }
           </div>

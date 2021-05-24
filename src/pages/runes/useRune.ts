@@ -30,8 +30,28 @@ export const useRune = () => {
     )
   );
 
+  const getKnownRunes = () => pipe(
+    getState(),
+    RemoteData.map(
+      state => state.knownRunes
+    )
+  )
+
+  const setKnownRunes = (knownRunes: string[]) => pipe(
+    getState(),
+    RemoteData.map(
+      state => ({
+        ...state,
+        knownRunes,
+      })
+    ),
+    setState,
+  )
+
   return {
     setSignification,
     getRunesSignification,
+    getKnownRunes,
+    setKnownRunes,
   }
 }
