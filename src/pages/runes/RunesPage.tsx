@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Input } from '../../components/Input';
 import { Layout } from '../../components/Layout';
-import { Rune, RuneName } from '../../components/Runes';
+import { Rune, RuneName, RUNES } from '../../components/Runes';
+import { keys } from '../../helpers/object';
 import { fromRemoteData } from '../../helpers/remoteData';
 import { useRune } from './useRune';
 
@@ -80,9 +81,10 @@ export function RunesPage(){
           </div>
           <div className="overflow-y-scroll grid grid-cols-8 gap-4" style={{maxHeight: '70vh'}}>
             {
-              knownRunes
+              keys(RUNES)
+                .filter(rune => knownRunes.includes(rune))
                 .map((rune) => (
-                  <RuneForm key={rune} addRune={() => addRune(rune as RuneName)} name={rune as RuneName} signification={runesSignification[rune] ?? ''} />
+                  <RuneForm key={rune} addRune={() => addRune(rune)} name={rune} signification={runesSignification[rune] ?? ''} />
                 ))
             }
           </div>
