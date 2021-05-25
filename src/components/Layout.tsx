@@ -48,8 +48,8 @@ export function Layout ({ children }: { children: React.ReactNode }) {
             getAvailableRoutes(state)
               .map(path => ({path, ...ROUTES[path]}))
               .map(({path, label, icon}) => (
-                <div>
-                  <NavLink hovered={hovered} key={`${path}_${label}`} path={path} label={label}  icon={icon}/>
+                <div key={`${path}_${label}`}>
+                  <NavLink hovered={hovered} path={path} label={label}  icon={icon}/>
                 </div>
               ))
           }
@@ -70,7 +70,7 @@ export function Layout ({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="flex h-screen bg-gray-500">
+      <div className="flex h-screen overflow-y-auto bg-gray-500">
         {hoverable}
         <div className="flex items-center justify-center flex-grow h-screen p-6 ml-16 space-x-2">
           {children}

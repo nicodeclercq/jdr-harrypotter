@@ -2,6 +2,7 @@ import { pipe } from "fp-ts/function";
 import * as Either from 'fp-ts/Either';
 import { Decoder } from "io-ts";
 import { formatValidationErrors } from 'io-ts-reporters';
+import { AES, SHA256, enc } from 'crypto-js';
 
 export function retrieveFromVersion<U>(
   version: string,
@@ -26,5 +27,19 @@ export function retrieveFromVersion<U>(
   );
 }
 
-export const encode = btoa;
-export const decode = atob;
+export const encode = (str: string) => btoa(unescape(encodeURIComponent(str)));
+export const decode = (str: string) => decodeURIComponent(escape(window.atob(str)));
+
+const getLockKey = (str: string) => SHA256(str).toString(); 
+
+export const encrypt = (key: string) => (json: unknown) => {
+  const str = JSON.stringify(json);
+  const lockKey = getLockKey(key);
+  return AES.encrypt(str, lockKey).toString();
+}
+
+export const decrypt = (key: string) => (value: string )  => {
+  const lockKey = getLockKey(key);
+  const result = AES.decrypt(value, lockKey).toString(enc.Utf8)/*?*/;
+  return JSON.parse(result/*?*/);
+}

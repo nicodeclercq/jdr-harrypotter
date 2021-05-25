@@ -39,15 +39,14 @@ export function Form({state: { traits }, callback}: {state: State,callback: (res
     }),
   });
 
-  const onSkillChange = (skill: string, callback: (value: number) => void) => (value: string) => {
-    const currentValue = getValues()[skill] * 1;
-    const v = parseInt(value, 10);
+  const onSkillChange = (skill: string, callback: (value: number) => void) => (value: number) => {
+    const currentValue = getValues()[skill];
 
-    setRemainingPoints(remainingPoints - v + currentValue);
-    callback(v);
+    setRemainingPoints(remainingPoints - value + currentValue);
+    callback(value);
   };
   const setSkillValue = (skill: string, value: number) => {
-    onSkillChange(skill, (v) => setValue(skill, v))(`${value}`);
+    onSkillChange(skill, (v) => setValue(skill, v))(value);
   }
 
   const onSubmit = (results: Record<string, number>) => {

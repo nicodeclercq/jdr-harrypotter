@@ -1,4 +1,4 @@
-import { encode, decode } from './helper';
+import { encode, decode, decrypt, encrypt } from './helper';
 import { api } from "./api";
 import { State } from "./State";
 
@@ -17,10 +17,7 @@ export const ExternalStore = {
 
     return fetch(ROOT, requestOptions)
       .then(response => response.json())
-      .then((values: {baskets: string[]}) => {
-        console.log(values.baskets.map((v) => decode(v)));
-        return values.baskets.map((v) => decode(v));
-      });
+      .then((values: {baskets: string[]}) => values.baskets.map((v) => decode(v)));
   },
   create: (name: string) => {
     const requestOptions = {
@@ -39,17 +36,23 @@ export const ExternalStore = {
     };
 
     return fetch(`${ROOT}/basket/${encode(name)}`, requestOptions)
-      .then(response => response.json());
+      .then(response => response.json())
+      .then(({value}) => value)
+      .then(decrypt(name));
   },
   update: (name: string, state: State) => {
     const requestOptions = {
       method: 'PUT',
       headers,
-      body: JSON.stringify(state),
+      body: JSON.stringify({
+        value: encrypt(name)(state)
+      }),
     };
 
     return fetch(`${ROOT}/basket/${encode(name)}`, requestOptions)
-      .then(response => response.json());
+      .then(response => response.json()) 
+      .then(({value}) => value)
+      .then(decrypt(name));
   },
   delete: (name: string) => {
     const requestOptions = {

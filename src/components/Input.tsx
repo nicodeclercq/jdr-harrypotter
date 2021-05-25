@@ -3,16 +3,25 @@ import { FieldError } from 'react-hook-form';
 import { getColor } from '../theme';
 import { ErrorMessage } from './ErrorMessage';
 
-type Props= {
+type NumberInputProps = {
+  onChange: (value: number) => void;
+  type: 'number' | 'range';
+}
+type OtherInputProps = {
   onChange: (value: string) => void;
-  type: string;
+  type: 'color' | 'date' | 'datetime-local' | 'email' | 'file' | 'image' | 'month' | 'password' | 'search' | 'tel' | 'text' | 'time' | 'url' | 'week';
+}
+
+const isNumberInputProps = (args: NumberInputProps | OtherInputProps): args is NumberInputProps => args.type === 'number' || args.type === 'range';
+
+type Props= (NumberInputProps | OtherInputProps) & {
   theme: 'base' | 'neutral';
   errors?: FieldError;
   messages?: Record<string, string>;
   width?: string;
 }
 
-export function Input ({onChange, theme,errors, messages, width, ...rest}: Props & Omit<
+export function Input ({onChange, type, theme,errors, messages, width, ...rest}: Props & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'className' | 'style' | 'onChange'
 >) {
@@ -25,8 +34,17 @@ export function Input ({onChange, theme,errors, messages, width, ...rest}: Props
     <div className="inline-flex flex-col">
       <input
         {...rest}
+        type={type}
         className={`focus:ring-4 ${styles[theme]}`}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => {
+          const value = e.target.value;
+          const props = {onChange, type} as NumberInputProps | OtherInputProps;
+          if(isNumberInputProps(props)){
+            props.onChange(parseInt(value, 10));
+          }else{
+            props.onChange(value);
+          }
+        }}
         style={width ? {width} : {}}
       />
       {errors && <ErrorMessage errors={errors} messages={messages} />}
