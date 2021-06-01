@@ -24,7 +24,7 @@ const skillDecoder = IO.type({
   )
 });
 
-const stateDecoder = IO.intersection([
+export const stateDecoder = IO.intersection([
   V3.stateDecoder,
   V4.lifeDecoder,
   skillDecoder,

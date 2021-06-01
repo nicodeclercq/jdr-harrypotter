@@ -32,3 +32,10 @@ export const map = <K extends string | number | symbol, A, B>(fn: (a: A, key: K
       {} as Record<K, B>
     )
 }
+
+export const emptyRecord = <A extends string | number | symbol, B>() => ({}) as Record<A, B>;
+
+export const fromEntries = <A extends string | number | symbol, B>(entries: [A, B][]) => entries.reduce(
+  (acc, [key, value]) => ({...acc , [key]: value}),
+  emptyRecord<A, B>()
+);

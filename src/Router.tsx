@@ -9,6 +9,8 @@ import { IconName } from './components/icons/Icon';
 import { keys } from './helpers/object';
 import { fromRemoteData } from './helpers/remoteData';
 import { HomePage } from './pages/home/HomePage';
+import { NotesPage } from './pages/notes/notesPage';
+import { ObjectsPage } from './pages/objects/ObjectsPage';
 import { RunesPage } from './pages/runes/RunesPage';
 import { SkillsPage } from './pages/skills/SkillsPage';
 import { SpellsPage } from './pages/spells/SpellsPage';
@@ -16,7 +18,7 @@ import { State } from './store/State';
 import { useStore } from './store/useStore';
 
 type RouteDefinition = {
-  label: string;
+  label: string | ((state: State) => string);
   icon: IconName;
   Component: () => React.ReactElement;
   lockKey?: string; 
@@ -25,7 +27,7 @@ type RouteDefinition = {
 export const ROUTES: Record<string, RouteDefinition> = {
   '/': {
     icon: 'SORCERER',
-    label: 'Accueil',
+    label: (state: State) => state.user.name,
     Component: HomePage,
   },
   '/skills': {
@@ -36,7 +38,8 @@ export const ROUTES: Record<string, RouteDefinition> = {
   '/spells': {
     icon: 'BOOK',
     label: 'Sorts',
-    Component: SpellsPage
+    Component: SpellsPage,
+    lockKey: 'alohomora',
   },
   '/runes': {
     icon: 'RUNE',
@@ -44,10 +47,20 @@ export const ROUTES: Record<string, RouteDefinition> = {
     Component: RunesPage,
     lockKey: 'futhark',
   },
+  '/objects': {
+    icon: 'BACKPACK',
+    label: 'Objets',
+    Component: ObjectsPage,
+  },
+  '/notes': {
+    icon: 'NOTEBOOK',
+    label: 'Notes',
+    Component: NotesPage,
+  }
 } as const;
 
 const routesDefOrder: Array<keyof typeof ROUTES> = [
-  '/', '/spells', '/skills', '/runes'
+  '/', '/spells', '/skills', '/runes', '/objects', '/notes'
 ];
 
 export const ROUTE_NAMES = keys(ROUTES);

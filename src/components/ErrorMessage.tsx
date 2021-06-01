@@ -22,6 +22,10 @@ export function ErrorMessage({
       ? <span key={`error_${key}`} className="text-sm text-red-800">⚠️ {value}</span>
       : undefined
     )
+    .map(a => {
+      console.log(a);
+      return a;
+    })
     .filter(value => value != null);
 
   return (

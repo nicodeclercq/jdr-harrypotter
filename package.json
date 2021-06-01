@@ -30,6 +30,7 @@
     "react-use": "^17.2.1",
     "rxjs": "^6.6.6",
     "typescript": "^4.1.2",
+    "uuid": "^8.3.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
@@ -58,6 +59,7 @@
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@testing-library/dom": "^7.31.0",
     "@types/react-router-dom": "^5.1.7",
+    "@types/uuid": "^8.3.0",
     "autoprefixer": "^9",
     "eslint-plugin-tailwind": "^0.2.1",
     "postcss": "^7",

@@ -33,7 +33,7 @@ export function NameForm({defaultValue, names = [], callback}: Props) {
             control={control}
             rules={{ required: true, min: 1, max: 20 }}
             render={({value, onChange}) => 
-              <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
+              <div className="flex flex-row flex-grow p-2 border-gray-100 space-x-3 border-b-1">
                 <Label htmlFor="input-name">Nom</Label>
                 <Input
                   id="input-name"
@@ -43,6 +43,7 @@ export function NameForm({defaultValue, names = [], callback}: Props) {
                   theme="neutral"
                   onChange={onChange}
                   list="input-name-list"
+                  width="100%"
                   autoComplete={names ? 'on' : 'off'}
                 />
                 <datalist id="input-name-list">

@@ -1,16 +1,11 @@
-import { remoteData } from '@devexperts/remote-data-ts';
-import { sequenceS } from 'fp-ts/lib/Apply';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Input } from '../../components/Input';
 import { Layout } from '../../components/Layout';
 import { Rune, RuneName, RUNES } from '../../components/Runes';
 import { keys } from '../../helpers/object';
-import { fromRemoteData } from '../../helpers/remoteData';
+import { fromRemoteData, sequence } from '../../helpers/remoteData';
 import { useRune } from './useRune';
-
-
-const sequence = sequenceS(remoteData);
 
 function RuneForm({name, signification, addRune}: {name: RuneName; signification: string; addRune: () => void;}) {
   const { setSignification } = useRune();
@@ -67,7 +62,7 @@ export function RunesPage(){
     }),
     ({runesSignification, knownRunes}) => (
       <Layout>
-        <div className="p-2 space-y-2">
+        <div className="h-full p-2 space-y-2">
           <div className="items-center w-full p-2 bg-gray-600 rounded grid grid-flow-col auto-cols-max gap-2" style={{minHeight: '25vh'}}>
             {
               usedRunes.map((rune, index) => (

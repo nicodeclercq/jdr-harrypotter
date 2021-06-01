@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import {useHover} from 'react-use';
+import { pipe } from 'fp-ts/function';
+
 import { getAvailableRoutes, ROUTES } from '../Router';
 import { getColor } from '../theme';
 import { D10 } from './dice/D10';
@@ -11,8 +13,8 @@ import { Dice } from './dice/dice';
 import { RollModal } from './RollModal';
 import { Icon, IconName } from './icons/Icon';
 import { useStore } from '../store/useStore';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { fromRemoteData } from '../helpers/remoteData';
+import { State } from '../store/State';
 
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName;}) {
   let match = useRouteMatch({
@@ -35,6 +37,13 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
   );
 }
 
+const displayLabel = (label: string | ((state: State) => string), state: State) => {
+  if(typeof label === 'string'){
+    return label;
+  }
+  return label(state);
+}
+
 export function Layout ({ children }: { children: React.ReactNode }) {
   const { getState } = useStore();
   const [rollModal, setRollModal] = useState<Dice[] | undefined>(undefined);
@@ -43,10 +52,15 @@ export function Layout ({ children }: { children: React.ReactNode }) {
       getState(),
       s => fromRemoteData(s, (state) => (
       <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-yellow-500 flex flex-col`}>
-        <div className="flex-grow divide-y divide-yellow-500">
+        <div className="flex-grow overflow-y-auto divide-y divide-yellow-500">
           {
             getAvailableRoutes(state)
               .map(path => ({path, ...ROUTES[path]}))
+              .map(({path, label, icon}) => ({
+                path,
+                label: displayLabel(label, state),
+                icon,
+              }))
               .map(({path, label, icon}) => (
                 <div key={`${path}_${label}`}>
                   <NavLink hovered={hovered} path={path} label={label}  icon={icon}/>

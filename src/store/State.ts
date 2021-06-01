@@ -1,4 +1,4 @@
-import { State as CurrentState, Trait as CurrentTrait, UserSpell as CurrentUserSpell } from './v5/v5';
+import { State as CurrentState, Trait as CurrentTrait, UserSpell as CurrentUserSpell } from './v6/v6';
 
 export type State = CurrentState;
 export type Skills = CurrentState['skills'];
