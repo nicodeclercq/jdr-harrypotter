@@ -19,7 +19,7 @@ const notesDecoder = IO.array(IO.type({
 const objectsDecoder = IO.record(IO.string, IO.number);
 const moneyDecoder = IO.number;
 
-const stateDecoder = IO.intersection([
+export const stateDecoder = IO.intersection([
   V5.stateDecoder,
   IO.type({
     notes: notesDecoder,

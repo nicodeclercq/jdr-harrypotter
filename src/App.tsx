@@ -8,12 +8,13 @@ import { ExternalStore } from './store/ExternalStore';
 
 function App() {
   const { setKnownRunes } = useRune();
-  const { setKeys } = useLocks();
+  const { setKeys, unlock } = useLocks();
 
   useEffect(() => {
     // @ts-ignore
     window.app = {
       setKeys,
+      unlock,
       setKnownRunes,
       getUserList: ExternalStore.getEntries,
       deleteUser: ExternalStore.delete,
@@ -23,7 +24,7 @@ function App() {
         location.reload();
       }
     }
-  }, [setKeys, setKnownRunes]);
+  }, [setKeys, unlock, setKnownRunes]);
 
   return (
     <div className="App">
