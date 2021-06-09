@@ -9,13 +9,14 @@ type Props = {
 
 export function WindowShortcuts({children}: Props) {
   const { setKnownRunes } = useRune();
-  const { setKeys } = useLocks();
+  const { setKeys, unlock } = useLocks();
 
   useEffect(() => {
     // @ts-ignore
     window.app = {
       setKeys,
       setKnownRunes,
+      unlock,
       getUserList: ExternalStore.getEntries,
       deleteUser: ExternalStore.delete,
       clear: () => {
