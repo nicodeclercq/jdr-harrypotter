@@ -67,7 +67,7 @@ export const ROUTES: Record<string, RouteDefinition> = {
 } as const;
 
 const routesDefOrder: Array<keyof typeof ROUTES> = [
-  '/', '/spells', '/skills', '/runes', '/cartomancy', '/objects', '/notes'
+  '/', '/skills', '/spells', '/runes', '/cartomancy', '/objects', '/notes'
 ];
 
 export const ROUTE_NAMES = keys(ROUTES);
