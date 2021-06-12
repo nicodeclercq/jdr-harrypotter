@@ -25,7 +25,7 @@ export function WindowShortcuts({children}: Props) {
         location.reload();
       }
     }
-  }, [setKeys, setKnownRunes]);
+  }, [setKeys, setKnownRunes, unlock]);
 
   return (
     <>

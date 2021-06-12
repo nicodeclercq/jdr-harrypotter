@@ -22,11 +22,11 @@ import { Card } from './components/card';
 import { Backpack } from './components/backpack';
 import { Coin } from './components/coin';
 import { Notebook } from './components/notebook';
+import { Abacus } from './components/abacus';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
   DICE: <Dice />,
-  IMPORT: '📥',
   FEU: <Fire />,
   AIR: <Wind />,
   EAU: <Water />,
@@ -48,6 +48,7 @@ export const ICONS = {
   BACKPACK: <Backpack />,
   COIN: <Coin />,
   NOTEBOOK: <Notebook />,
+  ABACUS: <Abacus />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

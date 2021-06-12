@@ -175,7 +175,7 @@ export const eventCards: EventCard[] = [
     image: "social",
   }, {
     title: "Tu ne devrais pas être au zoo toi?",
-    description: "Une bête féroce apparait sur la scène et elle n'a pas l'air comode... Il va falloir réagir rapidement.",
+    description: "Une bête féroce apparait sur la scène et elle n'a pas l'air commode... Il va falloir réagir rapidement.",
   }, {
     title: "Défaut de conception",
     description: "Ce mur n'était pas si solide qu'il en avait l'air... Après une action d'un PJ ou PNJ sur ce mur celui-ci commence à s'éfondrer... Mieux vaut ne pas rester dans le coin.",

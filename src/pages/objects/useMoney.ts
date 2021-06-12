@@ -25,8 +25,20 @@ export const useMoney = () => {
     );
   }
 
+  const addMoney = (money: number) => {
+    return pipe(
+      getState(),
+      RemoteData.map(state => ({
+        ...state,
+        money: state.money + money,
+      })),
+      setState,
+    );
+  }
+
   return {
     getMoney,
     setMoney,
+    addMoney,
   }
 }

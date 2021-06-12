@@ -5,7 +5,6 @@ import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { ElementTag } from '../../components/ElementTag';
 import { EmptyContent } from '../../components/EmptyContent';
-import { Incantation } from '../../components/font/Incantation';
 import { useNotification } from '../../components/Notification';
 import { RollModal } from '../../components/RollModal';
 import { UpgradeRollModal } from '../../components/UpgradeRollModal';
@@ -121,12 +120,7 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
       {
         rollModalSpellId != null && <RollModal
           successPercentage={userSpells[rollModalSpellId].currentLevel}
-          title={
-            <span className="space-x-2">
-              <Incantation>{spells[rollModalSpellId].incantation}</Incantation>
-              <span>{spells[rollModalSpellId].name}</span>
-            </span>
-          }
+          title={`${spells[rollModalSpellId].incantation} ${spells[rollModalSpellId].name}`}
           onRollEnd={onRollEnd(spells[rollModalSpellId])}
         />
       }

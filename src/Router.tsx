@@ -8,6 +8,7 @@ import {
 import { IconName } from './components/icons/Icon';
 import { keys } from './helpers/object';
 import { fromRemoteData } from './helpers/remoteData';
+import { ArithmancyPage } from './pages/arithmancy/arithmancyPage';
 import { CartomancyPage } from './pages/cartomancy/CartomancyPage';
 import { HomePage } from './pages/home/HomePage';
 import { NotesPage } from './pages/notes/notesPage';
@@ -54,6 +55,12 @@ export const ROUTES: Record<string, RouteDefinition> = {
     Component: CartomancyPage,
     lockKey: 'double vue',
   },
+  '/arithmancy': {
+    icon: 'ABACUS',
+    label: 'Arithmancy',
+    Component: ArithmancyPage,
+    lockKey: 'pythagore',
+  },
   '/objects': {
     icon: 'BACKPACK',
     label: 'Objets',
@@ -67,7 +74,7 @@ export const ROUTES: Record<string, RouteDefinition> = {
 } as const;
 
 const routesDefOrder: Array<keyof typeof ROUTES> = [
-  '/', '/skills', '/spells', '/runes', '/cartomancy', '/objects', '/notes'
+  '/', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/objects', '/notes'
 ];
 
 export const ROUTE_NAMES = keys(ROUTES);

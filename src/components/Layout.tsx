@@ -29,7 +29,7 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
 
   return (
     <Link to={path}>
-      <div className={`flex text-4xl flex-row space-x-2 p-4 items-center ${match ? style.active : style.inactive}`}>
+      <div className={`flex text-4xl flex-row space-x-2 py-2 px-4 items-center ${match ? style.active : style.inactive}`}>
         <span aria-label={label}><Icon name={icon} /></span>
         {hovered && <span className="text-xl">{label}</span>}
       </div>
@@ -92,11 +92,7 @@ export function Layout ({ children }: { children: React.ReactNode }) {
       </div>
       {
         rollModal && <RollModal
-          title={
-            <span className="space-x-2">
-              Lancé libre
-            </span>
-          }
+          title="Lancé libre"
           isCancellable={false}
           onRollEnd={() => { setRollModal(undefined)}}
           dices={rollModal}

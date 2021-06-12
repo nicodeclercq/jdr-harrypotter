@@ -63,11 +63,7 @@ function UserTraits({userTraits}: Props) {
       {
         rollModalCaracteristic != null && <RollModal
           successPercentage={caracteristics[rollModalCaracteristic]}
-          title={
-            <span className="space-x-2">
-              {rollModalCaracteristic}
-            </span>
-          }
+          title={rollModalCaracteristic}
           isCancellable={false}
           onRollEnd={() => { setRollModalCaracteristic(undefined)}}
         />
@@ -81,11 +77,7 @@ function UserTraits({userTraits}: Props) {
             hard: userTraits[rollModalTrait] * 2,
             veryHard: userTraits[rollModalTrait] * 1,
           }}
-          title={
-            <span className="space-x-2">
-              {rollModalTrait}
-            </span>
-          }
+          title={rollModalTrait}
           isCancellable={false}
           onRollEnd={() => { setRollModalTrait(undefined)}}
         />

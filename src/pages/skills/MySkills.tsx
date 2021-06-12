@@ -83,11 +83,7 @@ export function MySkills({ skills, showInColumns }: Props) {
         {
           rollModalSkill != null && <RollModal
             successPercentage={rollModalSkill.currentLevel}
-            title={
-              <span className="space-x-2">
-                {rollModalSkill.skill}
-              </span>
-            }
+            title={rollModalSkill.skill}
             isCancellable={false}
             onRollEnd={onRollEnd(rollModalSkill.skill)}
           />

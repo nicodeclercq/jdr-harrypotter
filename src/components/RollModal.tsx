@@ -4,6 +4,7 @@ import { Modal } from './Modal';
 import { Roll } from './Roll';
 import * as Interaction from '../helpers/interaction';
 import { Dice } from './dice/dice';
+import { useSocket } from '../useSocket';
 
 
 type SuccessPercentages = {
@@ -15,7 +16,7 @@ type SuccessPercentages = {
 }
 type Props = {
   successPercentage?: number | SuccessPercentages,
-  title: React.ReactNode,
+  title: string,
   onRollEnd: (result: Interaction.Interaction<never, number>) => void;
   isCancellable?: boolean;
   dices?: Dice[];
@@ -36,6 +37,7 @@ function DifficultySelection ({successPercentages, onSelection}: {successPercent
 
 
 export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, onRollEnd, isCancellable = true}: Props){
+  const { emit } = useSocket();
   const [value, setValue] = useState(NaN);
   const [percentage, setPercentage] = useState(typeof successPercentage === 'number' ? successPercentage : NaN);
 
@@ -47,7 +49,7 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
 
   return (
     <Modal
-      header={title}
+      header={<span className="space-x-2">title</span>}
     >
       {
         (isNaN(percentage) && successPercentage)
@@ -99,11 +101,36 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
                 title="En validant tes jets de dés tu enregistres une utilisation qui te permet d'améliorer tes sorts ou compétences petit à petit"
                 onClick={() => {
                   if(!percentage) {
-                    onRollEnd(Interaction.canceled())
-                  }
-                  value < percentage
-                    ? onRollEnd(Interaction.success(value))
-                    : onRollEnd(Interaction.emptyFailure())
+                    onRollEnd(Interaction.canceled());
+                    emit({
+                      type: 'roll',
+                      payload: {
+                        title,
+                        type: 'success',
+                        value
+                      }
+                    });
+                  } else if(value < percentage){
+                    emit({
+                      type: 'roll',
+                      payload: {
+                        title,
+                        type: 'success',
+                        value
+                      }
+                    });
+                    onRollEnd(Interaction.success(value));
+                  } else {
+                    emit({
+                      type: 'roll',
+                      payload: {
+                        title,
+                        type: 'failure',
+                        value
+                      }
+                    });
+                    onRollEnd(Interaction.emptyFailure());
+                  } 
                 }}
               >
                 Valider ce jet
