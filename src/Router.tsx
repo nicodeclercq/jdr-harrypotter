@@ -16,6 +16,7 @@ import { ObjectsPage } from './pages/objects/ObjectsPage';
 import { RunesPage } from './pages/runes/RunesPage';
 import { SkillsPage } from './pages/skills/SkillsPage';
 import { SpellsPage } from './pages/spells/SpellsPage';
+import { SocketMessageHandler } from './SocketMessageHandler';
 import { State } from './store/State';
 import { useStore } from './store/useStore';
 
@@ -89,21 +90,23 @@ export function Router() {
   return pipe(
     getState(),
     state => fromRemoteData(state, (s) => (
-      <BrowserRouter>
-        <Switch>
-          {
-            getAvailableRoutes(s)
-              .reverse()
-              .map((path) => {
-                const { Component } = ROUTES[path];
-                return (
-                <Route key={path} path={path}>
-                  <Component />
-                </Route>
-              )})
-          }
-        </Switch>
-      </BrowserRouter>
+      <SocketMessageHandler currentUserName={s.user.name}>
+        <BrowserRouter>
+          <Switch>
+            {
+              getAvailableRoutes(s)
+                .reverse()
+                .map((path) => {
+                  const { Component } = ROUTES[path];
+                  return (
+                  <Route key={path} path={path}>
+                    <Component />
+                  </Route>
+                )})
+            }
+          </Switch>
+        </BrowserRouter>
+      </SocketMessageHandler>
     )),
   );
 }
