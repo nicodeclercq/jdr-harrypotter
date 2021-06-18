@@ -1,45 +1,103 @@
 import React, { useState } from 'react';
+import { pipe } from 'fp-ts/function';
+
 import { Button } from './Button';
 import { Modal } from './Modal';
 import { Roll } from './Roll';
+import { Title } from './font/Title';
+import { Caption } from './font/Caption';
+import { Comment } from './font/Comment';
 import * as Interaction from '../helpers/interaction';
 import { Dice } from './dice/dice';
 import { useSocket } from '../useSocket';
 
+export type Interpretation = {
+  predicate: (value:number, percentage: number) => boolean;
+  result: {
+    type: 'success' | 'failure',
+    message: string;
+  }
+};
 
-type SuccessPercentages = {
-  veryEasy: number;
-  easy: number;
-  normal: number;
-  hard: number;
-  veryHard: number;
-}
 type Props = {
-  successPercentage?: number | SuccessPercentages,
+  successPercentage?: number,
   title: string,
   onRollEnd: (result: Interaction.Interaction<never, number>) => void;
   isCancellable?: boolean;
   dices?: Dice[];
+  resultsInterpretation?: Interpretation[];
 }
 
-function DifficultySelection ({successPercentages, onSelection}: {successPercentages: SuccessPercentages, onSelection: (value: number) => void}) {
+function DifficultySelection ({successPercentage, onSelection}: {successPercentage: number, onSelection: (value: number) => void}) {
+  const successPercentages = {
+    veryEasy: successPercentage + 20,
+    easy: successPercentage + 10,
+    normal: successPercentage,
+    hard: successPercentage - 10,
+    veryHard: successPercentage - 20,
+  };
+  
   return (
     <div className="flex flex-col space-y-2">
-        <span className="text-l">Sélection de la difficulté:</span>
-        <Button type="secondary" onClick={() => onSelection(successPercentages.veryEasy)}>Très facile</Button>
-        <Button type="secondary" onClick={() => onSelection(successPercentages.easy)}>Facile</Button>
-        <Button type="primary" onClick={() => onSelection(successPercentages.normal)}>Normal</Button>
-        <Button type="secondary" onClick={() => onSelection(successPercentages.hard)}>Difficile</Button>
-        <Button type="secondary" onClick={() => onSelection(successPercentages.veryHard)}>Très difficile</Button>
+        <Title>Chances de succès: {successPercentage}%</Title>
+        <br/>
+        <hr/>
+        <br/>
+        <Caption>Sélection de la difficulté:</Caption>
+        <Button disabled={successPercentages.veryEasy <= 0} type="secondary" onClick={() => onSelection(successPercentages.veryEasy <= 100 ? successPercentages.veryEasy : 100)}>Très facile&nbsp;<Comment>(+20%)</Comment></Button>
+        <Button disabled={successPercentages.easy <= 0} type="secondary" onClick={() => onSelection(successPercentages.easy <= 100 ? successPercentages.easy : 100)}>Facile&nbsp;<Comment>(+10%)</Comment></Button>
+        <Button disabled={successPercentages.normal <= 0} type="primary" onClick={() => onSelection(successPercentages.normal <= 100 ? successPercentages.normal : 100)}>Normal</Button>
+        <Button disabled={successPercentages.hard <= 0} type="secondary" onClick={() => onSelection(successPercentages.hard <= 100 ? successPercentages.hard : 100)}>Difficile&nbsp;<Comment>(-10%)</Comment></Button>
+        <Button disabled={successPercentages.veryHard <= 0} type="secondary" onClick={() => onSelection(successPercentages.veryHard <= 100 ? successPercentages.veryHard : 100)}>Très difficile&nbsp;<Comment>(-20%)</Comment></Button>
+        <br/>
+        <hr />
+        <br/>
+        <div className="flex flex-col items-end justify-end">
+          <Button type="secondary" onClick={() => onSelection(0)}>Annuler</Button>
+        </div>
     </div>
   )
 }
 
+const defaultInterpretation: Interpretation[] = [
+  {
+    predicate: (value:number, percentage: number) => value < percentage && value <= 5,
+    result: {
+      type: 'success',
+      message: '🎉 Réussite critique 🎉',
+    }
+  }, {
+    predicate: (value:number, percentage: number) => value < percentage,
+    result: {
+      type: 'success',
+      message: 'Réussite',
+    }
+  }, {
+    predicate: (value:number, percentage: number) => value > percentage && value < 95,
+    result: {
+      type: 'failure',
+      message: 'Échec',
+    }
+  }, {
+    predicate: (value:number, percentage: number) => value > 95,
+    result: {
+      type: 'failure',
+      message: '😈 Échec Critique 😈',
+    }
+  }
+];
 
-export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, onRollEnd, isCancellable = true}: Props){
+export function RollModal ({
+  successPercentage,
+  dices = ['d100', 'd10'],
+  title,
+  onRollEnd,
+  isCancellable = true,
+  resultsInterpretation = defaultInterpretation
+}: Props){
   const { emit } = useSocket();
   const [value, setValue] = useState(NaN);
-  const [percentage, setPercentage] = useState(typeof successPercentage === 'number' ? successPercentage : NaN);
+  const [percentage, setPercentage] = useState(NaN);
 
   const isD100 = (dices: Dice[]): dices is ['d100', 'd10'] => {
     return dices.length === 2 && dices[0] === 'd100' && dices[1] === 'd10';
@@ -47,13 +105,64 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
   const concatD100 = ([tens, units]: number[]) => tens + units || 100;
   const concat = (values: number[]) => values.reduce((a, b) => a + b, 0);
 
+  const getInterpretation = () => resultsInterpretation.find((interpretation) => interpretation.predicate(value, percentage));
+
+  const onRollEndEvent = () => {
+    if(!percentage) {
+      onRollEnd(Interaction.canceled());
+      emit({
+        type: 'roll',
+        payload: {
+          title,
+          type: 'success',
+          value
+        }
+      });
+    } else {
+      const interpretation = getInterpretation();
+      if(interpretation){
+        const {result} = interpretation;
+        emit({
+          type: 'roll',
+          payload: {
+            title,
+            type: result.type,
+            value
+          }
+        });
+        result.type === 'success'
+          ? onRollEnd(Interaction.success(value))
+          : onRollEnd(Interaction.emptyFailure());
+      } else {
+        onRollEnd(Interaction.canceled());
+        emit({
+          type: 'roll',
+          payload: {
+            title,
+            type: 'success',
+            value
+          }
+        });
+      }
+    }
+  }
+
   return (
     <Modal
-      header={<span className="space-x-2">title</span>}
+      header={<span className="space-x-2">{title}</span>}
     >
       {
         (isNaN(percentage) && successPercentage)
-          ? <DifficultySelection successPercentages={successPercentage as SuccessPercentages}  onSelection={value => {setPercentage(value)}} />
+          ? <DifficultySelection
+              successPercentage={successPercentage}
+              onSelection={value => {
+                if(value === 0) {
+                  onRollEnd(Interaction.canceled());
+                } else {
+                  setPercentage(value);
+                }
+              }}
+            />
           : (<>
             { !isNaN(percentage) &&
               <span className="text-center text-m">
@@ -74,10 +183,18 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
                       !isNaN(percentage) && (
                         <div className="flex flex-col items-center justify-center space-y-1">
                           {
-                              value <= 5                        ? <><span className="text-m">👑</span><span>🎉 Réussite critique 🎉</span></>
-                            : value >= 95                       ? <><span className="text-m">😈</span><span>Échec critique</span></>
-                            : value < percentage                ? <><span className="text-m">😀</span><span>Succés</span></>
-                            :                                     <><span className="text-m">🙁</span><span>Échec</span></>
+                            pipe(
+                              getInterpretation(),
+                              (interpretation) => interpretation != null
+                                ? <>
+                                    <span className="text-m">{interpretation.result.type === 'success'
+                                      ? '😀'
+                                      : '🙁'
+                                    }</span>
+                                    <span>{interpretation.result.message}</span>
+                                  </>
+                                : <></>
+                            )
                           }
                         </div>
                     )}
@@ -99,39 +216,7 @@ export function RollModal ({successPercentage, dices = ['d100', 'd10'], title, o
                 disabled={isNaN(value)}
                 type="primary"
                 title="En validant tes jets de dés tu enregistres une utilisation qui te permet d'améliorer tes sorts ou compétences petit à petit"
-                onClick={() => {
-                  if(!percentage) {
-                    onRollEnd(Interaction.canceled());
-                    emit({
-                      type: 'roll',
-                      payload: {
-                        title,
-                        type: 'success',
-                        value
-                      }
-                    });
-                  } else if(value < percentage){
-                    emit({
-                      type: 'roll',
-                      payload: {
-                        title,
-                        type: 'success',
-                        value
-                      }
-                    });
-                    onRollEnd(Interaction.success(value));
-                  } else {
-                    emit({
-                      type: 'roll',
-                      payload: {
-                        title,
-                        type: 'failure',
-                        value
-                      }
-                    });
-                    onRollEnd(Interaction.emptyFailure());
-                  } 
-                }}
+                onClick={onRollEndEvent}
               >
                 Valider ce jet
               </Button>

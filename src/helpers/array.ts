@@ -1,5 +1,7 @@
 import { random } from "./number";
 
+export type TypeofItems<U extends unknown[]> = U extends (infer R)[] ? R : never;
+
 // @ts-ignore
 export const removeDupplicates = <T>(arr: T[]): T[] => [...(new Set(arr))];
 
@@ -37,3 +39,6 @@ export const getNRandomIndexFromFilteredArray = <T>(number: number, predicate: (
   const randomIndex = random(0, indexes.length - 1);
   return [indexes[randomIndex], ...getNRandomIndexFromFilteredArray(number - 1, (a: T, index: number) => index !== randomIndex && predicate(a, index), arr)];
 }
+
+export const createArray = (size: number) => new Array(size)
+  .fill(0);

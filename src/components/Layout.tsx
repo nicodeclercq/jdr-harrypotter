@@ -51,8 +51,8 @@ export function Layout ({ children }: { children: React.ReactNode }) {
     pipe(
       getState(),
       s => fromRemoteData(s, (state) => (
-      <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-yellow-500 flex flex-col`}>
-        <div className="flex-grow overflow-y-auto divide-y divide-yellow-500">
+      <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-blue-500 flex flex-col`}>
+        <div className="flex-grow overflow-y-auto divide-y divide-blue-500">
           {
             getAvailableRoutes(state)
               .map(path => ({path, ...ROUTES[path]}))

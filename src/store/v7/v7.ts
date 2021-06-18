@@ -1,3 +1,4 @@
+import { createArray } from './../../helpers/array';
 import { pipe } from 'fp-ts/lib/function';
 import * as IO from 'io-ts';
 
@@ -10,6 +11,27 @@ export type Skills = V6.Skills;
 
 const version = 'V7';
 
+const arithmancyNumberDecoder = IO.union([
+  IO.type({
+    type: IO.literal('name'),
+    value: IO.string,
+  }),
+  IO.type({
+    type: IO.literal('verb'),
+    value: IO.string,
+    invert: IO.string,
+  }),
+  IO.type({
+    type: IO.literal('inverse'),
+  }),
+  IO.undefined,
+  IO.null,
+])
+
+const arithmancyDecoder = IO.type({
+  numbers: IO.array(arithmancyNumberDecoder),
+});
+
 const carthomancyDecoder = IO.type({
   used: IO.array(IO.number),
   visible: IO.array(IO.union([IO.number, IO.undefined, IO.null])),
@@ -18,6 +40,7 @@ const stateDecoder = IO.intersection([
   V6.stateDecoder,
   IO.type({
     carthomancy: carthomancyDecoder,
+    arithmancy: arithmancyDecoder,
   })
 ]);
 
@@ -34,6 +57,9 @@ function update(promise: Promise<V6.State>): Promise<State> {
           undefined,
           undefined
         ],
+      },
+      arithmancy: {
+        numbers: createArray(9).map(() => undefined),
       },
     }));
 }

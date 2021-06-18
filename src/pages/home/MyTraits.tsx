@@ -70,13 +70,7 @@ function UserTraits({userTraits}: Props) {
       }
       {
         rollModalTrait != null && <RollModal
-          successPercentage={{
-            veryEasy: userTraits[rollModalTrait] * 5,
-            easy: userTraits[rollModalTrait] * 4,
-            normal: userTraits[rollModalTrait] * 3,
-            hard: userTraits[rollModalTrait] * 2,
-            veryHard: userTraits[rollModalTrait] * 1,
-          }}
+          successPercentage={userTraits[rollModalTrait]}
           title={rollModalTrait}
           isCancellable={false}
           onRollEnd={() => { setRollModalTrait(undefined)}}
