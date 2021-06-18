@@ -21,7 +21,7 @@ export function NotesPage() {
               ))
             }
           </div>
-          <div className="pt-4">
+          <div className="flex justify-center w-full pt-4">
             <Button type="primary" onClick={addNote}>Ajouter une note</Button>
           </div>
         </div>
