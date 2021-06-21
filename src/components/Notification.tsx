@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { NotificationService, NotificationType } from '../NotificationService';
 import { useStore } from '../store/useStore';
 import { Button } from './Button';
+import { Icon } from './icons/Icon';
 
 function Notification({ action, message, type }: NotificationType) {
   const icons: Record<NotificationType['type'], React.ReactNode> = {
     success: <div className="flex items-center justify-center w-10 h-10 p-2 bg-green-500 rounded-full shadow-inner">🎉</div>,
     failure: <div className="flex items-center justify-center w-10 h-10 p-2 bg-red-500 rounded-full shadow-inner">😈</div>,
     warning: <div className="flex items-center justify-center w-10 h-10 p-2 bg-yellow-500 rounded-full shadow-inner">⚠️</div>,
+    message: <Icon name="CHARACTER" />
   }
 
   return (

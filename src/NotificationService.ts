@@ -4,7 +4,7 @@ import { State } from './store/State';
 
 export type NotificationType = {
   id: string;
-  type: 'success' | 'failure' | 'warning';
+  type: 'success' | 'failure' | 'warning' | 'message';
   message: string;
   action?: {
     run: () => void;

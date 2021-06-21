@@ -7,11 +7,10 @@ import { useMoney } from './pages/objects/useMoney';
 
 type Props = {
   currentUserName: string
-  children: React.ReactNode,
 }
 
-export function SocketMessageHandler({currentUserName, children}: Props){
-  const { stream } = useSocket();
+function MessageHandler({currentUserName}: Props){
+  const { stream, emit } = useSocket();
   const { add } = useNotification();
   const { addMoney } = useMoney();
 
@@ -32,6 +31,21 @@ export function SocketMessageHandler({currentUserName, children}: Props){
             if(recipient === currentUserName){
               addMoney(amount);
             }
+          },
+          chat: ({ message, recipient, needsConfirmation }, author) => {
+            if(recipient === currentUserName){
+              add({id: `chat_${message}_${author}`, type: 'message', message, action: needsConfirmation ? {
+                run: () => {
+                emit({
+                  type: 'chat',
+                  payload: {
+                    message: 'Bien reçu!',
+                    recipient: author,
+                    needsConfirmation: false,
+                  }
+                })
+              }, label:'OK'} : undefined});
+            }
           }
         }),
       });
@@ -39,10 +53,17 @@ export function SocketMessageHandler({currentUserName, children}: Props){
     return () => {
       subscription.unsubscribe();
     }
-  }, [add, addMoney, currentUserName, stream]);
+  }, [add, addMoney, currentUserName, emit, stream]);
 
   return (
+    <></>
+  )
+}
+
+export function SocketMessageHandler({currentUserName, children}: {currentUserName: string; children: React.ReactNode}){
+  return (
     <>
+      <MessageHandler currentUserName={currentUserName} />
       {children}
     </>
   )

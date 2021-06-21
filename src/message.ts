@@ -37,6 +37,16 @@ const exchangeMoneyDecoder = IO.type({
 });
 type ExchangeMoneyMessage = IO.TypeOf<typeof exchangeMoneyDecoder>;
 
+const chatDecoder = IO.type({
+  type: IO.literal('chat'),
+  payload: IO.type({
+    recipient: IO.string,
+    message: IO.string,
+    needsConfirmation: IO.boolean,
+  })
+});
+type ChatMessage = IO.TypeOf<typeof chatDecoder>;
+
 const messageDecoder = IO.type({
   author: IO.string,
   message: IO.union([
@@ -44,6 +54,7 @@ const messageDecoder = IO.type({
     quitMessageDecoder,
     rollMessageDecoder,
     exchangeMoneyDecoder,
+    chatDecoder,
   ])
 });
 
@@ -54,6 +65,7 @@ export const fold = (currentUserName: string, fns: {
   quit: (payload: QuitMessage['payload'], author: string) => void,
   roll: (payload: RollMessage['payload'], author: string) => void,
   exchangeMoney: (payload: ExchangeMoneyMessage['payload'], author: string) => void,
+  chat: (payload: ChatMessage['payload'], author: string) => void,
 }) => (message: unknown) => pipe(
   message,
   messageDecoder.decode,
@@ -76,6 +88,9 @@ export const fold = (currentUserName: string, fns: {
       }
       if(exchangeMoneyDecoder.is(data.message)) {
         fns.exchangeMoney(data.message.payload, data.author);
+      }
+      if(chatDecoder.is(data.message)) {
+        fns.chat(data.message.payload, data.author);
       }
     }
   )
