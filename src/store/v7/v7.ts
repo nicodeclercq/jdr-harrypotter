@@ -35,6 +35,7 @@ const arithmancyDecoder = IO.type({
 const carthomancyDecoder = IO.type({
   used: IO.array(IO.number),
   visible: IO.array(IO.union([IO.number, IO.undefined, IO.null])),
+  cardsNumber: IO.number,
 });
 const stateDecoder = IO.intersection([
   V6.stateDecoder,
@@ -57,6 +58,7 @@ function update(promise: Promise<V6.State>): Promise<State> {
           undefined,
           undefined
         ],
+        cardsNumber: 3,
       },
       arithmancy: {
         numbers: createArray(9).map(() => undefined),

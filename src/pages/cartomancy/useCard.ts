@@ -1,10 +1,16 @@
 import * as RemoteData from '@devexperts/remote-data-ts';
+import { pipe } from 'fp-ts/lib/function';
 
 import { useStore } from '../../store/useStore';
-import { pipe } from 'fp-ts/lib/function';
+import { createArray } from '../../helpers/array';
 
 export const useCard = () => {
   const { getState, setState } = useStore();
+
+  const getCardsNumber = () => pipe(
+    getState(),
+    RemoteData.map(state => state.carthomancy.cardsNumber),
+  )
 
   const getVisibleCards = () => {
     return pipe(
@@ -65,11 +71,7 @@ export const useCard = () => {
         carthomancy: {
           ...state.carthomancy,
           used: [],
-          visible: [
-            undefined,
-            undefined,
-            undefined,
-          ]
+          visible: createArray(state.carthomancy.cardsNumber).map(() => undefined)
         }
       })),
       setState,
@@ -77,6 +79,7 @@ export const useCard = () => {
   };
 
   return {
+    getCardsNumber,
     getVisibleCards,
     getUsedCards,
     revealCard,

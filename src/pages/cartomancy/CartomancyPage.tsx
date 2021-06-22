@@ -12,17 +12,18 @@ import { values } from '../../helpers/object';
 import { Button } from '../../components/Button';
 
 export function CartomancyPage() {
-  const { getVisibleCards, getUsedCards, shuffleDeck, revealCard, playCard } = useCard();
+  const { getCardsNumber, getVisibleCards, getUsedCards, shuffleDeck, revealCard, playCard } = useCard();
 
   return fromRemoteData(
     pipe(
       sequence({
+        cardsNumber: getCardsNumber(),
         visibleCards: getVisibleCards(),
         usedCards: getUsedCards(),
       }),
-      RemoteData.map(({visibleCards, usedCards}) => {
+      RemoteData.map(({cardsNumber, visibleCards, usedCards}) => {
         const forbidenIndexes = [...values(visibleCards).filter(c => c != null), ...usedCards];
-        const randomValues = getNRandomIndexFromFilteredArray(3, (_, index) => !forbidenIndexes.includes(index), eventCards);
+        const randomValues = getNRandomIndexFromFilteredArray(cardsNumber, (_, index) => !forbidenIndexes.includes(index), eventCards);
 
         return visibleCards
           .map((card, i) =>
