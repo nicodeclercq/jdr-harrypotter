@@ -9,7 +9,7 @@ type Props = {
   currentUserName: string
 }
 
-function MessageHandler({currentUserName}: Props){
+export function SocketMessageHandler({currentUserName}: Props){
   const { stream, emit } = useSocket();
   const { add } = useNotification();
   const { addMoney } = useMoney();
@@ -55,16 +55,5 @@ function MessageHandler({currentUserName}: Props){
     }
   }, [add, addMoney, currentUserName, emit, stream]);
 
-  return (
-    <></>
-  )
-}
-
-export function SocketMessageHandler({currentUserName, children}: {currentUserName: string; children: React.ReactNode}){
-  return (
-    <>
-      <MessageHandler currentUserName={currentUserName} />
-      {children}
-    </>
-  )
+  return (<></>);
 }

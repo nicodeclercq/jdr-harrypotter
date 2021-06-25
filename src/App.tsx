@@ -5,10 +5,11 @@ import { WindowShortcuts } from './WindowShortcuts';
 
 function App() {
   return (
-    <WindowShortcuts>
+    <>
       <Router />
       <NotificationStack />
-    </WindowShortcuts>
+      <WindowShortcuts />
+    </>
   );
 }
 

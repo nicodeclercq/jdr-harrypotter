@@ -90,7 +90,8 @@ export function Router() {
   return pipe(
     getState(),
     state => fromRemoteData(state, (s) => (
-      <SocketMessageHandler currentUserName={s.user.name}>
+      <>
+        <SocketMessageHandler currentUserName={s.user.name} />
         <BrowserRouter>
           <Switch>
             {
@@ -106,7 +107,7 @@ export function Router() {
             }
           </Switch>
         </BrowserRouter>
-      </SocketMessageHandler>
+      </>
     )),
   );
 }

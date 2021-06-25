@@ -1,21 +1,16 @@
-import { pipe } from 'fp-ts/function';
 import React, { useEffect } from 'react';
 import * as RemoteData from '@devexperts/remote-data-ts';
+import { pipe, constVoid } from 'fp-ts/function';
 import { useArithmancy } from './pages/arithmancy/useArithmancy';
 import { useUser } from './pages/home/useUser';
 import { useRune } from './pages/runes/useRune';
 import { ExternalStore } from './store/ExternalStore';
 import { useLocks } from './useLocks';
-import { constVoid } from 'fp-ts/function';
 import { useCallback } from 'react';
 import { random } from './helpers/number';
 import { useSocket } from './useSocket';
 
-type Props = {
-  children: React.ReactNode;
-}
-
-function Shortcuts() {
+export function WindowShortcuts() {
   const { getName } = useUser();
   const { setKnownRunes } = useRune();
   const { setKeys, unlock } = useLocks();
@@ -76,13 +71,4 @@ function Shortcuts() {
   return (
     <></>
   );
-}
-
-export function WindowShortcuts({children}: Props) {
-  return (
-    <>
-    {children}
-    <Shortcuts />
-    </>
-  )
 }

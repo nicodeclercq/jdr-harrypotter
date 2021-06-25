@@ -29,7 +29,7 @@ export function Input ({onChange, type, theme, errors, disabled, messages, width
     base: `${getColor('primary', 200, 'ring')} px-1 border ${getColor('primary', 700, 'border')}  rounded ${getColor('primary', 800, 'placeholder')} ${getColor('primary', 900, 'foreground')} ${getColor('primary', 500)} bg-opacity-50`,
     neutral: 'ring-gray-200 px-1 border border-gray-500 rounded placeholder-gray-600 text-gray-900 bg-gray-200 bg-opacity-50',
     invalid: 'ring-red-200 px-1 border border-red-500 rounded placeholder-red-600 text-red-900 bg-red-200 bg-opacity-50',
-    disabled: 'px-1 rounded bg-white bg-opacity-0',
+    disabled: 'px-1 rounded bg-white bg-opacity-0 overflow-ellipsis',
   }
 
   return (
@@ -38,7 +38,7 @@ export function Input ({onChange, type, theme, errors, disabled, messages, width
         {...rest}
         disabled={disabled}
         type={type}
-        className={`w-full focus:ring-4 ${
+        className={`w-full focus:ring-4 h-7 ${
           errors ? styles.invalid
           : disabled ? styles.disabled
           : styles[theme]}`

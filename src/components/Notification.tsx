@@ -9,7 +9,7 @@ function Notification({ action, message, type }: NotificationType) {
     success: <div className="flex items-center justify-center w-10 h-10 p-2 bg-green-500 rounded-full shadow-inner">🎉</div>,
     failure: <div className="flex items-center justify-center w-10 h-10 p-2 bg-red-500 rounded-full shadow-inner">😈</div>,
     warning: <div className="flex items-center justify-center w-10 h-10 p-2 bg-yellow-500 rounded-full shadow-inner">⚠️</div>,
-    message: <Icon name="CHARACTER" />
+    message: <div className="flex items-center justify-center w-10 h-10 p-2 bg-blue-500 rounded-full shadow-inner"><Icon name="CHARACTER" /></div>
   }
 
   return (
