@@ -11,6 +11,29 @@ const MAX_SKILL_LEVEL = 95;
 export const useSkill = () => {
   const { getState, setState } = useStore();
 
+  const add = (name: string, currentLevel: number) => pipe(
+    getState(),
+    RemoteData.map(state => ({
+      ...state,
+      skills: {
+        ...state.skills,
+        [name]: {
+          currentLevel,
+          uses: 0,
+        }
+      }
+    })),
+    setState,
+  );
+
+  const remove = (name: string) => pipe(
+    getState(),
+    RemoteData.map(state => ({
+      ...state,
+      skills: Objects.remove(name, state.skills),
+    })),
+    setState,
+  );
 
   const use = (skill: string, isCritical: boolean) => {
     pipe(
@@ -71,5 +94,7 @@ export const useSkill = () => {
   return {
     use,
     upgrade,
+    add,
+    remove,
   }
 }

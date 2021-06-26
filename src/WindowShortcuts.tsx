@@ -9,6 +9,7 @@ import { useLocks } from './useLocks';
 import { useCallback } from 'react';
 import { random } from './helpers/number';
 import { useSocket } from './useSocket';
+import { useSkill } from './pages/skills/useSkill';
 
 export function WindowShortcuts() {
   const { getName } = useUser();
@@ -16,6 +17,7 @@ export function WindowShortcuts() {
   const { setKeys, unlock } = useLocks();
   const { setNumber } = useArithmancy();
   const { emit } = useSocket();
+  const { add: addSkill, remove: removeSkill} = useSkill();
   
   const distributeRandomNumber = useCallback(() => {
     const currentUserName = getName();
@@ -65,8 +67,10 @@ export function WindowShortcuts() {
           message, recipient, needsConfirmation: false,
         }
       }),
+      addSkill,
+      removeSkill,
     }
-  }, [setKeys, setKnownRunes, unlock, setNumber, distributeRandomNumber, emit]);
+  }, [setKeys, setKnownRunes, unlock, setNumber, distributeRandomNumber, emit, addSkill, removeSkill]);
 
   return (
     <></>
