@@ -24,7 +24,7 @@ export function Form({state: { traits }, callback}: {state: State,callback: (res
       {} as Record<string, number>
     ),
     resolver: (values: Record<string, number>) => new Promise((resolve, reject) => {
-      if(remainingPoints !== 0){
+      if(remainingPoints < 0){
         const firstEntry = entries(values)[0][0];
         resolve({
           values: {},
