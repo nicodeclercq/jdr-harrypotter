@@ -23,7 +23,7 @@ export function Form({state: { traits }, callback}: {state: State,callback: (res
       }),
       {} as Record<string, number>
     ),
-    resolver: (values: Record<string, number>) => new Promise((resolve, reject) => {
+    resolver: (values: Record<string, number>) => new Promise((resolve) => {
       if(remainingPoints < 0){
         const firstEntry = entries(values)[0][0];
         resolve({
@@ -98,7 +98,7 @@ export function Form({state: { traits }, callback}: {state: State,callback: (res
             }
           </div>
           <div className="space-x-2">
-            <Button onClick="submit" disabled={remainingPoints !== 0} type="primary">Valider</Button>
+            <Button onClick="submit" disabled={remainingPoints < 0} type="primary">Valider</Button>
             <span className={
               remainingPoints < 0
                 ? 'text-red-500'
