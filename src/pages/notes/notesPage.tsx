@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { Layout } from '../../components/Layout';
@@ -10,10 +11,15 @@ import { useNote } from './useNote';
 
 function Notes({notes}: { notes: State['notes']}) {
   const { addNote } = useNote();
+  const [searchQuery, setSearchQuery] = useState('');
   const [displayedNotes, setDisplayedNotes] = useState(notes);
 
+  useEffect(() => {
+    setDisplayedNotes(notes.filter(note => note.title.includes(searchQuery) || note.description.includes(searchQuery)));
+  }, [notes, searchQuery]);
+
   const search = (query: string) => {
-    setDisplayedNotes(notes.filter(note => note.title.includes(query) || note.description.includes(query)));
+    setSearchQuery(query);
   }
 
   return (<div className="space-y-4">
