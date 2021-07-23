@@ -21,7 +21,7 @@ export function Tag({color, title, children}: {color: Color, title: string, chil
     : `${colors[color]} text-${color}-700 border`
 
   return (
-    <span title={title} className={`inline-flex items-center rounded-full px-2 border ${tagColor}`}>
+    <span title={title} className={`inline-flex items-center rounded-full px-2 border ${tagColor} whitespace-nowrap`}>
       <Caption>{children}</Caption>
     </span>
   )

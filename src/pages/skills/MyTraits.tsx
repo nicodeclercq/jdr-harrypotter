@@ -6,7 +6,7 @@ import { RollModal } from '../../components/RollModal';
 import { entries } from '../../helpers/object';
 import { fromRemoteData } from '../../helpers/remoteData';
 import { Trait } from '../../store/State';
-import { useTraits } from './useTraits';
+import { useTraits } from '../home/useTraits';
 
 type Props = {
   userTraits: Record<Trait, number>;
@@ -70,7 +70,7 @@ function UserTraits({userTraits}: Props) {
       }
       {
         rollModalTrait != null && <RollModal
-          successPercentage={userTraits[rollModalTrait]}
+          successPercentage={userTraits[rollModalTrait] * 5}
           title={rollModalTrait}
           isCancellable={false}
           onRollEnd={() => { setRollModalTrait(undefined)}}

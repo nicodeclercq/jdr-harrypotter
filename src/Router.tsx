@@ -13,6 +13,7 @@ import { CartomancyPage } from './pages/cartomancy/CartomancyPage';
 import { HomePage } from './pages/home/HomePage';
 import { NotesPage } from './pages/notes/notesPage';
 import { ObjectsPage } from './pages/objects/ObjectsPage';
+import { PotionsPage } from './pages/potions/potionsPage';
 import { RunesPage } from './pages/runes/RunesPage';
 import { SkillsPage } from './pages/skills/SkillsPage';
 import { SpellsPage } from './pages/spells/SpellsPage';
@@ -71,11 +72,17 @@ export const ROUTES: Record<string, RouteDefinition> = {
     icon: 'NOTEBOOK',
     label: 'Notes',
     Component: NotesPage,
+  },
+  '/potions': {
+    icon: 'CAULDRON',
+    label: 'Potions',
+    Component: PotionsPage,
+    lockKey: 'felix felicis'
   }
 } as const;
 
 const routesDefOrder: Array<keyof typeof ROUTES> = [
-  '/', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/objects', '/notes'
+  '/', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/potions', '/objects', '/notes'
 ];
 
 export const ROUTE_NAMES = keys(ROUTES);

@@ -24,6 +24,15 @@ import { Coin } from './components/coin';
 import { Notebook } from './components/notebook';
 import { Abacus } from './components/abacus';
 import { JigsawBox } from './components/jigsaw-box';
+import { Potion } from './components/potion';
+import { Sword } from './components/sword';
+import { Upgrade } from './components/upgrade';
+import { Shield } from './components/shield';
+import { HeartBottle } from './components/heart-bottle';
+import { Check } from './components/check';
+import { Cross } from './components/cross';
+import { Ingredients } from './components/ingredients';
+import { Cauldron } from './components/cauldron';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -51,6 +60,15 @@ export const ICONS = {
   NOTEBOOK: <Notebook />,
   ABACUS: <Abacus />,
   JIGSAW_BOX: <JigsawBox />,
+  POTION: <Potion />,
+  SWORD: <Sword />,
+  UPGRADE: <Upgrade />,
+  SHIELD: <Shield />,
+  HEART_BOTTLE: <HeartBottle />,
+  CHECK: <Check />,
+  CROSS: <Cross />,
+  INGREDIENTS: <Ingredients />,
+  CAULDRON: <Cauldron />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

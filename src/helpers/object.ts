@@ -41,3 +41,6 @@ export const fromEntries = <A extends string | number | symbol, B>(entries: [A, 
   (acc, [key, value]) => ({...acc , [key]: value}),
   emptyRecord<A, B>()
 );
+
+export type ValueOf<T extends Record< string | number | symbol,unknown>> =  T extends Record<string | number | symbol, infer R> ? R : never;
+export type KeyOf<T extends Record< string | number | symbol,unknown>> =  keyof T;

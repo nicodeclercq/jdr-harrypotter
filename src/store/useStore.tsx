@@ -3,8 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import * as RemoteData from '@devexperts/remote-data-ts';
 
 import { tryCatch } from "../helpers/function";
-import { State } from "./State";
-import { retrieve } from './v7/v7';
+import { State, retrieve } from "./State";
 import { ExternalStore } from "./ExternalStore";
 import { prompt } from "../helpers/io";
 import { NameForm } from "./v1/NameForm";

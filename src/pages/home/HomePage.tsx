@@ -5,7 +5,7 @@ import { Layout } from '../../components/Layout';
 import { useRouter } from '../../useRouter';
 import { MySpells } from '../spells/MySpells';
 import { BestSkills } from '../skills/BestSkills';
-import { MyTraits } from './MyTraits';
+import { MyTraits } from '../skills/MyTraits';
 import { fromRemoteData, sequence } from '../../helpers/remoteData';
 import { State } from '../../store/State';
 import { useStore } from '../../store/useStore';

@@ -37,7 +37,7 @@ const carthomancyDecoder = IO.type({
   visible: IO.array(IO.union([IO.number, IO.undefined, IO.null])),
   cardsNumber: IO.number,
 });
-const stateDecoder = IO.intersection([
+export const stateDecoder = IO.intersection([
   V6.stateDecoder,
   IO.type({
     carthomancy: carthomancyDecoder,
