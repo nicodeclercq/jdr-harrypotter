@@ -100,7 +100,7 @@ export function Potion({ number, emptyBottles, ownedIngredients, potion, isOwned
       {
         displayRollModal && <RollModal
           successPercentage={75}
-          title="Tentative de récupération de la fiole après utilisation"
+          title="Récupération de la fiole après utilisation"
           onRollEnd={onRollEnd}
         />
       }

@@ -9,6 +9,7 @@ import { Tag } from '../../components/Tag';
 import { ingredients } from './potions';
 import { Icon } from '../../components/icons/Icon';
 import { Title } from '../../components/font/Title';
+import { useEffect } from 'react';
 
 type Props = {
   ownedIngredients: {
@@ -28,7 +29,7 @@ type Form = {
 
 export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
   const { setOwnedIngredientsAndBottles } = usePotions();
-  const { handleSubmit, control } = useForm<Form>({
+  const { handleSubmit, control, getValues, setValue } = useForm<Form>({
     defaultValues: {
       ingredients: ingredients.map(ingredient => ({
         name: ingredient.name,
@@ -41,6 +42,19 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
     control,
     name: 'ingredients',
   });
+
+  useEffect(() => {
+    const currentValues = getValues();
+    if(ownedBottles !== currentValues.emptyBottles){
+      setValue('emptyBottles', ownedBottles);
+    }
+    ownedIngredients.forEach((ingredient, index) => {
+      console.log(ingredient.id, ingredient.number, currentValues.ingredients[index]?.number)
+      if(ingredient.number !== currentValues.ingredients[index]?.number){
+        setValue(`ingredients.${index}.number`, ingredient.number);
+      }
+    });
+  }, [ownedIngredients, ownedBottles, getValues, setValue]);
 
   const onSubmit = ({ingredients: newIngredients, emptyBottles}: Form) => {
     setOwnedIngredientsAndBottles(
