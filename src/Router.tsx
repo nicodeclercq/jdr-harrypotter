@@ -1,5 +1,5 @@
-import { pipe } from 'fp-ts/function';
 import React from 'react';
+import { pipe } from 'fp-ts/function';
 import {
   BrowserRouter,
   Switch,
@@ -7,10 +7,11 @@ import {
 } from 'react-router-dom';
 import { IconName } from './components/icons/Icon';
 import { keys } from './helpers/object';
-import { fromRemoteData } from './helpers/remoteData';
+import { fromRemoteData, sequence } from './helpers/remoteData';
 import { ArithmancyPage } from './pages/arithmancy/arithmancyPage';
 import { CartomancyPage } from './pages/cartomancy/CartomancyPage';
 import { HomePage } from './pages/home/HomePage';
+import { useUser } from './pages/home/useUser';
 import { NotesPage } from './pages/notes/notesPage';
 import { ObjectsPage } from './pages/objects/ObjectsPage';
 import { PotionsPage } from './pages/potions/potionsPage';
@@ -19,10 +20,10 @@ import { SkillsPage } from './pages/skills/SkillsPage';
 import { SpellsPage } from './pages/spells/SpellsPage';
 import { SocketMessageHandler } from './SocketMessageHandler';
 import { State } from './store/State';
-import { useStore } from './store/useStore';
+import { useLocks } from './useLocks';
 
 type RouteDefinition = {
-  label: string | ((state: State) => string);
+  label: ((state: State) => string) | string;
   icon: IconName;
   Component: () => React.ReactElement;
   lockKey?: string; 
@@ -87,22 +88,25 @@ const routesDefOrder: Array<keyof typeof ROUTES> = [
 
 export const ROUTE_NAMES = keys(ROUTES);
 
-export const getAvailableRoutes = (state: State) => routesDefOrder
-  .filter((path) => ROUTES[path].lockKey == null || state.lockKeys.includes(ROUTES[path].lockKey as string));
-
+export const getAvailableRoutes = (unlockedKeys: State['lockKeys']) => routesDefOrder
+  .filter((path) => ROUTES[path].lockKey == null || unlockedKeys.includes(ROUTES[path].lockKey as string));
 
 export function Router() {
-  const { getState } = useStore();
+  const { getUnlockedKeys } = useLocks();
+  const { getName } = useUser();
 
   return pipe(
-    getState(),
-    state => fromRemoteData(state, (s) => (
-      <>
-        <SocketMessageHandler currentUserName={s.user.name} />
+    sequence({
+      name: getName(),
+      unlockedKeys: getUnlockedKeys(),
+    }),
+    fromRemoteData(
+      ({name, unlockedKeys}) => <>
+        <SocketMessageHandler currentUserName={name} />
         <BrowserRouter>
           <Switch>
             {
-              getAvailableRoutes(s)
+              getAvailableRoutes(unlockedKeys)
                 .reverse()
                 .map((path) => {
                   const { Component } = ROUTES[path];
@@ -115,6 +119,6 @@ export function Router() {
           </Switch>
         </BrowserRouter>
       </>
-    )),
+    )
   );
 }

@@ -140,7 +140,8 @@ export function MySpells({goTo}: Props) {
 
   const userSpells = getUserSpells();
 
-  return fromRemoteData(
+  return pipe(
     userSpells,
-    (userSpells) => <UserSpells goTo={goTo} userSpells={userSpells} />);
+    fromRemoteData((userSpells) => <UserSpells goTo={goTo} userSpells={userSpells} />)
+  );
 }

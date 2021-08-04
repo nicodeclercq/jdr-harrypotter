@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pipe } from 'fp-ts/function';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { Icon } from '../../components/icons/Icon';
@@ -86,8 +87,8 @@ export function MyTraits() {
 
   const userTraits = getUserTraits();
 
-  return fromRemoteData(
+  return pipe(
     userTraits,
-    (userTraits) => <UserTraits userTraits={userTraits} />
+    fromRemoteData((userTraits) => <UserTraits userTraits={userTraits} />)
   );
 }

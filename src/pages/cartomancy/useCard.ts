@@ -3,19 +3,24 @@ import { pipe } from 'fp-ts/lib/function';
 
 import { useStore } from '../../store/useStore';
 import { createArray } from '../../helpers/array';
+import { useDistinct } from '../../hooks/useDistinct';
+import { equals } from '../../helpers/remoteData';
 
 export const useCard = () => {
   const { getState, setState } = useStore();
+  const distinct = useDistinct(equals);
 
   const getCardsNumber = () => pipe(
     getState(),
     RemoteData.map(state => state.carthomancy.cardsNumber),
+    distinct,
   )
 
   const getVisibleCards = () => {
     return pipe(
       getState(),
       RemoteData.map(state => state.carthomancy.visible),
+      distinct,
     );
   };
 
@@ -23,6 +28,7 @@ export const useCard = () => {
     return pipe(
       getState(),
       RemoteData.map(state => state.carthomancy.used),
+      distinct,
     );
   };
 

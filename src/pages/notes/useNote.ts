@@ -3,15 +3,19 @@ import { v4 as uuid } from 'uuid';
 
 import { useStore } from '../../store/useStore';
 import { pipe } from 'fp-ts/lib/function';
+import { useDistinct } from '../../hooks/useDistinct';
+import { equals } from '../../helpers/remoteData';
 
 
 export const useNote = () => {
   const { getState, setState } = useStore();
+  const distinct = useDistinct(equals);
 
   const getNotes = () => {
     return pipe(
       getState(),
       RemoteData.map(state => state.notes),
+      distinct,
     );
   }
 

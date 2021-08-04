@@ -13,8 +13,9 @@ import { Dice } from './dice/dice';
 import { RollModal } from './RollModal';
 import { Icon, IconName } from './icons/Icon';
 import { useStore } from '../store/useStore';
-import { fromRemoteData } from '../helpers/remoteData';
+import { fromRemoteData, sequence } from '../helpers/remoteData';
 import { State } from '../store/State';
+import { useLocks } from '../useLocks';
 
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName;}) {
   let match = useRouteMatch({
@@ -41,20 +42,25 @@ const displayLabel = (label: string | ((state: State) => string), state: State) 
   if(typeof label === 'string'){
     return label;
   }
+
   return label(state);
 }
 
 export function Layout ({ children }: { children: React.ReactNode }) {
+  const { getUnlockedKeys } = useLocks();
   const { getState } = useStore();
+
   const [rollModal, setRollModal] = useState<Dice[] | undefined>(undefined);
-  const [hoverable] = useHover((hovered: boolean) => 
-    pipe(
-      getState(),
-      s => fromRemoteData(s, (state) => (
+  const [hoverable] = useHover((hovered: boolean) => pipe(
+    sequence({
+      lockKeys: getUnlockedKeys(),
+      state: getState(),
+    }),
+    fromRemoteData(({lockKeys, state}) => (
       <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-blue-500 flex flex-col`}>
         <div className="flex-grow overflow-y-auto divide-y divide-blue-500">
           {
-            getAvailableRoutes(state)
+            getAvailableRoutes(lockKeys)
               .map(path => ({path, ...ROUTES[path]}))
               .map(({path, label, icon}) => ({
                 path,

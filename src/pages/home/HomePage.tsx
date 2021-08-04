@@ -1,5 +1,6 @@
 import React from 'react';
-import {useTitle} from 'react-use';
+import {useTitle} from 'react-use'; 
+import { pipe } from 'fp-ts/lib/function';
 
 import { Layout } from '../../components/Layout';
 import { useRouter } from '../../useRouter';
@@ -42,11 +43,11 @@ export function HomePage(){
   const { getState } = useStore();
   const { isUnlocked } = useLockKey();
 
-  return fromRemoteData(
+  return pipe(
     sequence({
       state: getState(),
       hasSpells: isUnlocked('alohomora'),
     }),
-    ({state, hasSpells}) => <Home state={state} hasSpells={hasSpells} />
+    fromRemoteData(({state, hasSpells}) => <Home state={state} hasSpells={hasSpells} />)
   );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { pipe } from 'fp-ts/function';
 import { useTitle } from 'react-use';
 import { Card } from '../../components/Card';
 import { Layout } from '../../components/Layout';
@@ -11,21 +12,21 @@ export function SkillsPage() {
   useTitle('Compétences');
   const { getState } = useStore();
 
-  return fromRemoteData(
+  return pipe(
     getState(),
-    ({ skills }) => (
+    fromRemoteData(({ skills }) => (
       <Layout>
         <div className="w-full h-full m-3 space-y-2">
           <MyTraits />
           <Card title={(
             <div className="flex space-x-2">
-              <span className="flex-grow">Mes Compétences</span>
+              <span className="flex-grow">Compétences</span>
             </div>)}
           >
             <MySkills showInColumns skills={skills} />
           </Card>
         </div>
       </Layout>
-    )
+    ))
   );
 }

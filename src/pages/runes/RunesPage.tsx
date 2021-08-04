@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pipe } from 'fp-ts/function';
 import { Controller, useForm } from 'react-hook-form';
 import { Input } from '../../components/Input';
 import { Layout } from '../../components/Layout';
@@ -55,36 +56,37 @@ export function RunesPage(){
     setUsedRunes(usedRunes.filter((_, i) => i !== index));
   }
 
-  return fromRemoteData(
+  return pipe(
     sequence({
       runesSignification: getRunesSignification(),
       knownRunes: getKnownRunes(),
     }),
-    ({runesSignification, knownRunes}) => (
-      <Layout>
-        <div className="h-full p-2 space-y-2">
-          <div className="items-center w-full p-2 bg-gray-600 rounded grid grid-flow-col auto-cols-max gap-2" style={{minHeight: '25vh'}}>
-            {
-              usedRunes.map((rune, index) => (
-                <button key={`${rune}_${index}`} onClick={() => removeRune(index)} draggable className="flex flex-col items-center justify-center p-2 text-white bg-gray-400 rounded shadow-md space-x-2">
-                  <span className="text-4xl filter drop-shadow-sm"><Rune name={rune} /></span>
-                  {rune}
-                  <span className="text-xs">{runesSignification[rune] ?? '-'}</span>
-                </button>
-              ))
-            }
-          </div>
-          <div className="overflow-y-scroll grid grid-cols-8 gap-4" style={{maxHeight: '70vh'}}>
-            {
-              keys(RUNES)
-                .filter(rune => knownRunes.includes(rune))
-                .map((rune) => (
-                  <RuneForm key={rune} addRune={() => addRune(rune)} name={rune} signification={runesSignification[rune] ?? ''} />
+    fromRemoteData(
+      ({runesSignification, knownRunes}) => (
+        <Layout>
+          <div className="h-full p-2 space-y-2">
+            <div className="items-center w-full p-2 bg-gray-600 rounded grid grid-flow-col auto-cols-max gap-2" style={{minHeight: '25vh'}}>
+              {
+                usedRunes.map((rune, index) => (
+                  <button key={`${rune}_${index}`} onClick={() => removeRune(index)} draggable className="flex flex-col items-center justify-center p-2 text-white bg-gray-400 rounded shadow-md space-x-2">
+                    <span className="text-4xl filter drop-shadow-sm"><Rune name={rune} /></span>
+                    {rune}
+                    <span className="text-xs">{runesSignification[rune] ?? '-'}</span>
+                  </button>
                 ))
-            }
+              }
+            </div>
+            <div className="overflow-y-scroll grid grid-cols-8 gap-4" style={{maxHeight: '70vh'}}>
+              {
+                keys(RUNES)
+                  .filter(rune => knownRunes.includes(rune))
+                  .map((rune) => (
+                    <RuneForm key={rune} addRune={() => addRune(rune)} name={rune} signification={runesSignification[rune] ?? ''} />
+                  ))
+              }
+            </div>
           </div>
-        </div>
-      </Layout>
-    )
+        </Layout>
+      ))
   )
 }

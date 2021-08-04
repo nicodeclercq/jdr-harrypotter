@@ -5,13 +5,13 @@ import { Potion } from './Potion';
 
 type Props = {
   emptyBottles: number;
-  ownedIngredients: {id: string, number: number}[];
+  ownedIngredients: {name: string, number: number}[];
 }
 
 export function PotionsLibrary({ownedIngredients, emptyBottles}: Props) {
   return (<Card title="Liste des potions" useDividers fullWidth>
     {
-      potions.map(potion => <Potion key={potion.id} potion={potion} emptyBottles={emptyBottles} ownedIngredients={ownedIngredients} />)
+      potions.map(potion => <Potion key={potion.name} potion={potion} emptyBottles={emptyBottles} ownedIngredients={ownedIngredients} />)
     }
   </Card>);
 }

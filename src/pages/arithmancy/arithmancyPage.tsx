@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pipe } from 'fp-ts/function';
 import { Layout } from '../../components/Layout';
 import { RollModal, Interpretation } from '../../components/RollModal';
 import { useArithmancy } from './useArithmancy';
@@ -81,6 +82,8 @@ export function ArithmancyPage() {
   const { getNumbers } = useArithmancy();
   const numbers = getNumbers();
 
-  return fromRemoteData(numbers,
-    numbers => <ArithmancyContent numbers={numbers} />);
+  return pipe(
+    numbers,
+    fromRemoteData(numbers => <ArithmancyContent numbers={numbers} />)
+  );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { pipe } from 'fp-ts/function';
 import { State } from '../../store/State';
 import { Icon } from '../../components/icons/Icon';
 import { Card } from '../../components/Card';
@@ -78,17 +79,18 @@ function LifeForm({current, max}: State['life']) {
 export function Identity({state}: Props){
   const {getUserLife} = useLife();
 
-  return fromRemoteData(
+  return pipe(
     getUserLife(),
-    (life) => <Card>
-      <div className="flex p-2 flex-column space-y-4">
-        <div className="flex flex-row items-center w-full space-x-2">
-          <span className="flex-grow">
-            <Title>{state.user.name}</Title>
-          </span>
-          <LifeForm current={life.current} max={life.max} />
+    fromRemoteData((life) => <Card>
+        <div className="flex p-2 flex-column space-y-4">
+          <div className="flex flex-row items-center w-full space-x-2">
+            <span className="flex-grow">
+              <Title>{state.user.name}</Title>
+            </span>
+            <LifeForm current={life.current} max={life.max} />
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    )
   );
 }

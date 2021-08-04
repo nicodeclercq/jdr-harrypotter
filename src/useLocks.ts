@@ -6,6 +6,13 @@ import { useStore } from './store/useStore';
 export const useLocks = () => {
   const { getState, setState } = useStore();
 
+  const getUnlockedKeys = () => pipe(
+    getState(),
+    RemoteData.map(
+      state => state.lockKeys
+    ),
+  );
+
   const setKeys = (lockKeys: string[]) => pipe(
     getState(),
     RemoteData.map(
@@ -29,6 +36,7 @@ export const useLocks = () => {
   )
 
   return {
+    getUnlockedKeys,
     setKeys,
     unlock,
   }

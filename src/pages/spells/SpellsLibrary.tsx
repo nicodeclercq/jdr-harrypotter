@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useDebounce } from 'react-use';
 import * as RemoteData from '@devexperts/remote-data-ts';
 import { sortBy, filter } from 'fp-ts/Array'
-import { Ord } from 'fp-ts/lib/Ord';
-import { pipe } from 'fp-ts/lib/function';
-import { reverse } from 'fp-ts/lib/ReadonlyArray';
+import { Ord } from 'fp-ts/Ord';
+import { pipe } from 'fp-ts/function';
+import { reverse } from 'fp-ts/ReadonlyArray';
 
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
@@ -89,9 +89,9 @@ export function SpellsLibrary() {
     [search, orderCategory, orderDirection, showKnown, userSpells]
   );
 
-  return fromRemoteData(
-      userSpells,
-      userSpells => (
+  return pipe(
+    userSpells,
+    fromRemoteData(userSpells => (
       <Card useDividers title={(
         <>
         <div className="flex">
@@ -111,7 +111,6 @@ export function SpellsLibrary() {
                   setOrderCategory(orderCategory);
                   setOrderDirection(orderDirection);
                   setShowKnown(showKnown);
-                  console.log(showKnown)
                 }}
               />
               <Tip>
@@ -127,21 +126,21 @@ export function SpellsLibrary() {
         </>
         )}
       >
-          {
-            debouncedSearch
-              .map((spell) => (
-                <Spell
-                  key={spell.id}
-                  spell={spell}
-                  actions={
-                    userSpells[spell.id] ? (<></>) : (
-                    <Button onClick={() => add(spell)} type="secondary">Apprendre +</Button>
-                  )}
-                  roll={() => {}}
-                />
-              ))
-          }
-        </Card>
-    )
+        {
+          debouncedSearch
+            .map((spell) => (
+              <Spell
+                key={spell.id}
+                spell={spell}
+                actions={
+                  userSpells[spell.id] ? (<></>) : (
+                  <Button onClick={() => add(spell)} type="secondary">Apprendre +</Button>
+                )}
+                roll={() => {}}
+              />
+            ))
+        }
+      </Card>
+    ))
   );
 }

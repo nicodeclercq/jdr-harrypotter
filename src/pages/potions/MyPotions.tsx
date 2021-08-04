@@ -7,8 +7,8 @@ import { isDefined } from '../../helpers/nullable';
 
 type Props = {
   emptyBottles: number;
-  cookedPotions: {id: string; number: number}[];
-  ownedIngredients: {id: string; number: number}[];
+  cookedPotions: {name: string; number: number}[];
+  ownedIngredients: {name: string; number: number}[];
 }
 
 export function MyPotions({emptyBottles, cookedPotions, ownedIngredients}: Props) {
@@ -17,11 +17,9 @@ export function MyPotions({emptyBottles, cookedPotions, ownedIngredients}: Props
       {
         cookedPotions.length
           ? cookedPotions
-              .map(potion => ({potion: potions.find(p => p.id === potion.id), number: potion.number}))
+              .map(potion => ({potion: potions.find(p => p.name === potion.name), number: potion.number}))
               .filter(({ potion }) => isDefined(potion))
-              .map(({ potion, number }) => <>
-                {potion && <Potion key={potion.id} number={number} potion={potion} isOwned emptyBottles={emptyBottles} ownedIngredients={ownedIngredients} />}
-              </>)
+              .map(({ potion, number }) => potion && <Potion key={potion.name} number={number} potion={potion} isOwned emptyBottles={emptyBottles} ownedIngredients={ownedIngredients} />)
           : <EmptyContent>
               {{
                 emoji: 'POTION',

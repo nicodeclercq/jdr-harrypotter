@@ -35,7 +35,6 @@ export function MoneyForm({money}: {money: number}){
   });
 
   const onSubmit = ({money: {gallion, mornille, noise}}: {money: {gallion: number, mornille: number, noise: number}}) => {
-    console.log(gallion * CurrencyDivisions.gallion + mornille * CurrencyDivisions.mornille + noise)
     pipe(
       gallion * CurrencyDivisions.gallion + mornille * CurrencyDivisions.mornille + noise,
       setMoney

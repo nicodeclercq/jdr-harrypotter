@@ -16,7 +16,7 @@ import { Caption } from '../../components/font/Caption';
 
 type Props = {
   emptyBottles: number;
-  ownedIngredients: {id: string, number: number}[];
+  ownedIngredients: {name: string, number: number}[];
   potion: PotionType;
   isOwned?: boolean;
   number?: number;
@@ -27,7 +27,7 @@ export function Potion({ number, emptyBottles, ownedIngredients, potion, isOwned
   const { cookPotion, usePotion } = usePotions();
 
   const hasIngredient = (ingredient: string) => ownedIngredients
-    .filter(owned => owned.id === ingredient && owned.number > 0)
+    .filter(owned => owned.name === ingredient && owned.number > 0)
     .length === 1;
   const hasAllIngredients = pipe(
     potion.ingredients.reduce(
@@ -41,9 +41,9 @@ export function Potion({ number, emptyBottles, ownedIngredients, potion, isOwned
       result,
       Interaction.fold({
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        success: () => usePotion(potion.id, true),
+        success: () => usePotion(potion.name, true),
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        failure: () => usePotion(potion.id, false),
+        failure: () => usePotion(potion.name, false),
         canceled: noop,
       }),
       () => setDisplayRollModal(false),
@@ -92,7 +92,7 @@ export function Potion({ number, emptyBottles, ownedIngredients, potion, isOwned
               }
             </div>
             {!isOwned && <div className="self-end">
-              <Button type="secondary" onClick={() => cookPotion(potion.id)}>+ Mijoter</Button></div>}
+              <Button type="secondary" onClick={() => cookPotion(potion.name)}>+ Mijoter</Button></div>}
           </div>,
           actions: isOwned && <Button type="secondary" onClick={() => {setDisplayRollModal(true)}}>+ Utiliser</Button>
         }}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { pipe } from 'fp-ts/function';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { Layout } from '../../components/Layout';
@@ -7,7 +7,6 @@ import { fromRemoteData } from '../../helpers/remoteData';
 import { State } from '../../store/State';
 import { Note } from './Note';
 import { useNote } from './useNote';
-
 
 function Notes({notes}: { notes: State['notes']}) {
   const { addNote } = useNote();
@@ -44,13 +43,14 @@ function Notes({notes}: { notes: State['notes']}) {
 export function NotesPage() {
   const { getNotes } = useNote();
 
-  return fromRemoteData(
+  return pipe(
     getNotes(),
-    (notes) => (
-    <Layout>
-      <div className="w-full h-full">
-        <Notes notes={notes} />
-      </div>
-    </Layout>
-  ))
+    fromRemoteData((notes) => (
+      <Layout>
+        <div className="w-full h-full">
+          <Notes notes={notes} />
+        </div>
+      </Layout>
+    ))
+  )
 }

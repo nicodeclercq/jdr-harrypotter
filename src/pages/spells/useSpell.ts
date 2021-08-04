@@ -6,6 +6,8 @@ import { useStore } from '../../store/useStore';
 import { Spell, getSpellCost, Element } from './domain/Spell';
 import * as Objects from '../../helpers/object';
 import * as Interaction from '../../helpers/interaction';
+import { useDistinct } from '../../hooks/useDistinct';
+import { equals } from '../../helpers/remoteData';
 
 const rawElementPoints = {
   Air: 0,
@@ -92,6 +94,7 @@ const removeSpellsPoints = (cost: Record<Element, number>, state: State): State 
 
 export const useSpell = () => {
   const { getState, setState } = useStore();
+  const distinct = useDistinct(equals);
 
   const add = (spell: Spell) => {
     const cost = getSpellCost(spell);
@@ -206,6 +209,7 @@ export const useSpell = () => {
     return pipe(
       getState(),
       RemoteData.map(state => state.userSpells),
+      distinct,
     );
   }
 

@@ -7,7 +7,7 @@ import * as LastState from '../v7/v7';
 const version = 'V8';
 
 const itemDecoder = IO.type({
-  id: IO.string,
+  name: IO.string,
   number: IO.number,
 });
 
@@ -17,11 +17,17 @@ const potionsDecoder = IO.type({
   ingredients: IO.array(itemDecoder),
 });
 
+const roleDecoder = IO.union([
+  IO.literal('MJ'),
+  IO.literal('Player'),
+]);
+
 export const stateDecoder = IO.intersection([
   LastState.stateDecoder,
   IO.type({
     potions: potionsDecoder,
-  })
+    role: roleDecoder,
+  }),
 ]);
 
 export type State = IO.TypeOf<typeof stateDecoder>;
@@ -34,7 +40,8 @@ function update(promise: Promise<LastState.State>): Promise<State> {
         cookedPotions: [],
         emptyBottles: 0,
         ingredients: [],
-      }
+      },
+      role: 'Player',
     }));
 }
 

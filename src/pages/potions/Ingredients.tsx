@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 
 type Props = {
   ownedIngredients: {
-    id: string,
+    name: string,
     number: number,
   }[],
   ownedBottles: number,
@@ -33,7 +33,7 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
     defaultValues: {
       ingredients: ingredients.map(ingredient => ({
         name: ingredient.name,
-        number: ownedIngredients.find(owned => owned.id === ingredient.name)?.number ?? 0
+        number: ownedIngredients.find(owned => owned.name === ingredient.name)?.number ?? 0
       })),
       emptyBottles: ownedBottles,
     },
@@ -49,7 +49,6 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
       setValue('emptyBottles', ownedBottles);
     }
     ownedIngredients.forEach((ingredient, index) => {
-      console.log(ingredient.id, ingredient.number, currentValues.ingredients[index]?.number)
       if(ingredient.number !== currentValues.ingredients[index]?.number){
         setValue(`ingredients.${index}.number`, ingredient.number);
       }
@@ -60,7 +59,7 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
     setOwnedIngredientsAndBottles(
       newIngredients
         .map(({number}, i) => ({
-          id: ingredients[i].name,
+          name: ingredients[i].name,
           number,
         }))
         .filter(({number}) => number > 0),

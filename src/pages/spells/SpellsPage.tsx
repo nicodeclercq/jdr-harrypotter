@@ -1,4 +1,5 @@
 import React from 'react';
+import { pipe } from 'fp-ts/function';
 import { useTitle } from 'react-use';
 
 import { Layout } from '../../components/Layout';
@@ -12,9 +13,9 @@ export function SpellsPage() {
   useTitle('Sorts');
   const { getState } = useStore();
 
-  return fromRemoteData(
+  return pipe(
     getState(),
-    () => (
+    fromRemoteData(() => (
       <Layout>
         <div className="w-1/2 h-full m-3">
           <SpellsLibrary />
@@ -23,6 +24,6 @@ export function SpellsPage() {
           <MySpells />
         </div>
       </Layout>
-    )
+    ))
   );
 }

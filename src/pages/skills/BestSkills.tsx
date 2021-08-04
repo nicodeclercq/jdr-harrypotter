@@ -1,5 +1,5 @@
 import React from 'react';
-import { flow } from 'fp-ts/function';
+import { pipe, flow } from 'fp-ts/function';
 import * as Record from 'fp-ts/Record';
 
 import { fromRemoteData } from '../../helpers/remoteData';
@@ -14,8 +14,9 @@ export function BestSkills() {
   const { goTo } = useRouter();
   const { getState } = useStore();
 
-  return  fromRemoteData(
+  return  pipe(
     getState(),
+    fromRemoteData(
     flow(
       ({skills}: State) => skills,
       Record.toArray,
@@ -42,6 +43,6 @@ export function BestSkills() {
           </div>
         </Card>
       )
-    )
+    ))
   );
 }
