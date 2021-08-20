@@ -33,6 +33,8 @@ import { Check } from './components/check';
 import { Cross } from './components/cross';
 import { Ingredients } from './components/ingredients';
 import { Cauldron } from './components/cauldron';
+import { Sleepy } from './components/sleepy';
+import { Halt } from './components/halt';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -69,6 +71,8 @@ export const ICONS = {
   CROSS: <Cross />,
   INGREDIENTS: <Ingredients />,
   CAULDRON: <Cauldron />,
+  SLEEPY: <Sleepy />,
+  HALT: <Halt />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

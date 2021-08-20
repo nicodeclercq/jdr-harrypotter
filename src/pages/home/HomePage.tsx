@@ -20,20 +20,20 @@ function Home ({state, hasSpells}: { state: State, hasSpells: boolean}) {
   useTitle(`${state.user.name} - ${state.life.current}/${state.life.max} ♥`);
 
   return (
-    <Layout>
-      <div className="w-1/2 h-full m-3 space-y-4">
-        <Identity state={state} />
-        <MyTraits />
-        <BestSkills />
-      </div>
-      <div className="w-1/2 h-full m-3 space-y-4">
-        {
-          hasSpells && <MySpells goTo={() => goTo('/spells')} />
-        }
-        <MoneyForm money={state.money} />
-        <ObjectsForm objects={state.objects} columns={2} maxDisplayed={6} />
-      </div>
-    </Layout>
+      <Layout>
+        <div className="w-1/2 h-full m-3 space-y-4">
+          <Identity state={state} />
+          <MyTraits />
+          <BestSkills />
+        </div>
+        <div className="w-1/2 h-full m-3 space-y-4">
+          {
+            hasSpells && <MySpells goTo={() => goTo('/spells')} />
+          }
+          <MoneyForm money={state.money} />
+          <ObjectsForm objects={state.objects} columns={2} maxDisplayed={6} />
+        </div>
+      </Layout>
   );
 }
 

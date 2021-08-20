@@ -16,6 +16,7 @@ import { useStore } from '../store/useStore';
 import { fromRemoteData, sequence } from '../helpers/remoteData';
 import { State } from '../store/State';
 import { useLocks } from '../useLocks';
+import { QuickActions } from '../pages/home/QuickActions';
 
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName;}) {
   let match = useRouteMatch({
@@ -104,6 +105,7 @@ export function Layout ({ children }: { children: React.ReactNode }) {
           dices={rollModal}
         />
       }
+      <QuickActions />
     </>
   );
 }

@@ -33,7 +33,7 @@ export function Input ({onChange, type, theme, errors, disabled, messages, width
   }
 
   return (
-    <div className="inline-flex flex-col" style={width ? {width} : {width: 'min-content'}}>
+    <div className="inline-flex flex-col" style={width ? {width} : {width: 'min-content', minWidth: '10rem', maxWidth: '100%'}}>
       <input
         {...rest}
         disabled={disabled}

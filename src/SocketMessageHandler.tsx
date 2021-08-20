@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
+import { pipe, constVoid } from 'fp-ts/function';
+import * as RemoteData from '@devexperts/remote-data-ts';
 
 import { useNotification } from './components/Notification';
 import { fold } from './message';
 import { useSocket } from './useSocket';
 import { useMoney } from './pages/objects/useMoney';
+import { useRole } from './useRole';
 
 type Props = {
   currentUserName: string
@@ -13,6 +16,7 @@ export function SocketMessageHandler({currentUserName}: Props){
   const { stream, emit } = useSocket();
   const { add } = useNotification();
   const { addMoney } = useMoney();
+  const { isMJ } = useRole();
 
   useEffect(() => {
     const subscription = stream
@@ -46,14 +50,35 @@ export function SocketMessageHandler({currentUserName}: Props){
                 })
               }, label:'OK'} : undefined});
             }
-          }
+          },
+          alert: ({type}, author) => {
+            console.log('YOUPI', type, author)
+            if(type === 'playerIsAsleep') {
+              pipe(
+                isMJ(),
+                RemoteData.fold(
+                  constVoid,
+                  constVoid,
+                  constVoid,
+                  (isCurrentUserMJ) => {
+                    if(isCurrentUserMJ){
+                      add({id: `sleepy_${author}`, type: 'message', message: `${author} s'ennuie`});
+                    }
+                  },
+                )
+              );
+            }
+            if(type === 'playerNeedsPause'){
+              add({id: `halt_${author}`, type: 'message', message: `${author} veut faire une pause`});
+            }
+          },
         }),
       });
 
     return () => {
       subscription.unsubscribe();
     }
-  }, [add, addMoney, currentUserName, emit, stream]);
+  }, [add, addMoney, currentUserName, isMJ, emit, stream]);
 
   return (<></>);
 }
