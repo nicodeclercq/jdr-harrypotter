@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 import { Icon, IconName } from '../../components/icons/Icon';
@@ -12,9 +13,60 @@ type Props = {
 }
 
 function QuickButton ({onClick, icon, color, background}: Props) {
-  return <button style={{borderColor: 'currentcolor', boxShadow: '0.0625rem 0.0625rem 1rem 0.0625rem rgba(0,0,0,0.5)'}} className={`transform duration-200 hover:-translate-y-2 hover:z-10 hover:scale-150 opacity-75 hover:opacity-100 flex justify-center items-center border-solid border-2 p-3 text-4xl rounded-full h-12 w-12 ${color} ${background}`} onClick={onClick}>
-    <Icon name={icon} />
-  </button>
+  const [isClicked, setIsClicked] = useState(false);
+  const [isShown, setIsShown] = useState(true);
+
+  useEffect(() => {
+    if(isClicked){
+      const timeout = setTimeout(() => {
+        setIsShown(false);
+        setIsClicked(false);
+      }, 1000);
+
+      return () => clearTimeout(timeout);
+    }
+
+  }, [isClicked]);
+
+  useEffect(() => {
+    if(!isShown){
+      const timeout = setTimeout(() => {
+        setIsShown(true);
+      }, 1000);
+
+      return () => clearTimeout(timeout);
+    }
+
+  }, [isShown]);
+  return (
+    <>
+      <div
+        style={{
+          position: 'fixed',
+          top: '0',
+          left: '50%',
+          display: isShown ? 'block' : 'none',
+          transition: 'all 1s ease-out',
+          transform: isClicked ? 'scale(1)' : 'scale(800)',
+          opacity: isClicked ? 1 : 0,
+          pointerEvents: 'none'
+        }}
+        className={color}
+      >
+        <Icon name={icon} />
+      </div>
+      <button
+        style={{borderColor: 'currentcolor', boxShadow: '0.0625rem 0.0625rem 1rem 0.0625rem rgba(0,0,0,0.5)'}}
+        className={`transform duration-200 hover:-translate-y-2 hover:z-10 hover:scale-150 opacity-75 hover:opacity-100 flex justify-center items-center border-solid border-2 p-3 text-4xl rounded-full h-12 w-12 ${color} ${background}`}
+        onClick={() => {
+          setIsClicked(true);
+          onClick();
+        }}
+      >
+        <Icon name={icon} />
+      </button>
+    </>
+  );
 }
 
 export function QuickActions() {
