@@ -1,33 +1,13 @@
-import * as RemoteData from '@devexperts/remote-data-ts';
+import { lens } from '../../helpers/object';
+import { useStore } from '../../hooks/useStore';
+import { State } from '../../store/State';
 
-import { useStore } from '../../store/useStore';
-import { pipe } from 'fp-ts/lib/function';
-import { useDistinct } from '../../hooks/useDistinct';
-import { equals } from '../../helpers/remoteData';
-
+const objectsLens = lens<State, 'objects'>('objects');
 
 export const useObjects = () => {
-  const { getState, setState } = useStore();
-  const distinct = useDistinct(equals);
+  const [objects, setObjects] = useStore(objectsLens);
 
-  const getObjects = () => {
-    return pipe(
-      getState(),
-      RemoteData.map(state => state.objects),
-      distinct,
-    );
-  }
-
-  const setObjects = (objects: Record<string, number>) => {
-    return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        objects
-      })),
-      setState,
-    );
-  }
+  const getObjects = () => objects;
 
   return {
     getObjects,

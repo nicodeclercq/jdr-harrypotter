@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
 import { BehaviorSubject } from 'rxjs';
 import * as RemoteData from '@devexperts/remote-data-ts';
 
 import { tryCatch } from "../helpers/function";
-import { State, retrieve } from "./State";
-import { ExternalStore } from "./ExternalStore";
 import { prompt } from "../helpers/io";
-import { NameForm } from "./v1/NameForm";
+import { State, retrieve } from "../store/State";
+import { ExternalStore } from "../store/ExternalStore";
+import { NameForm } from "../store/v1/NameForm";
 
 type StateDTO = {
   state: unknown,
   name: string | undefined;
 };
 
-const retrieveState = (): Promise<State> => 
+export const subject = new BehaviorSubject<RemoteData.RemoteData<Error, State>>(RemoteData.initial);
+
+
+export const retrieveState = (): Promise<State> => 
   Promise.resolve(window.localStorage.getItem('state'))
     .then((currentState) => tryCatch(
       () => JSON.parse(currentState || ''),
@@ -43,36 +45,3 @@ const retrieveState = (): Promise<State> =>
         : {state, name: undefined};
     })
     .then(({state, name}) => retrieve(state, name));
-
-const subject = new BehaviorSubject<RemoteData.RemoteData<Error, State>>(RemoteData.initial);
-
-export const useStore = () => {
-  const [state, setState] = useState<RemoteData.RemoteData<Error, State>>(subject.value);
-
-  const setNewState = (newState: RemoteData.RemoteData<Error, State>) => {
-    if(RemoteData.isSuccess(newState)){
-      window.localStorage.setItem('state', JSON.stringify(newState.value));
-      ExternalStore.update(newState.value.user.name, newState.value)
-        .catch((error) => console.error('Unable to save remotely', error));
-    }
-    subject.next(newState);
-  }
-
-  useEffect(() => {
-    const subscription = subject.subscribe({next: (value) => {
-      setState(value);
-    }});
-
-    if(RemoteData.isInitial(subject.value)){
-      retrieveState()
-        .then((currentState) => setNewState(RemoteData.success(currentState)));
-    }
-
-    return () => subscription.unsubscribe();
-  },[]);
-
-  return {
-    getState: () => state,
-    setState: setNewState
-  };
-}

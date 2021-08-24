@@ -1,27 +1,32 @@
 /* eslint-disable no-restricted-globals */
 import { pipe } from "fp-ts/function";
 import * as RemoteData from '@devexperts/remote-data-ts';
-import { useStore } from './store/useStore';
+import { useStore } from './useStore';
+import { State } from "../store/State";
+import { lens } from "../helpers/object";
+
+const roleLens = lens<State, 'role'>('role');
 
 export const useRole = () => {
-  const { getState } = useStore();
+  const [role, setRole] = useStore(roleLens);
 
   const isMJ = () => pipe(
-    getState(),
+    role,
     RemoteData.map(
-      state => state.role === 'MJ'
+      role => role === 'MJ'
     ),
   );
 
   const isPlayer = () => pipe(
-    getState(),
+    role,
     RemoteData.map(
-      state => state.role === 'MJ'
+      role => role === 'Player'
     ),
   );
 
   return {
     isMJ,
     isPlayer,
+    setRole,
   }
 };

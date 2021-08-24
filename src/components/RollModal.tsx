@@ -9,7 +9,7 @@ import { Caption } from './font/Caption';
 import { Comment } from './font/Comment';
 import * as Interaction from '../helpers/interaction';
 import { Dice } from './dice/dice';
-import { useSocket } from '../useSocket';
+import { useSocket } from '../hooks/useSocket';
 
 export type Interpretation = {
   predicate: (value:number, percentage: number) => boolean;

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { NotificationService, NotificationType } from '../NotificationService';
-import { useStore } from '../store/useStore';
+import { useStore } from '../hooks/useStore';
 import { Button } from './Button';
 import { Icon } from './icons/Icon';
+import { identity } from 'fp-ts/function';
+import { State } from '../store/State';
 
 function Notification({ action, message, type }: NotificationType) {
   const icons: Record<NotificationType['type'], React.ReactNode> = {
@@ -30,9 +32,10 @@ export const useNotification = () => {
 export function NotificationStack(){
   const { remove, subject } = NotificationService;
   const [stack, setStack] = useState(subject.value);
-  const { getState } = useStore();
-
-  const state = getState();
+  const [state] = useStore([
+    identity,
+    (state: State, newState: State) => newState,
+  ]);
 
   useEffect(() => {
     const subscription = subject.subscribe((value) => {

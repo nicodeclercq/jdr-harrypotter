@@ -44,3 +44,15 @@ export const fromEntries = <A extends string | number | symbol, B>(entries: [A, 
 
 export type ValueOf<T extends Record< string | number | symbol,unknown>> =  T extends Record<string | number | symbol, infer R> ? R : never;
 export type KeyOf<T extends Record< string | number | symbol,unknown>> =  keyof T;
+
+export const getProperty = <T, K extends keyof T>(o: T, propertyName: K) => o[propertyName];
+export const setProperty = <T, K extends keyof T>(o: T, propertyName: K) => (newValue: T[K]) => ({
+  ...o,
+  [propertyName]: newValue,
+});
+export const lens = <T, K extends keyof T>(propertyName: K) => [
+  (o: T) => getProperty(o, propertyName),
+  (o: T, newValue: T[K]) => setProperty(o, propertyName)(newValue),
+] as [(o: T) => T[K], (o: T, newValue: T[K]) => T];
+
+export type Lens<T, K extends keyof T> = (propertyName: K) => [(o: T) => T[K], (o: T, newValue: T[K]) => T];

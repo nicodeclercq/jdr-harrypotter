@@ -9,7 +9,6 @@ import { ObjectsForm } from './ObjectsForm';
 import { useMoney } from './useMoney';
 import { useObjects } from './useObjects';
 
-
 export function ObjectsPage(){
   useTitle('Objets');
   const { getObjects } = useObjects();

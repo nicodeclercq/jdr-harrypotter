@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { pipe, constVoid } from 'fp-ts/function';
+import { pipe } from 'fp-ts/function';
 import { BehaviorSubject } from 'rxjs';
-import * as RemoteData from '@devexperts/remote-data-ts';
 import { io } from 'socket.io-client';
 
-import { useUser } from './pages/home/useUser';
-import { Message } from './message';
+import { useUser } from '../pages/home/useUser';
+import { Message } from '../message';
+import { onSuccess } from '../helpers/remoteData';
 
 const DEFAULT_AUTHOR = 'Unknown';
 const DOMAIN = 'https://jdr-harrypotter-back.herokuapp.com/';
@@ -33,16 +33,12 @@ window.addEventListener('beforeunload', () => {
 });
 
 export const useSocket = () =>{
-  const { getName } = useUser();
-  const name = getName();
+  const { name } = useUser();
 
   useEffect(
     () => pipe(
       name,
-      RemoteData.fold(
-        constVoid,
-        constVoid,
-        constVoid,
+      onSuccess(
         (name) => {
           if (author !== name) {
             if(author === DEFAULT_AUTHOR) {
@@ -58,7 +54,7 @@ export const useSocket = () =>{
         }
       )
     ),
-    [getName, name]
+    [name]
   );
 
   return {

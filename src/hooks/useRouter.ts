@@ -1,10 +1,11 @@
 /* eslint-disable no-restricted-globals */
 import { useHistory } from 'react-router';
-import { entries } from './helpers/object';
-import { ROUTE_NAMES } from './Router';
+import { entries } from '../helpers/object';
+import { ROUTE_NAMES } from '../Router';
 
 export const useRouter = () => {
   const history = useHistory();
+
   const goTo = (path: string) => {
     if (!ROUTE_NAMES.includes(path)) {
       throw new Error(`Unknown route name "${path}"`);

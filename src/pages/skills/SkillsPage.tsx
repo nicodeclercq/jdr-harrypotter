@@ -4,17 +4,17 @@ import { useTitle } from 'react-use';
 import { Card } from '../../components/Card';
 import { Layout } from '../../components/Layout';
 import { fromRemoteData } from '../../helpers/remoteData';
-import { useStore } from '../../store/useStore';
 import { MySkills } from './MySkills';
 import { MyTraits } from './MyTraits';
+import { useSkill } from './useSkill';
 
 export function SkillsPage() {
   useTitle('Compétences');
-  const { getState } = useStore();
+  const { getSkills } = useSkill();
 
   return pipe(
-    getState(),
-    fromRemoteData(({ skills }) => (
+    getSkills(),
+    fromRemoteData((skills) => (
       <Layout>
         <div className="w-full h-full m-3 space-y-2">
           <MyTraits />

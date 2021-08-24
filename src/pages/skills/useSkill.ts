@@ -1,47 +1,46 @@
 import * as RemoteData from '@devexperts/remote-data-ts';
 import { pipe } from 'fp-ts/function';
 
-import { useStore } from '../../store/useStore';
+import { useStore } from '../../hooks/useStore';
 import * as Objects from '../../helpers/object';
 import * as Interaction from '../../helpers/interaction';
+import { State } from '../../store/State';
+import { onSuccess } from '../../helpers/remoteData';
 
 export const MIN_USE_FOR_UPGRADE = 5;
 const MAX_SKILL_LEVEL = 95;
 
+const skillsLens = Objects.lens<State, 'skills'>('skills');
+
 export const useSkill = () => {
-  const { getState, setState } = useStore();
+  const [skills, setSkills] = useStore(skillsLens);
+
+  const getSkills = () => skills;
 
   const add = (name: string, currentLevel: number) => pipe(
-    getState(),
-    RemoteData.map(state => ({
-      ...state,
-      skills: {
-        ...state.skills,
-        [name]: {
-          currentLevel,
-          uses: 0,
-        }
+    skills,
+    RemoteData.map(skills => ({
+      ...skills,
+      [name]: {
+        currentLevel,
+        uses: 0,
       }
     })),
-    setState,
+    onSuccess(setSkills),
   );
 
   const remove = (name: string) => pipe(
-    getState(),
-    RemoteData.map(state => ({
-      ...state,
-      skills: Objects.remove(name, state.skills),
-    })),
-    setState,
+    skills,
+    RemoteData.map(skills => 
+      Objects.remove(name, skills)
+    ),
+    onSuccess(setSkills),
   );
 
   const use = (skill: string, isCritical: boolean) => {
     pipe(
-      getState(),
-      RemoteData.map(state => {
-        return {
-          ...state,
-          skills: Objects.map(
+      skills,
+      RemoteData.map(skills => Objects.map(
             ({currentLevel, uses}, key) =>
               key === skill && uses < MIN_USE_FOR_UPGRADE
                 ? {
@@ -52,46 +51,43 @@ export const useSkill = () => {
                   currentLevel,
                   uses
                 },
-            state.skills
+            skills
           ),
-        };
-      }),
-      setState,
+      ),
+      onSuccess(setSkills),
     );
   }
 
   const upgrade = (skill: string, result: Interaction.Interaction<never, number>) => {
     pipe(
-      getState(),
-      RemoteData.map(state => {
-        const currentLevel = state.skills[skill].currentLevel;
+      skills,
+      RemoteData.map(skills => {
+        const currentLevel = skills[skill].currentLevel;
         const nextLevel = pipe(
           result,
           Interaction.fold({
-            success: (points) => state.skills[skill].currentLevel + points < MAX_SKILL_LEVEL
+            success: (points) => skills[skill].currentLevel + points < MAX_SKILL_LEVEL
               ? currentLevel + points
               : MAX_SKILL_LEVEL,
-            failure: () => state.skills[skill].currentLevel,
-            canceled: () => state.skills[skill].currentLevel,
+            failure: () => skills[skill].currentLevel,
+            canceled: () => skills[skill].currentLevel,
           })
         );
 
         return {
-          ...state,
-          skills: {
-            ...state.skills,
-            [skill]: {
-              uses: Interaction.isCanceled(result) ? state.skills[skill].uses : 0,
-              currentLevel: nextLevel,
-            },
+          ...skills,
+          [skill]: {
+            uses: Interaction.isCanceled(result) ? skills[skill].uses : 0,
+            currentLevel: nextLevel,
           },
         };
       }),
-      setState,
+      onSuccess(setSkills),
     );
   }
 
   return {
+    getSkills,
     use,
     upgrade,
     add,

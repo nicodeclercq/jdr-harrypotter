@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import {useHover} from 'react-use';
-import { pipe } from 'fp-ts/function';
+import { identity, pipe } from 'fp-ts/function';
 
 import { getAvailableRoutes, ROUTES } from '../Router';
 import { getColor } from '../theme';
@@ -12,10 +12,10 @@ import { D6 } from './dice/D6';
 import { Dice } from './dice/dice';
 import { RollModal } from './RollModal';
 import { Icon, IconName } from './icons/Icon';
-import { useStore } from '../store/useStore';
+import { useStore } from '../hooks/useStore';
 import { fromRemoteData, sequence } from '../helpers/remoteData';
 import { State } from '../store/State';
-import { useLocks } from '../useLocks';
+import { useLockKey } from '../hooks/useLockKey';
 import { QuickActions } from '../pages/home/QuickActions';
 
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName;}) {
@@ -48,14 +48,17 @@ const displayLabel = (label: string | ((state: State) => string), state: State) 
 }
 
 export function Layout ({ children }: { children: React.ReactNode }) {
-  const { getUnlockedKeys } = useLocks();
-  const { getState } = useStore();
+  const { lockKeys } = useLockKey();
+  const [state] = useStore([
+    identity,
+    (state: State, newState: State) => newState,
+  ]);
 
   const [rollModal, setRollModal] = useState<Dice[] | undefined>(undefined);
   const [hoverable] = useHover((hovered: boolean) => pipe(
     sequence({
-      lockKeys: getUnlockedKeys(),
-      state: getState(),
+      lockKeys,
+      state,
     }),
     fromRemoteData(({lockKeys, state}) => (
       <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-blue-500 flex flex-col`}>

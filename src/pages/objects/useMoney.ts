@@ -1,42 +1,21 @@
-import * as RemoteData from '@devexperts/remote-data-ts';
+import { pipe } from 'fp-ts/function';
 
-import { useStore } from '../../store/useStore';
-import { pipe } from 'fp-ts/lib/function';
-import { useDistinct } from '../../hooks/useDistinct';
-import { equals } from '../../helpers/remoteData';
+import { useStore } from '../../hooks/useStore';
+import { onSuccess } from '../../helpers/remoteData';
+import { State } from '../../store/State';
+import { lens } from '../../helpers/object';
 
+const moneyLens = lens<State, 'money'>('money');
 
 export const useMoney = () => {
-  const { getState, setState } = useStore();
-  const distinct = useDistinct(equals);
+  const [money, setMoney] = useStore(moneyLens);
 
-  const getMoney = () => {
-    return pipe(
-      getState(),
-      RemoteData.map(state => state.money),
-      distinct
-    );
-  }
+  const getMoney = () => money;
 
-  const setMoney = (money: number) => {
+  const addMoney = (newMoney: number) => {
     return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        money
-      })),
-      setState,
-    );
-  }
-
-  const addMoney = (money: number) => {
-    return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        money: state.money + money,
-      })),
-      setState,
+      money,
+      onSuccess((money) => setMoney(money + newMoney)),
     );
   }
 

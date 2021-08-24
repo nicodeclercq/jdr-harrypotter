@@ -1,86 +1,73 @@
 import * as RemoteData from '@devexperts/remote-data-ts';
 import { pipe } from 'fp-ts/lib/function';
 
-import { useStore } from '../../store/useStore';
+import { useStore } from '../../hooks/useStore';
 import { createArray } from '../../helpers/array';
-import { useDistinct } from '../../hooks/useDistinct';
-import { equals } from '../../helpers/remoteData';
+import { State } from '../../store/State';
+import { onSuccess } from '../../helpers/remoteData';
+import { lens } from '../../helpers/object';
+
+const carthomancyLens = lens<State, 'carthomancy'>('carthomancy');
 
 export const useCard = () => {
-  const { getState, setState } = useStore();
-  const distinct = useDistinct(equals);
+  const [carthomancy, setCarthomancy ] = useStore(carthomancyLens);
 
   const getCardsNumber = () => pipe(
-    getState(),
-    RemoteData.map(state => state.carthomancy.cardsNumber),
-    distinct,
+    carthomancy,
+    RemoteData.map(({cardsNumber}) => cardsNumber),
   )
 
   const getVisibleCards = () => {
     return pipe(
-      getState(),
-      RemoteData.map(state => state.carthomancy.visible),
-      distinct,
+      carthomancy,
+      RemoteData.map(({visible}) => visible),
     );
   };
 
   const getUsedCards = () => {
     return pipe(
-      getState(),
-      RemoteData.map(state => state.carthomancy.used),
-      distinct,
+      carthomancy,
+      RemoteData.map(({used}) => used),
     );
   };
 
   const revealCard = (selected: number, index: number) => {
     return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        carthomancy: {
-          ...state.carthomancy,
-          visible: state.carthomancy.visible.map((v, i) =>
-            i === selected
-              ? index
-              : v
-          ),
-        }
+      carthomancy,
+      onSuccess(carthomancy => setCarthomancy({
+        ...carthomancy,
+        visible: carthomancy.visible.map((v, i) =>
+          i === selected
+            ? index
+            : v
+        ),
       })),
-      setState,
     )
   };
 
   const playCard = (selected: number, index: number) => {
     return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        carthomancy: {
-          ...state.carthomancy,
-          visible: state.carthomancy.visible.map((v, i) =>
+      carthomancy,
+      onSuccess(carthomancy => setCarthomancy({
+          ...carthomancy,
+          visible: carthomancy.visible.map((v, i) =>
             i === selected
               ? undefined
               : v
           ),
-          used: [...state.carthomancy.used, index],
-        }
+          used: [...carthomancy.used, index],
       })),
-      setState,
     )
   };
 
   const shuffleDeck = () => {
     return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        carthomancy: {
-          ...state.carthomancy,
+      carthomancy,
+      onSuccess((carthomancy => setCarthomancy({
+          ...carthomancy,
           used: [],
-          visible: createArray(state.carthomancy.cardsNumber).map(() => undefined)
-        }
-      })),
-      setState,
+          visible: createArray(carthomancy.cardsNumber).map(() => undefined)
+      }))),
     )
   };
 

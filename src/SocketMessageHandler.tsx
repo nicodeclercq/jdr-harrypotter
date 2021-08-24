@@ -4,9 +4,9 @@ import * as RemoteData from '@devexperts/remote-data-ts';
 
 import { useNotification } from './components/Notification';
 import { fold } from './message';
-import { useSocket } from './useSocket';
+import { useSocket } from './hooks/useSocket';
 import { useMoney } from './pages/objects/useMoney';
-import { useRole } from './useRole';
+import { useRole } from './hooks/useRole';
 
 type Props = {
   currentUserName: string

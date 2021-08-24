@@ -5,22 +5,22 @@ import { useArithmancy } from './pages/arithmancy/useArithmancy';
 import { useUser } from './pages/home/useUser';
 import { useRune } from './pages/runes/useRune';
 import { ExternalStore } from './store/ExternalStore';
-import { useLocks } from './useLocks';
+import { useLockKey } from './hooks/useLockKey';
 import { useCallback } from 'react';
 import { random } from './helpers/number';
-import { useSocket } from './useSocket';
+import { useSocket } from './hooks/useSocket';
 import { useSkill } from './pages/skills/useSkill';
 
 export function WindowShortcuts() {
-  const { getName } = useUser();
+  const { name } = useUser();
   const { setKnownRunes } = useRune();
-  const { setKeys, unlock } = useLocks();
+  const { setLockKeys: setKeys, unlock } = useLockKey();
   const { setNumber } = useArithmancy();
   const { emit } = useSocket();
   const { add: addSkill, remove: removeSkill} = useSkill();
   
   const distributeRandomNumber = useCallback(() => {
-    const currentUserName = getName();
+    const currentUserName = name;
     ExternalStore.getEntries()
       .then(names => pipe(
         currentUserName,
@@ -44,7 +44,7 @@ export function WindowShortcuts() {
           },
         )
       ))
-  }, [emit, getName]);
+  }, [emit, name]);
 
   useEffect(() => {
     // @ts-ignore

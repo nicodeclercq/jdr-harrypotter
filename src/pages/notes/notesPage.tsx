@@ -41,10 +41,10 @@ function Notes({notes}: { notes: State['notes']}) {
 }
 
 export function NotesPage() {
-  const { getNotes } = useNote();
+  const { notes } = useNote();
 
   return pipe(
-    getNotes(),
+    notes,
     fromRemoteData((notes) => (
       <Layout>
         <div className="w-full h-full">

@@ -1,47 +1,34 @@
-import * as RemoteData from '@devexperts/remote-data-ts';
+import { pipe } from 'fp-ts/function';
 import { v4 as uuid } from 'uuid';
 
-import { useStore } from '../../store/useStore';
-import { pipe } from 'fp-ts/lib/function';
-import { useDistinct } from '../../hooks/useDistinct';
-import { equals } from '../../helpers/remoteData';
+import { lens } from '../../helpers/object';
+import { onSuccess } from '../../helpers/remoteData';
+import { useStore } from '../../hooks/useStore';
+import { State } from '../../store/State';
 
+const notesLens = lens<State, 'notes'>('notes');
 
 export const useNote = () => {
-  const { getState, setState } = useStore();
-  const distinct = useDistinct(equals);
-
-  const getNotes = () => {
-    return pipe(
-      getState(),
-      RemoteData.map(state => state.notes),
-      distinct,
-    );
-  }
+  const [notes, setNotes ] = useStore(notesLens);
 
   const setNote = (newNote: {id: string, title: string, description: string}) => {
     return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        notes: state.notes.map((note) =>
+      notes,
+      onSuccess(notes => setNotes(notes.map((note) =>
           note.id === newNote.id
             ? newNote
             : note
         )
-      })),
-      setState,
+      ))
     );
   }
 
   const removeNote = (id: string) => {
     return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        notes: state.notes.filter(({id: currentId}) => currentId !== id)
-      })),
-      setState,
+      notes,
+      onSuccess(notes => setNotes(
+        notes.filter(({id: currentId}) => currentId !== id))
+      ),
     );
   }
 
@@ -49,17 +36,13 @@ export const useNote = () => {
     const id = uuid();
 
     return pipe(
-      getState(),
-      RemoteData.map(state => ({
-        ...state,
-        notes: [...state.notes, {id, title: '', description: ''}],
-      })),
-      setState,
+      notes,
+      onSuccess(notes => setNotes([...notes, {id, title: '', description: ''}])),
     );
   }
 
   return {
-    getNotes,
+    notes,
     setNote,
     addNote,
     removeNote,

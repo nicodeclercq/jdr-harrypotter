@@ -1,7 +1,7 @@
 import React from "react";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { sequenceS } from 'fp-ts/Apply';
-import { pipe } from "fp-ts/function";
+import { pipe, constVoid } from "fp-ts/function";
 
 import { Loader } from "../components/Loader";
 
@@ -23,12 +23,22 @@ export const fromRemoteData = <T, U>(callback: (data: U) => JSX.Element ) => (re
   )
 );
 
+export const onSuccess = <T, U>(callback: (data: U) => void ) => (remoteData: RemoteData.RemoteData<T, U>): void => pipe(
+  remoteData,
+  RemoteData.fold(
+    constVoid,
+    constVoid,
+    constVoid,
+    callback,
+  )
+);
+
 export const equals = <T, U>(a: RemoteData.RemoteData<T, U>, b: RemoteData.RemoteData<T, U>) => pipe(
   a,
   RemoteData.fold(
     () => RemoteData.isInitial(b),
     () => RemoteData.isPending(b),
-    (e) => RemoteData.isFailure(b) && b.error === e,
-    (v) => RemoteData.isSuccess(b) && b.value === v,
+    e => RemoteData.isFailure(b) && b.error === e,
+    v => RemoteData.isSuccess(b) && b.value === v,
   ),
 );

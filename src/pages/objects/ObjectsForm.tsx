@@ -9,7 +9,7 @@ import { Input } from '../../components/Input';
 import { entries, fromEntries } from '../../helpers/object';
 import { useObjects } from './useObjects';
 import { findLastIndex, getDupplicates, removeDupplicates } from '../../helpers/array';
-import { useRouter } from '../../useRouter';
+import { useRouter } from '../../hooks/useRouter';
 import { EmptyContent } from '../../components/EmptyContent';
 
 export function ObjectsForm({objects, columns, maxDisplayed}: {objects: Record<string, number>, columns: 1 | 2, maxDisplayed?: number | undefined}){

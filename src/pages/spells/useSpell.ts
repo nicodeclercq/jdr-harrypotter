@@ -1,13 +1,14 @@
+import { sequence } from './../../helpers/remoteData';
+import { useTraits } from './../home/useTraits';
 import * as RemoteData from '@devexperts/remote-data-ts';
 import { pipe } from 'fp-ts/function';
 
 import { State, UserSpell } from '../../store/State';
-import { useStore } from '../../store/useStore';
+import { useStore } from '../../hooks/useStore';
 import { Spell, getSpellCost, Element } from './domain/Spell';
 import * as Objects from '../../helpers/object';
 import * as Interaction from '../../helpers/interaction';
-import { useDistinct } from '../../hooks/useDistinct';
-import { equals } from '../../helpers/remoteData';
+import { onSuccess } from '../../helpers/remoteData';
 
 const rawElementPoints = {
   Air: 0,
@@ -18,13 +19,13 @@ const rawElementPoints = {
   Âme: 0,
 } as const;
 
-
-const hasSufficiantPoints = (cost: Record<Element, number>, state: State) => Objects
+const hasSufficiantPoints = (cost: Record<Element, number>, state: State['userSpells']) => Objects
   .entries(cost)
   .filter(([element, value]) => value > 0 && hasRemainingPoints(state, element))
   .length > 0;
-const hasRemainingPoints = (state: State, element: Element) => Objects
-  .entries(state.userSpells)
+
+const hasRemainingPoints = (state: State['userSpells'], element: Element) => Objects
+  .entries(state)
   .filter(([,userSpell]) => userSpell.userPoints[element] > 0)
   .length > 0;
 
@@ -67,11 +68,11 @@ const removeSpellPoints = (cost: Record<Element, number>, userSpell: UserSpell):
   };
 };
 
-const removeSpellsPoints = (cost: Record<Element, number>, state: State): State => {
+const removeSpellsPoints = (cost: Record<Element, number>, state: State['userSpells']): State['userSpells'] => {
   if(!hasRemainingCost(cost) || !hasSufficiantPoints(cost, state)) {
     return state;
   }
-  const {newCost, userSpells} = Objects.entries(state.userSpells)
+  const {newCost, userSpells} = Objects.entries(state)
     .reduce(({newCost: cost, userSpells}, [,userSpell]) => {
       const { cost: newCost, userSpell: newUserSpell } = removeSpellPoints(cost, userSpell);
 
@@ -86,31 +87,31 @@ const removeSpellsPoints = (cost: Record<Element, number>, state: State): State 
 
   return removeSpellsPoints(
     newCost,
-    {
-      ...state,
-      userSpells
-    });
+    userSpells
+  );
 }
 
+const userSpellsLens = Objects.lens<State, 'userSpells'>('userSpells');
+
 export const useSpell = () => {
-  const { getState, setState } = useStore();
-  const distinct = useDistinct(equals);
+  const { getUserTraits } = useTraits();
+  const [userSpells, setUserSpells] = useStore(userSpellsLens);
+
+  const traits = getUserTraits();
 
   const add = (spell: Spell) => {
     const cost = getSpellCost(spell);
 
     pipe(
-      getState(),
+      sequence({userSpells, traits}),
       RemoteData.map(
-        state => ({
-          ...state,
-          userSpells: {...state.userSpells, [spell.id]: {
-            id: spell.id,
-            currentLevel: state.traits.Pouvoir * 2,
-            uses: 0,
-            userPoints: rawElementPoints,
-          }},
-        })
+        ({userSpells, traits}) => ({
+          ...userSpells, [spell.id]: {
+          id: spell.id,
+          currentLevel: traits.Pouvoir * 2,
+          uses: 0,
+          userPoints: rawElementPoints,
+        }})
       ),
       RemoteData.map(
         state => {
@@ -126,92 +127,74 @@ export const useSpell = () => {
           };
         }
       ),
-      setState,
+      onSuccess(setUserSpells),
     );
   }
 
   const remove = (spell: Spell) => {
     pipe(
-      getState(),
-      RemoteData.map(state => {
-        const userSpells = Objects.remove(`${spell.id}`, state.userSpells);
-        return {
-          ...state,
-          userSpells,
-        };
-      }),
-      setState,
+      userSpells,
+      RemoteData.map(userSpells => Objects.remove(`${spell.id}`, userSpells)),
+      onSuccess(setUserSpells),
     );
   }
 
   const use = (spell: Spell, isCritical: boolean) => {
     pipe(
-      getState(),
-      RemoteData.map(state => {
-        const userPoints = state.userSpells[spell.id].userPoints;
+      sequence({userSpells, traits}),
+      RemoteData.map(({userSpells, traits}) => {
+        const userPoints = userSpells[spell.id].userPoints;
 
-        if (state.userSpells[spell.id].currentLevel < state.traits.Pouvoir * 5) {
+        if (userSpells[spell.id].currentLevel < traits.Pouvoir * 5) {
           userPoints[spell.primaryElement] = userPoints[spell.primaryElement] + 2 * (isCritical ? 2 : 1);
           userPoints[spell.secondaryElement] = userPoints[spell.secondaryElement] + 1 * (isCritical ? 2 : 1);
         }
 
         return {
-          ...state,
-          userSpells: {
-            ...state.userSpells,
-            [spell.id]: {
-              ...state.userSpells[spell.id],
-              userPoints:{
-                ...userPoints
-              },
-              uses: state.userSpells[spell.id].uses + 1,
+          ...userSpells,
+          [spell.id]: {
+            ...userSpells[spell.id],
+            userPoints:{
+              ...userPoints
             },
+            uses: userSpells[spell.id].uses + 1,
           },
         };
       }),
-      setState,
+      onSuccess(setUserSpells),
     );
   }
 
   const upgrade = (spell: Spell, result: Interaction.Interaction<never, number>) => {
     pipe(
-      getState(),
-      RemoteData.map(state => {
-        const currentLevel = state.userSpells[spell.id].currentLevel;
+      sequence({userSpells, traits}),
+      RemoteData.map(({userSpells, traits}) => {
+        const currentLevel = userSpells[spell.id].currentLevel;
         const nextLevel = pipe(
           result,
           Interaction.fold({
-            success: (points) => state.userSpells[spell.id].currentLevel + points < state.traits.Pouvoir * 5
+            success: (points) => userSpells[spell.id].currentLevel + points < traits.Pouvoir * 5
               ? currentLevel + points
-              : state.traits.Pouvoir * 5,
-            failure: () => state.userSpells[spell.id].currentLevel,
-            canceled: () => state.userSpells[spell.id].currentLevel,
+              : traits.Pouvoir * 5,
+            failure: () => userSpells[spell.id].currentLevel,
+            canceled: () => userSpells[spell.id].currentLevel,
           })
         );
 
         return {
-          ...state,
-          userSpells: {
-            ...state.userSpells,
-            [spell.id]: {
-              ...state.userSpells[spell.id],
-              uses: Interaction.isCanceled(result) ? state.userSpells[spell.id] : 0,
-              currentLevel: nextLevel,
-            },
+          ...userSpells,
+          [spell.id]: {
+            ...userSpells[spell.id],
+            uses: Interaction.isCanceled(result) ? userSpells[spell.id] : 0,
+            currentLevel: nextLevel,
           },
         };
       }),
-      setState,
+      onSuccess(setUserSpells),
     );
   }
 
-  const getUserSpells = () => {
-    return pipe(
-      getState(),
-      RemoteData.map(state => state.userSpells),
-      distinct,
-    );
-  }
+  const getUserSpells = () => userSpells;
 
   return {
     add,

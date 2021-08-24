@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { IconName } from './components/icons/Icon';
 import { keys } from './helpers/object';
-import { fromRemoteData, sequence } from './helpers/remoteData';
+import { fromRemoteData } from './helpers/remoteData';
 import { ArithmancyPage } from './pages/arithmancy/arithmancyPage';
 import { CartomancyPage } from './pages/cartomancy/CartomancyPage';
 import { HomePage } from './pages/home/HomePage';
@@ -20,7 +20,7 @@ import { SkillsPage } from './pages/skills/SkillsPage';
 import { SpellsPage } from './pages/spells/SpellsPage';
 import { SocketMessageHandler } from './SocketMessageHandler';
 import { State } from './store/State';
-import { useLocks } from './useLocks';
+import { useLockKey } from './hooks/useLockKey';
 
 type RouteDefinition = {
   label: ((state: State) => string) | string;
@@ -91,18 +91,22 @@ export const ROUTE_NAMES = keys(ROUTES);
 export const getAvailableRoutes = (unlockedKeys: State['lockKeys']) => routesDefOrder
   .filter((path) => ROUTES[path].lockKey == null || unlockedKeys.includes(ROUTES[path].lockKey as string));
 
-export function Router() {
-  const { getUnlockedKeys } = useLocks();
-  const { getName } = useUser();
+
+function SocketMessageHandlerRenderer(){
+  const { name } = useUser();
 
   return pipe(
-    sequence({
-      name: getName(),
-      unlockedKeys: getUnlockedKeys(),
-    }),
-    fromRemoteData(
-      ({name, unlockedKeys}) => <>
-        <SocketMessageHandler currentUserName={name} />
+    name,
+    fromRemoteData(name => <SocketMessageHandler currentUserName={name} />),
+  )
+}
+
+function RouterRenderer(){
+  const { lockKeys } = useLockKey();
+
+  return pipe(
+      lockKeys,
+      fromRemoteData((unlockedKeys) => <>
         <BrowserRouter>
           <Switch>
             {
@@ -120,5 +124,12 @@ export function Router() {
         </BrowserRouter>
       </>
     )
-  );
+  )
+}
+
+export function Router() {
+  return <>
+    <SocketMessageHandlerRenderer />
+    <RouterRenderer />
+  </>;
 }

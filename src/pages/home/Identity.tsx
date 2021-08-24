@@ -19,13 +19,13 @@ type Props = {
 }
 
 function LifeForm({current, max}: State['life']) {
-  const {setUserLife} = useLife();
+  const {setLife} = useLife();
   const { handleSubmit, control, errors } = useForm<FormType>({
     defaultValues: {current, max},
   });
 
   const onSubmit = ({current, max}: State['life']) => {
-    setUserLife({current: current * 1, max: max * 1});
+    setLife({current: current * 1, max: max * 1});
   };
 
   return (
@@ -77,10 +77,10 @@ function LifeForm({current, max}: State['life']) {
 }
 
 export function Identity({state}: Props){
-  const {getUserLife} = useLife();
+  const {life} = useLife();
 
   return pipe(
-    getUserLife(),
+    life,
     fromRemoteData((life) => <Card>
         <div className="flex p-2 flex-column space-y-4">
           <div className="flex flex-row items-center w-full space-x-2">
