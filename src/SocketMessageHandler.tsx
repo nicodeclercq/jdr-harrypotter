@@ -52,10 +52,9 @@ export function SocketMessageHandler({currentUserName}: Props){
             }
           },
           alert: ({type}, author) => {
-            console.log('YOUPI', type, author)
             if(type === 'playerIsAsleep') {
               pipe(
-                isMJ(),
+                isMJ,
                 RemoteData.fold(
                   constVoid,
                   constVoid,

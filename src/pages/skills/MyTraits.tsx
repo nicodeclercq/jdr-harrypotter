@@ -45,6 +45,7 @@ function UserTraits({userTraits}: Props) {
               </div>
             ))
           }
+          <div></div>
           {
             entries(caracteristics)
               .map(([key, value]) => (

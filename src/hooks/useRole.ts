@@ -10,14 +10,14 @@ const roleLens = lens<State, 'role'>('role');
 export const useRole = () => {
   const [role, setRole] = useStore(roleLens);
 
-  const isMJ = () => pipe(
+  const isMJ = pipe(
     role,
     RemoteData.map(
       role => role === 'MJ'
     ),
   );
 
-  const isPlayer = () => pipe(
+  const isPlayer = pipe(
     role,
     RemoteData.map(
       role => role === 'Player'

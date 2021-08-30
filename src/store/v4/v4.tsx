@@ -43,8 +43,8 @@ function update(promise: Promise<V3.State>): Promise<State> {
     .then((state) => ({
       ...state,
       life: {
-        current: Math.round((state.traits.Taille + state.traits.Constitution) / 2),
-        max: Math.round((state.traits.Taille + state.traits.Constitution) / 2),
+        current: Math.round(state.traits.Constitution),
+        max: Math.round(state.traits.Constitution),
       }
     }))
     .then((state) => prompt<State>((callback) => (

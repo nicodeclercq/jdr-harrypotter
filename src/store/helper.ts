@@ -3,6 +3,7 @@ import * as Either from 'fp-ts/Either';
 import { Decoder } from "io-ts";
 import { formatValidationErrors } from 'io-ts-reporters';
 import { AES, SHA256, enc } from 'crypto-js';
+import { secrets } from "../secrets";
 
 export function retrieveFromVersion<U>(
   version: string,
@@ -30,7 +31,7 @@ export function retrieveFromVersion<U>(
 export const encode = (str: string) => btoa(unescape(encodeURIComponent(str)));
 export const decode = (str: string) => decodeURIComponent(escape(window.atob(str)));
 
-const getLockKey = (str: string) => SHA256(str).toString(); 
+const getLockKey = (str: string) => SHA256(`${str}${secrets.salt}`).toString(); 
 
 export const encrypt = (key: string) => (json: unknown) => {
   const str = JSON.stringify(json);

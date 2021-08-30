@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { pipe } from 'fp-ts/function';
 
 import { Icon, IconName } from '../../components/icons/Icon';
+import { fromRemoteData } from '../../helpers/remoteData';
+import { useRole } from '../../hooks/useRole';
 import { useSocket } from '../../hooks/useSocket';
 
 type Props = {
@@ -70,23 +72,30 @@ function QuickButton ({onClick, icon, color, background}: Props) {
 }
 
 export function QuickActions() {
+  const { isMJ } = useRole();
   const { emit } = useSocket();
 
-  return createPortal((
-      <div style={{position: 'fixed', bottom: '1rem', right: '50%', transform: 'translateX(50%)'}} className="flex rounded-full flex-columns space-x-1">
-        <QuickButton background="bg-orange-400" color="text-orange-900" icon="SLEEPY" onClick={() => emit({
-          type: 'alert',
-          payload: {
-            type: 'playerIsAsleep' 
+  return createPortal(
+    pipe(
+      isMJ,
+      fromRemoteData(isMJ => (
+        <div style={{position: 'fixed', bottom: '1rem', right: '50%', transform: 'translateX(50%)'}} className="flex rounded-full flex-columns space-x-1">
+          {
+            !isMJ && <QuickButton background="bg-orange-400" color="text-orange-900" icon="SLEEPY" onClick={() => emit({
+              type: 'alert',
+              payload: {
+                type: 'playerIsAsleep' 
+              }
+            })}/>
           }
-        })}/>
-        <QuickButton background="bg-red-400" color="text-red-900" icon="HALT" onClick={() => emit({
-          type: 'alert',
-          payload: {
-            type: 'playerNeedsPause' 
-          }
-        })}/>
-      </div>
+          <QuickButton background="bg-red-400" color="text-red-900" icon="HALT" onClick={() => emit({
+            type: 'alert',
+            payload: {
+              type: 'playerNeedsPause' 
+            }
+          })}/>
+        </div>
+      ))
     ),
     document.body
   );

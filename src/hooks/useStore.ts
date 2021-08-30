@@ -56,6 +56,7 @@ export const useStore = <T>([getter, setter]: [getter: FunctionN<[State], T>, se
     RemoteData.map(
       currentState => setter(currentState, newValue)
     ),
+    newState => subject.next(newState),
   );
 
   return [

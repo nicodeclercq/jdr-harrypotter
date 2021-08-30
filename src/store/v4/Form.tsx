@@ -10,7 +10,7 @@ import { skills } from '../../pages/skills/skills';
 import { entries } from '../../helpers/object';
 
 const defaultSkills = entries(skills);
-const repartitionPoints = 300;
+const repartitionPoints = 200;
 
 export function Form({state: { traits }, callback}: {state: State,callback: (result: {skills: Skills}) => void}) {
   const [remainingPoints, setRemainingPoints] = useState(repartitionPoints);

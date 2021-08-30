@@ -37,7 +37,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "bash makeSecrets.sh && craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**\""

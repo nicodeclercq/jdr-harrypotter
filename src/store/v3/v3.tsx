@@ -23,13 +23,12 @@ export const userSpellsDecoder = IO.record(
 );
 
 const traitDecoder = IO.union([
-  IO.literal('Force'),
+  IO.literal('Charisme'),
   IO.literal('Constitution'),
-  IO.literal('Taille'),
-  IO.literal('Perception'),
-  IO.literal('Intelligence'),
   IO.literal('Dextérité'),
-  IO.literal('Apparence'),
+  IO.literal('Force'),
+  IO.literal('Intelligence'),
+  IO.literal('Perception'),
   IO.literal('Pouvoir'),
 ]);
 
