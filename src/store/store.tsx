@@ -1,8 +1,10 @@
 import { BehaviorSubject } from 'rxjs';
 import * as RemoteData from '@devexperts/remote-data-ts';
+import * as RX from 'rxjs/operators';
 
 import { tryCatch } from "../helpers/function";
 import { prompt } from "../helpers/io";
+import { equals } from "../helpers/remoteData";
 import { State, retrieve } from "../store/State";
 import { ExternalStore } from "../store/ExternalStore";
 import { NameForm } from "../store/v1/NameForm";
@@ -14,15 +16,14 @@ type StateDTO = {
 
 export const subject = new BehaviorSubject<RemoteData.RemoteData<Error, State>>(RemoteData.initial);
 
-
 export const retrieveState = (): Promise<State> => 
   Promise.resolve(window.localStorage.getItem('state'))
     .then((currentState) => tryCatch(
       () => JSON.parse(currentState || ''),
       () => undefined
     ))
-    .then((state): StateDTO | Promise<StateDTO> => {
-      return state == null
+    .then((state): StateDTO | Promise<StateDTO> =>
+      state == null
         ? ExternalStore.getEntries()
           .catch((error) => {
             console.error(error);
@@ -42,6 +43,19 @@ export const retrieveState = (): Promise<State> =>
                 .catch(() => ({state: undefined, name}))
             )
           )
-        : {state, name: undefined};
-    })
+        : {state, name: undefined}
+    )
     .then(({state, name}) => retrieve(state, name));
+
+subject
+  .asObservable()
+  .pipe(RX.distinctUntilChanged(equals))
+  .subscribe({
+    next: (newState) => {
+      if (RemoteData.isSuccess(newState)) {
+        ExternalStore.update(newState.value.user.name, newState.value);
+        window.localStorage.setItem('state', JSON.stringify(newState.value));
+      }
+    }
+  });
+  

@@ -1,8 +1,8 @@
 import { encode, decode, decrypt, encrypt } from './helper';
-import { api } from "./api";
 import { State } from "./State";
+import { secrets } from '../secrets';
 
-const ROOT = `https://getpantry.cloud/apiv1/pantry/${api.key}`;
+const ROOT = `https://getpantry.cloud/apiv1/pantry/${secrets.apiKey}`;
 
 const headers = new Headers();
 headers.append('Content-Type', 'application/json');
