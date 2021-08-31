@@ -4,13 +4,17 @@ import { FunctionN, pipe } from "fp-ts/function";
 import * as RemoteData from '@devexperts/remote-data-ts';
 
 import { State } from "../store/State";
-import { ExternalStore } from "../store/ExternalStore";
 import { subject, retrieveState } from "../store/store";
 import { equals } from "../helpers/remoteData";
 
 const fetchStatePromise = retrieveState();
 
-export const useStore = <T>([getter, setter]: [getter: FunctionN<[State], T>, setter: (state: State, payload: T) => State]) => {
+type Props<T> = [
+  getter: FunctionN<[State], T>,
+  setter: (state: State, payload: T) => State
+];
+
+export const useStore = <T>([getter, setter]: Props<T>) => {
   const [state, setState] = useState<RemoteData.RemoteData<Error, T>>(pipe(
     subject.value,
     RemoteData.map(getter),
@@ -34,17 +38,12 @@ export const useStore = <T>([getter, setter]: [getter: FunctionN<[State], T>, se
 
   useEffect(() => {
     if(RemoteData.isInitial(subject.value)){
-        Promise.resolve()
-        .then(() => subject.next(RemoteData.pending))
-        .then(() => fetchStatePromise)
+      subject.next(RemoteData.pending);
+
+      fetchStatePromise
         .then((currentState) => pipe(
           RemoteData.success(currentState),
-          (newState: RemoteData.RemoteData<Error, State>) => {
-            if(RemoteData.isSuccess(newState)){
-              window.localStorage.setItem('state', JSON.stringify(newState.value));
-              ExternalStore.update(newState.value.user.name, newState.value)
-                .catch((error) => console.error('Unable to save remotely', error));
-            }
+          newState => {
             subject.next(newState);
           }
         ));

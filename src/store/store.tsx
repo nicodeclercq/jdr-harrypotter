@@ -49,11 +49,15 @@ export const retrieveState = (): Promise<State> =>
 
 subject
   .asObservable()
-  .pipe(RX.distinctUntilChanged(equals))
+  .pipe(
+    RX.distinctUntilChanged(equals),
+    RX.debounceTime(200),
+  )
   .subscribe({
     next: (newState) => {
       if (RemoteData.isSuccess(newState)) {
-        ExternalStore.update(newState.value.user.name, newState.value);
+        ExternalStore.update(newState.value.user.name, newState.value)
+          .catch((error) => console.error('Unable to save remotely', error));
         window.localStorage.setItem('state', JSON.stringify(newState.value));
       }
     }
