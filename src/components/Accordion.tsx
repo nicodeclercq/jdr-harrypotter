@@ -25,7 +25,7 @@ export function Accordion({children: {header, content, actions, toggle}}: Props)
     <>
       <style>{style(id)}</style>
       <details className={`accordion_${id} flex flex-col`}>
-        <summary className="flex items-center px-6 py-2">
+        <summary className="flex items-center px-6 py-2 space-x-2">
           {
             toggle
               ? (<>

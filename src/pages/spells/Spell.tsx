@@ -1,74 +1,83 @@
 import React from 'react';
-import { pipe } from 'fp-ts/lib/function';
 import { BodyText } from '../../components/font/BodyText';
 import { Incantation } from '../../components/font/Incantation';
 import { Tag, Color } from '../../components/Tag';
 import { Accordion } from '../../components/Accordion';
-import { entries } from '../../helpers/object';
 import * as SpellType from './domain/Spell';
-import { ElementTag } from '../../components/ElementTag';
 import { Button } from '../../components/Button';
 import { Icon, IconName } from '../../components/icons/Icon';
 
-const elements: Record<SpellType.Target, IconName> = {
-  'Animal': 'ANIMAL',
-  'Object': 'OBJECT',
-  'Plant': 'PLANT',
-  'Person': 'CHARACTER',
+const baseElements: Record<string, string> = {
+  'feu': 'FEU',
+  'air': 'AIR',
+  'terre': 'PLANT',
+  'eau': 'EAU',
+}
+
+const elements: Record<SpellType.Category, IconName> = {
+  'feu': 'FEU',
+  'air': 'AIR',
+  'terre': 'PLANT',
+  'eau': 'EAU',
+  'annulation': "CROSS",
+  'attaque simple': "SWORD",
+  'détection magique': "LAMP",
+  'lévitation': "CORPS",
+  'sort de base': "SORCERER",
+  'métamorphose': "ANIMAL"
 };
 
-const colors: Record<SpellType.Target, Color> = {
-  'Animal': 'red',
-  'Object': 'indigo',
-  'Plant': 'green',
-  'Person': 'pink',
+const colors: Record<SpellType.Category, Color> = {
+  'feu': 'red',
+  'air': 'red',
+  'terre': 'red',
+  'eau': 'red',
+  'annulation': "indigo",
+  'attaque simple': "yellow",
+  'détection magique': "pink",
+  'lévitation': "green",
+  'sort de base': "blue",
+  'métamorphose': "purple"
 };
 
-export function Spell({spell, roll, actions, isOwned = false}: {roll: (id: number) => void; spell: SpellType.Spell, isOwned?: boolean, actions?: React.ReactNode}) {
-  const costs = pipe(
-    SpellType.getSpellCost(spell),
-    ({primary, secondary}) => {
-      if(spell.primaryElement === spell.secondaryElement) {
-        return {[spell.primaryElement]: primary + secondary};
-      }
-      return {[spell.primaryElement]: primary, [spell.secondaryElement]: secondary};
-    },
-    (c) => entries(c).map(([name, cost]) => <ElementTag key={name} title={`${cost} Éléments ${name}`} points={cost} element={name as SpellType.Element} />),
-  );
+type Props = {
+  roll?: (name: string) => void;
+  spell: SpellType.Spell;
+  isOwned?: boolean;
+  actions?: React.ReactNode;
+};
 
+export function Spell({spell, roll, actions, isOwned = false}: Props) {
   return (
     <Accordion>
       {{
         header: (
           <div className="flex">
-            <div className="flex-grow text-left space-x-2">
+            <div className="flex items-center flex-grow text-left capitalize space-x-2">
               <Tag color="white" title={`Niveau ${spell.level}`}>{spell.level}</Tag>
               <Incantation>{spell.incantation}</Incantation>
-              <BodyText>{spell.name}</BodyText>
+              <div className="flex-grow">
+                <BodyText>{spell.name}</BodyText>
+              </div>
+              <Tag title={spell.category} color={colors[spell.category]}>
+                <Icon name={elements[spell.category]} />
+                {baseElements[spell.category] ? ` ${spell.category}` : ''}
+              </Tag>
             </div>
-            {!isOwned && (<div className="flex-shrink-0 text-right space-x-1">{costs}</div>)}
           </div>
         ),
         content: (
           <div className="flex flex-col space-y-2">
             <hr className="border-y"/>
             <BodyText>{spell.description}</BodyText>
-            <div className="space-x-2">
-              {spell.targets.Animal && <Tag title={'Cible Animale'} color={colors.Animal}><Icon name={elements.Animal} /></Tag>}
-              {spell.targets.Plant && <Tag title={'Cible Végétale'} color={colors.Plant}><Icon name={elements.Plant} /></Tag>}
-              {spell.targets.Person && <Tag title={'Cible Personne'} color={colors.Person}><Icon name={elements.Person} /></Tag>}
-              {spell.targets.Object && <Tag title={'Cible Objet'} color={colors.Object}><Icon name={elements.Object} /></Tag>}
-            </div>
             {actions && <div className="flex flex-row-reverse m-2 space-x-2">{actions}</div>}
           </div>
         ),
-        actions: isOwned
+        actions: isOwned && roll
             && (
-                <div className="space-x-2">
-                  <Button onClick={() => roll(spell.id)} type="secondary">
-                    <Icon name="DICE" />
-                  </Button>
-                </div>
+                <Button onClick={() => roll(spell.name)} type="secondary">
+                  <Icon name="DICE" />
+                </Button>
               )
       }}
     </Accordion>

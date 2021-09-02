@@ -1,8 +1,6 @@
 import { pipe } from 'fp-ts/lib/function';
 import * as IO from 'io-ts';
-import { merge } from '../../helpers/object';
 
-import { getSpellPoints } from '../../pages/spells/domain/Spell';
 import { spells } from '../../pages/spells/spells';
 import { retrieveFromVersion } from '../helper';
 import * as V1 from '../v1/v1';
@@ -38,7 +36,7 @@ function update(promise: Promise<V1.State>): Promise<State> {
         const id = spellList.findIndex((spellFromList) => spellFromList.name === spell.name);
         return ({
           id,
-          usePoints: merge(getSpellPoints(spells[id]), state.uses, (a, b) => a + b),
+          usePoints: {},
         });
       });
 

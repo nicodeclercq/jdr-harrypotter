@@ -10,6 +10,6 @@ export const useTraits = () => {
   const getUserTraits = () => traits;
 
   return {
-    getUserTraits,
+    traits,
   }
 }

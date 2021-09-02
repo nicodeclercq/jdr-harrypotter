@@ -84,12 +84,10 @@ function UserTraits({userTraits}: Props) {
 
 
 export function MyTraits() {
-  const { getUserTraits } = useTraits();
-
-  const userTraits = getUserTraits();
+  const { traits } = useTraits();
 
   return pipe(
-    userTraits,
-    fromRemoteData((userTraits) => <UserTraits userTraits={userTraits} />)
+    traits,
+    fromRemoteData((traits) => <UserTraits userTraits={traits} />)
   );
 }
