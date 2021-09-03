@@ -7,8 +7,6 @@ const traitsLens = lens<State, 'traits'>('traits');
 export const useTraits = () => {
   const [traits] = useStore(traitsLens);
 
-  const getUserTraits = () => traits;
-
   return {
     traits,
   }
