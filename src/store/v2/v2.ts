@@ -11,22 +11,25 @@ export const elementDecoder = V1.elementDecoder;
 export const userDecoder = V1.userDecoder;
 export type UserPoints = Record<V1.Element, number>;
 
-export const userSpellDecoder = IO.type({
-  id: IO.number,
-  userPoints: IO.record(elementDecoder, IO.number),
+export const userSpellsDecoder = IO.type({
+  knownSpells: IO.record(IO.string, IO.type({
+    currentLevel: IO.number,
+    uses: IO.number,
+  })),
+  points: IO.record(IO.string, IO.number),
 });
 
 export const stateDecoder = IO.type({
   user: V1.userDecoder,
-  userSpells: IO.record(
-    IO.string,
-    userSpellDecoder,
-  ),
+  userSpells: userSpellsDecoder,
 });
 
 export type State = IO.TypeOf<typeof stateDecoder>;
 
-export const defaultUserSpells: State['userSpells'] = {};
+export const defaultUserSpells: State['userSpells'] = {
+  knownSpells: {},
+  points:{},
+};
 
 function update(promise: Promise<V1.State>): Promise<State> {
   return promise.then((state) => {

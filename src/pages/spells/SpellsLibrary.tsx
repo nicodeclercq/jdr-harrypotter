@@ -9,7 +9,7 @@ import { useSpell } from './useSpell';
 import { fromRemoteData } from '../../helpers/remoteData';
 
 export function SpellsLibrary() {
-  const { add, userSpells } = useSpell();
+  const { add, userSpells, canBeAdded } = useSpell();
 
   return pipe(
     userSpells,
@@ -17,14 +17,17 @@ export function SpellsLibrary() {
       <Card useDividers title="Liste des Sortilèges">
         {
           spells
+            .filter(({name}) => !(name in userSpells.knownSpells))
             .map((spell) => (
               <Spell
-                key={spell.name}
+                key={`${spell.name}_${spell.level}`}
                 spell={spell}
+                canBeAdded={canBeAdded(spell, userSpells)}
                 actions={
-                  userSpells.knownSpells[spell.name] ? (<></>) : (
-                  <Button onClick={() => add(spell)} type="secondary">Apprendre +</Button>
-                )}
+                  userSpells.knownSpells[spell.name]
+                    ? (<></>)
+                    : (<Button onClick={() => add(spell)} type="secondary">Apprendre +</Button>)
+                }
               />
             ))
         }

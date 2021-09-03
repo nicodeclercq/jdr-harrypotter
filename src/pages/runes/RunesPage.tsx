@@ -46,8 +46,7 @@ function RuneForm({name, signification, addRune}: {name: RuneName; signification
 
 export function RunesPage(){
   const [usedRunes, setUsedRunes] = useState<RuneName[]>([]);
-  const { getRunesSignification, getKnownRunes } = useRune();
-
+  const { runesDefinition, knownRunes } = useRune();
 
   const addRune = (name: RuneName) => {
     setUsedRunes([...usedRunes, name]);
@@ -58,11 +57,11 @@ export function RunesPage(){
 
   return pipe(
     sequence({
-      runesSignification: getRunesSignification(),
-      knownRunes: getKnownRunes(),
+      runesDefinition,
+      knownRunes,
     }),
     fromRemoteData(
-      ({runesSignification, knownRunes}) => (
+      ({runesDefinition, knownRunes}) => (
         <Layout>
           <div className="h-full p-2 space-y-2">
             <div className="items-center w-full p-2 bg-gray-600 rounded grid grid-flow-col auto-cols-max gap-2" style={{minHeight: '25vh'}}>
@@ -71,7 +70,7 @@ export function RunesPage(){
                   <button key={`${rune}_${index}`} onClick={() => removeRune(index)} draggable className="flex flex-col items-center justify-center p-2 text-white bg-gray-400 rounded shadow-md space-x-2">
                     <span className="text-4xl filter drop-shadow-sm"><Rune name={rune} /></span>
                     {rune}
-                    <span className="text-xs">{runesSignification[rune] ?? '-'}</span>
+                    <span className="text-xs">{runesDefinition[rune] ?? '-'}</span>
                   </button>
                 ))
               }
@@ -81,7 +80,7 @@ export function RunesPage(){
                 keys(RUNES)
                   .filter(rune => knownRunes.includes(rune))
                   .map((rune) => (
-                    <RuneForm key={rune} addRune={() => addRune(rune)} name={rune} signification={runesSignification[rune] ?? ''} />
+                    <RuneForm key={rune} addRune={() => addRune(rune)} name={rune} signification={runesDefinition[rune] ?? ''} />
                   ))
               }
             </div>

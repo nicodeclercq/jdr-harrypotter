@@ -45,9 +45,10 @@ type Props = {
   spell: SpellType.Spell;
   isOwned?: boolean;
   actions?: React.ReactNode;
+  canBeAdded?: boolean;
 };
 
-export function Spell({spell, roll, actions, isOwned = false}: Props) {
+export function Spell({spell, roll, actions, isOwned = false, canBeAdded = false}: Props) {
   return (
     <Accordion>
       {{
@@ -59,6 +60,7 @@ export function Spell({spell, roll, actions, isOwned = false}: Props) {
               <div className="flex-grow">
                 <BodyText>{spell.name}</BodyText>
               </div>
+              {canBeAdded && <span className="text-green-600"><Icon name="CHECK" /></span>}
               <Tag title={spell.category} color={colors[spell.category]}>
                 <Icon name={elements[spell.category]} />
                 {baseElements[spell.category] ? ` ${spell.category}` : ''}

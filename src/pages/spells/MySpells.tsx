@@ -78,7 +78,7 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
           knownSpells.length
             ? knownSpells.map(({name, spell}) => (
                 <Spell
-                  key={name}
+                  key={`${spell?.name}_${spell?.level}`}
                   spell={spell as SpellType.Spell}
                   actions={(
                     <Button onClick={() => remove(spell as SpellType.Spell)} type="secondary">Supprimer -</Button>

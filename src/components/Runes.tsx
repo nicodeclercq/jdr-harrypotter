@@ -1,57 +1,63 @@
 import * as React from "react";
+import { keys } from "../helpers/object";
 
 export const RUNES = {
-  Fehu: 0,
-  Ūruz: 1,
-  Ūrq: 2,
-  Þurisaz: 3,
-  Ansuz: 4,
-  Raidō: 5,
-  Kaunan: 6,
-  Kenaz: 7,
-  Gebō: 8,
-  Wunjō: 9,
-  Hagalaz: 10,
-  Haglaz: 11,
-  Nauđiz: 12,
-  Īsaz: 13,
-  Īsą: 14,
-  Īsan: 15,
-  Jēra: 16,
-  Jēran: 17,
-  Jēraz: 18,
-  Ihwaz: 19,
-  Eihwaz: 20,
-  Perþō: 21, 
-  Perþaz: 22,
-  Algiz: 23,
-  Sōwilō: 24,
-  Sæwelō: 25,
-  Tīwaz: 26,
-  Teiwaz: 27,
-  Berkanan: 28,
-  Ehwaz: 29,
-  Mannaz: 30,
-  Laguz: 31,
-  Laukaz: 32,
-  Ingwaz: 33,
-  Inguz: 34,
-  Dagaz: 35,
-  Ōþalan: 36,
-  Gizn: 37,
-  Bōwaz: 38,
-  Kahlan: 39,
-  Hieraz: 40,
+  Fehu: '0',
+  Ūruz: '1',
+  Ūrq: '2',
+  Þurisaz: '3',
+  Ansuz: '4',
+  Raidō: '5',
+  Kaunan: '6',
+  Kenaz: '7',
+  Gebō: '8',
+  Wunjō: '9',
+  Hagalaz: '10',
+  Haglaz: '11',
+  Nauđiz: '12',
+  Īsaz: '13',
+  Īsą: '14',
+  Īsan: '15',
+  Jēra: '16',
+  Jēran: '17',
+  Jēraz: '18',
+  Ihwaz: '19',
+  Eihwaz: '20',
+  Perþō: '21',
+  Perþaz: '22',
+  Algiz: '23',
+  Sōwilō: '24',
+  Sæwelō: '25',
+  Tīwaz: '26',
+  Teiwaz: '27',
+  Berkanan: '28',
+  Ehwaz: '29',
+  Mannaz: '30',
+  Laguz: '31',
+  Laukaz: '32',
+  Ingwaz: '33',
+  Inguz: '34',
+  Dagaz: '35',
+  Ōþalan: '36',
+  Gizn: '37',
+  Bōwaz: '38',
+  Kahlan: '39',
+  Hieraz: '40',
 };
 
 export type RuneName = keyof typeof RUNES;
+
+const runesIndex = keys(RUNES).reduce((acc, cur, index) => ({
+  ...acc,
+  [cur]: index,
+}), {} as Record<RuneName, number>);
 
 type Props = {
   name: RuneName
 };
 
 export function Rune({name}: Props) {
-  const index = RUNES[name];  
+  const index = runesIndex[name];  
 
   return (
     <div className="inline-block">

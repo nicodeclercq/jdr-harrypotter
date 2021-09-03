@@ -2,7 +2,6 @@ import { pipe } from 'fp-ts/function';
 import * as IO from 'io-ts';
 
 import { prompt } from '../../helpers/io';
-import { map } from '../../helpers/object';
 import * as V2 from '../v2/v2';
 import { Form } from './Form';
 import { retrieveFromVersion } from '../helper';
@@ -10,17 +9,6 @@ import { retrieveFromVersion } from '../helper';
 const version = 'V3';
 
 export const userDecoder = V2.userDecoder;
-
-export const userSpellsDecoder = IO.record(
-  IO.string,
-  IO.intersection([
-    V2.userSpellDecoder,
-    IO.type({
-      currentLevel: IO.number,
-      uses: IO.number,
-    })
-  ])
-);
 
 const traitDecoder = IO.union([
   IO.literal('Charisme'),
@@ -47,11 +35,8 @@ export const traitsDecoder = IO.record(
 );
 
 export const stateDecoder = IO.intersection([
+  V2.stateDecoder,
   IO.type({
-    user: V2.userDecoder
-  }),
-  IO.type({
-    userSpells: userSpellsDecoder,
     traits: traitsDecoder,
   })
 ]);
@@ -62,15 +47,7 @@ function update(promise: Promise<V2.State>): Promise<State> {
   return promise
     .then((state) => prompt<V2.State & {traits: Record<Trait, number>}>((callback) => (
         <Form callback={(traits) => callback({...state, ...traits})} />
-    ), <>Caractéristiques de mon Personnage</>))
-    .then((state) => ({
-      ...state,
-      userSpells: map((spell) => ({
-        ...spell,
-        currentLevel: state.traits.Pouvoir * 5,
-        uses: 0,
-      }), state.userSpells),
-    }));
+    ), <>Caractéristiques de mon Personnage</>));
 }
 
 export function retrieve(currentState: unknown, name: string | undefined) {

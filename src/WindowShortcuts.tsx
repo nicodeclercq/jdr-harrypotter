@@ -13,7 +13,7 @@ import { useSkill } from './pages/skills/useSkill';
 
 export function WindowShortcuts() {
   const { name } = useUser();
-  const { setKnownRunes } = useRune();
+  const { setKnownRunes, learnAllRunes, setAllRunesDefinition } = useRune();
   const { setLockKeys: setKeys, unlock } = useLockKey();
   const { setNumber } = useArithmancy();
   const { emit } = useSocket();
@@ -51,6 +51,8 @@ export function WindowShortcuts() {
     window.app = {
       setKeys,
       setKnownRunes,
+      learnAllRunes,
+      setAllRunesDefinition,
       unlock,
       getUserList: ExternalStore.getEntries,
       deleteUser: ExternalStore.delete,
@@ -70,7 +72,7 @@ export function WindowShortcuts() {
       addSkill,
       removeSkill,
     }
-  }, [setKeys, setKnownRunes, unlock, setNumber, distributeRandomNumber, emit, addSkill, removeSkill]);
+  }, [learnAllRunes, setAllRunesDefinition, setKeys, setKnownRunes, unlock, setNumber, distributeRandomNumber, emit, addSkill, removeSkill]);
 
   return (
     <></>

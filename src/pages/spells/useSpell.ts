@@ -29,6 +29,10 @@ export const useSpell = () => {
               uses: 0,
             }
           },
+          points: {
+            ...userSpells.points,
+            [spell.category]: 0,
+          }
         })
       ),
       onSuccess(setUserSpells),
@@ -62,7 +66,7 @@ export const useSpell = () => {
           },
           points: {
             ...userSpells.points,
-            [spell.category]: (userSpells.points[spell.category] ?? 0) + factor
+            [spell.category]: (userSpells.points[spell.category] ?? 0) + factor * ((spell.level ?? 0)+1)
           }
         };
       }),
@@ -87,14 +91,17 @@ export const useSpell = () => {
                   currentLevel: traits.Pouvoir * 5,
                   uses: 0,
                 },
-            failure: () => userSpells.knownSpells[spell.name],
+            failure: () => ({
+              currentLevel,
+              uses: 0,
+            }),
             canceled: () => userSpells.knownSpells[spell.name],
           })
         );
 
         return {
           ...userSpells,
-          knownSpellsLevel: {
+          knownSpells: {
             ...userSpells.knownSpells,
             [spell.name]: nextLevel
           },
@@ -104,11 +111,18 @@ export const useSpell = () => {
     );
   }
 
+  const canBeAdded = (spell: Spell, userSpells: State['userSpells']) => {
+    return  spell.category !== 'sort de base' &&
+      userSpells.knownSpells[spell.name] == null &&
+      (userSpells.points[spell.category] ?? 0) >= 2 * ((spell.level ?? 1) + 1)**((spell.level ?? 1 + 1)) + 1;
+  }
+
   return {
     userSpells,
     add,
     remove,
     use,
     upgrade,
+    canBeAdded,
   }
 }
