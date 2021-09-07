@@ -5,18 +5,18 @@ import { Icon } from '../../components/icons/Icon';
 import { Card } from '../../components/Card';
 import { Title } from '../../components/font/Title';
 import { useLife } from './useLife';
-import { fromRemoteData } from '../../helpers/remoteData';
+import { fromRemoteData, sequence } from '../../helpers/remoteData';
 import { Controller, useForm } from 'react-hook-form';
 import { Input } from '../../components/Input';
+import { Avatar } from '../../components/Avatar';
+import { useUser } from './useUser';
+import { prompt } from '../../helpers/io';
+import { Button } from '../../components/Button';
 
 type FormType = {
   current: number;
   max: number;
 };
-
-type Props = {
-  state: State;
-}
 
 function LifeForm({current, max}: State['life']) {
   const {setLife} = useLife();
@@ -76,16 +76,49 @@ function LifeForm({current, max}: State['life']) {
   )
 }
 
-export function Identity({state}: Props){
+function ImageUrlForm({imageUrl, onSubmit}: {imageUrl: string, onSubmit: (result: {imageUrl: string}) => void}) {
+  const { handleSubmit, control, errors } = useForm<{imageUrl: string}>({
+    defaultValues: {imageUrl},
+  });
+
+  return (
+    <form  className="flex items-center space-x-2" onSubmit={handleSubmit(onSubmit)}>
+      <Controller
+        name="imageUrl"
+        control={control}
+        render={({value, onChange}) => 
+          <Input
+            id="input-image_url"
+            errors={errors['imageUrl']}
+            value={value}
+            type="text"
+            theme="neutral"
+            onChange={onChange}
+            width="100%"
+          />
+        }
+      />
+      <Button type="primary" onClick={handleSubmit(onSubmit)}>Valider</Button>
+    </form>
+  )
+}
+
+export function Identity(){
   const {life} = useLife();
+  const { name, imageUrl, setImageUrl } = useUser();
 
   return pipe(
-    life,
-    fromRemoteData((life) => <Card>
+    sequence({name, life, imageUrl}),
+    fromRemoteData(({name, life, imageUrl}) => <Card>
         <div className="flex p-2 flex-column space-y-4">
           <div className="flex flex-row items-center w-full space-x-2">
             <span className="flex-grow">
-              <Title>{state.user.name}</Title>
+              <Title>
+                <div className="flex items-center space-x-2">
+                  <Avatar text={name} url={imageUrl} onClick={() => prompt<{imageUrl: string}>((callback) => <ImageUrlForm imageUrl={imageUrl ?? ''} onSubmit={callback}/>, 'Choisis ton avatar').then(({imageUrl}) => setImageUrl(imageUrl))} />
+                  <span>{name}</span>
+                </div>
+              </Title>
             </span>
             <LifeForm current={life.current} max={life.max} />
           </div>

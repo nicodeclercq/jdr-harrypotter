@@ -24,6 +24,7 @@ export const stateDecoder = IO.intersection([
   IO.type({
     notes: notesDecoder,
     objects: objectsDecoder,
+    handledObjects: objectsDecoder,
     money: moneyDecoder,
   })
 ]);
@@ -36,6 +37,7 @@ function update(promise: Promise<V5.State>): Promise<State> {
       ...state,
       notes: [],
       objects: emptyRecord<string, number>(),
+      handledObjects: emptyRecord<string, number>(),
       money: 0,
     }));
 }

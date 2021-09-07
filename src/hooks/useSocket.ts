@@ -15,10 +15,11 @@ socket.on('message', function(data) {
 });
 const stream = new BehaviorSubject<Message | undefined>(undefined);
 let author: string = DEFAULT_AUTHOR;
+let avatar: string = '';
 
 const emit = (message: Message['message']) => {
-  console.log('send', message)
-  socket.emit('message', JSON.stringify({author, message}));
+  console.log('send', {author: {name: author, avatar}, message});
+  socket.emit('message', JSON.stringify({author: {name: author, avatar}, message}));
 };
 
 //@ts-ignore
@@ -33,7 +34,7 @@ window.addEventListener('beforeunload', () => {
 });
 
 export const useSocket = () =>{
-  const { name } = useUser();
+  const { name, imageUrl } = useUser();
 
   useEffect(
     () => pipe(
@@ -45,7 +46,7 @@ export const useSocket = () =>{
               emit({
                 type: 'join',
                 payload:{
-                  name
+                  name,
                 }
               })
             }
@@ -55,6 +56,19 @@ export const useSocket = () =>{
       )
     ),
     [name]
+  );
+  useEffect(
+    () => pipe(
+      imageUrl,
+      onSuccess(
+        (imageUrl) => {
+          if (avatar !== imageUrl) {
+            avatar = imageUrl ?? '';
+          }
+        }
+      )
+    ),
+    [imageUrl]
   );
 
   return {

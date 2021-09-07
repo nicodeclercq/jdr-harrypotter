@@ -1,4 +1,5 @@
 import * as IO from 'io-ts';
+import { formatValidationErrors } from 'io-ts-reporters';
 import { pipe, constVoid } from 'fp-ts/function';
 import * as Either from 'fp-ts/Either';
 
@@ -59,7 +60,10 @@ const alertDecoder = IO.type({
 type AlertMessage = IO.TypeOf<typeof alertDecoder>;
 
 const messageDecoder = IO.type({
-  author: IO.string,
+  author: IO.type({
+    name: IO.string,
+    avatar: IO.union([IO.string, IO.undefined, IO.null]),
+  }),
   message: IO.union([
     joinMessageDecoder,
     quitMessageDecoder,
@@ -73,18 +77,25 @@ const messageDecoder = IO.type({
 export type Message = IO.TypeOf<typeof messageDecoder>;
 
 export const fold = (currentUserName: string, fns: {
-  join: (payload: JoinMessage['payload'], author: string) => void,
-  quit: (payload: QuitMessage['payload'], author: string) => void,
-  roll: (payload: RollMessage['payload'], author: string) => void,
-  exchangeMoney: (payload: ExchangeMoneyMessage['payload'], author: string) => void,
-  chat: (payload: ChatMessage['payload'], author: string) => void,
-  alert: (payload: AlertMessage['payload'], author: string) => void,
+  join: (payload: JoinMessage['payload'], author: Message['author']) => void,
+  quit: (payload: QuitMessage['payload'], author: Message['author']) => void,
+  roll: (payload: RollMessage['payload'], author: Message['author']) => void,
+  exchangeMoney: (payload: ExchangeMoneyMessage['payload'], author: Message['author']) => void,
+  chat: (payload: ChatMessage['payload'], author: Message['author']) => void,
+  alert: (payload: AlertMessage['payload'], author: Message['author']) => void,
 }) => (message: unknown) => pipe(
   message,
+  (m) => {
+    console.log('received', m)
+    return m;
+  },
   messageDecoder.decode,
-  Either.mapLeft(() => Either.left('Wrong encoding')),
+  Either.mapLeft((e) => {
+    console.log('error', formatValidationErrors(e));
+    return Either.left('Wrong encoding');
+  }),
   Either.filterOrElse(
-    (data) => data.author !== currentUserName,
+    (data) => data.author.name !== currentUserName,
     () => Either.left('Same user'),
   ),
   Either.fold(

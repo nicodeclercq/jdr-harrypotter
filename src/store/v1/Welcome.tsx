@@ -7,10 +7,7 @@ export function Welcome ({callback}: Props) {
   return (
     <div className="flex flex-col p-2 space-y-4">
       <p>
-        Avant de commencer sache que tout ce que tu inscris ici est <strong>sauvegardé en cache sur ton navigateur.
-        </strong> Ainsi si tu changes de navigateur, d'ordinateur, que tu effaces ton historique de navigation ou qu'il se passe quoi que ce soit d'imprévue
-        (les bugs ici n'existant évidemment pas) tu pourras dire avec nous cette magnifique phrases dont la véracité n'a d'égale
-        que sa douce simplicité « C’est balot! ».
+        C'est parti.
       </p>
       <div>
         <div className="flex flex-row p-2 space-x-4">

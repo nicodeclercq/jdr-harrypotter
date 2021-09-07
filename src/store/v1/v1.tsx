@@ -49,6 +49,11 @@ export type Spell = IO.TypeOf<typeof spellDecoder>;
 
 export const userDecoder = IO.type({
   name: IO.string,
+  imageUrl: IO.union([
+    IO.null,
+    IO.undefined,
+    IO.string,
+  ]),
 });
 
 export type User = IO.TypeOf<typeof userDecoder>;
@@ -62,7 +67,7 @@ export const stateDecoder = IO.type({
 export type State = IO.TypeOf<typeof stateDecoder>;
 
 export const defaultState: State = {
-  user: {name: ''},
+  user: {name: '', imageUrl: undefined},
   userSpells: [],
   uses: {},
 };

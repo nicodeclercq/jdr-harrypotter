@@ -5,9 +5,9 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
-import { IconName } from './components/icons/Icon';
+import { Icon, IconName } from './components/icons/Icon';
 import { keys } from './helpers/object';
-import { fromRemoteData } from './helpers/remoteData';
+import { fromRemoteData, sequence } from './helpers/remoteData';
 import { ArithmancyPage } from './pages/arithmancy/arithmancyPage';
 import { CartomancyPage } from './pages/cartomancy/CartomancyPage';
 import { HomePage } from './pages/home/HomePage';
@@ -21,17 +21,20 @@ import { SpellsPage } from './pages/spells/SpellsPage';
 import { SocketMessageHandler } from './SocketMessageHandler';
 import { State } from './store/State';
 import { useLockKey } from './hooks/useLockKey';
+import { Avatar } from './components/Avatar';
 
 type RouteDefinition = {
   label: ((state: State) => string) | string;
-  icon: IconName;
+  icon: IconName | ((state: State) => React.ReactElement);
   Component: () => React.ReactElement;
   lockKey?: string; 
 };
 
 export const ROUTES: Record<string, RouteDefinition> = {
   '/': {
-    icon: 'SORCERER',
+    icon: (state: State) => state.user.imageUrl
+      ? <Avatar url={state.user.imageUrl} text={state.user.name} />
+      : <Icon name="SORCERER" />,
     label: (state: State) => state.user.name,
     Component: HomePage,
   },
@@ -93,11 +96,11 @@ export const getAvailableRoutes = (unlockedKeys: State['lockKeys']) => routesDef
 
 
 function SocketMessageHandlerRenderer(){
-  const { name } = useUser();
+  const { name, imageUrl } = useUser();
 
   return pipe(
-    name,
-    fromRemoteData(name => <SocketMessageHandler currentUserName={name} />),
+    sequence({name, imageUrl}),
+    fromRemoteData(({name, imageUrl}) => <SocketMessageHandler currentUserName={name} currentUserAvatar={imageUrl ?? ''} />),
   )
 }
 

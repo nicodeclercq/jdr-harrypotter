@@ -9,10 +9,11 @@ import { useMoney } from './pages/objects/useMoney';
 import { useRole } from './hooks/useRole';
 
 type Props = {
-  currentUserName: string
+  currentUserName: string;
+  currentUserAvatar: string;
 }
 
-export function SocketMessageHandler({currentUserName}: Props){
+export function SocketMessageHandler({currentUserName, currentUserAvatar}: Props){
   const { stream, emit } = useSocket();
   const { add } = useNotification();
   const { addMoney } = useMoney();
@@ -22,8 +23,16 @@ export function SocketMessageHandler({currentUserName}: Props){
     const subscription = stream
       .subscribe({
         next: fold(currentUserName, {
-          join: ({name}) => {
-            add({id: `join_${name}`, type: 'success', message: `${name} vient de rejoindre la partie`});
+          join: (_, author) => {
+            add({
+              id: `join_${author.name}`,
+              type: 'message',
+              message: `${author.name} vient de rejoindre la partie`,
+              author: {
+                name: author.name,
+                avatar: author.avatar ?? ''
+              },
+            });
           },
           quit: ({name}) => {
             add({id: `quit_${name}`, type: 'success', message: `${name} vient de quitter la partie`});
@@ -38,17 +47,30 @@ export function SocketMessageHandler({currentUserName}: Props){
           },
           chat: ({ message, recipient, needsConfirmation }, author) => {
             if(recipient === currentUserName){
-              add({id: `chat_${message}_${author}`, type: 'message', message, action: needsConfirmation ? {
-                run: () => {
-                emit({
-                  type: 'chat',
-                  payload: {
-                    message: 'Bien reçu!',
-                    recipient: author,
-                    needsConfirmation: false,
+              add({
+                id: `chat_${message}_${author.name}`,
+                type: 'message',
+                message,
+                action: needsConfirmation
+                  ? {
+                    run: () => {
+                      emit({
+                        type: 'chat',
+                        payload: {
+                          message: 'Bien reçu!',
+                          recipient: author.name,
+                          needsConfirmation: false,
+                        }
+                      })
+                    },
+                    label:'OK'
                   }
-                })
-              }, label:'OK'} : undefined});
+                  : undefined,
+                  author: {
+                    name: author.name,
+                    avatar: author.avatar ?? ''
+                  },
+              });
             }
           },
           alert: ({type}, author) => {
@@ -61,14 +83,30 @@ export function SocketMessageHandler({currentUserName}: Props){
                   constVoid,
                   (isCurrentUserMJ) => {
                     if(isCurrentUserMJ){
-                      add({id: `sleepy_${author}`, type: 'message', message: `${author} s'ennuie`});
+                      add({
+                        id: `sleepy_${author.name}`,
+                        type: 'message',
+                        message: `${author.name} s'ennuie`,
+                        author: {
+                          name: author.name,
+                          avatar: author.avatar ?? ''
+                        },
+                      });
                     }
                   },
                 )
               );
             }
             if(type === 'playerNeedsPause'){
-              add({id: `halt_${author}`, type: 'message', message: `${author} veut faire une pause`});
+              add({
+                id: `halt_${author.name}`,
+                type: 'message',
+                message: `${author.name} veut faire une pause`,
+                author: {
+                  name: author.name,
+                  avatar: author.avatar ?? ''
+                },
+              });
             }
           },
         }),

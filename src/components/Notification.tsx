@@ -1,25 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { NotificationService, NotificationType } from '../NotificationService';
+import { isMessageType, NotificationService, NotificationType } from '../NotificationService';
 import { useStore } from '../hooks/useStore';
 import { Button } from './Button';
 import { Icon } from './icons/Icon';
 import { identity } from 'fp-ts/function';
 import { State } from '../store/State';
+import { Avatar } from './Avatar';
 
-function Notification({ action, message, type }: NotificationType) {
-  const icons: Record<NotificationType['type'], React.ReactNode> = {
-    success: <div className="flex items-center justify-center w-10 h-10 p-2 bg-green-500 rounded-full shadow-inner">🎉</div>,
-    failure: <div className="flex items-center justify-center w-10 h-10 p-2 bg-red-500 rounded-full shadow-inner">😈</div>,
-    warning: <div className="flex items-center justify-center w-10 h-10 p-2 bg-yellow-500 rounded-full shadow-inner">⚠️</div>,
-    message: <div className="flex items-center justify-center w-10 h-10 p-2 bg-blue-500 rounded-full shadow-inner"><Icon name="CHARACTER" /></div>
+function Notification({notification}: {notification: NotificationType}) {
+  const renderIcon = (notification: NotificationType) => {
+    const icons = {
+      success: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-green-500 rounded-full shadow-inner">🎉</div>,
+      failure: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-red-500 rounded-full shadow-inner">😈</div>,
+      warning: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-yellow-500 rounded-full shadow-inner">⚠️</div>,
+      message: ({avatar, name}: {name: string, avatar: string}) => avatar
+        ? <Avatar text={name} url={avatar} />
+        : <div className="flex items-center justify-center w-10 h-10 p-2 bg-blue-500 rounded-full shadow-inner">
+            <Icon name="CHARACTER" />
+          </div>
+      
+    } as const;
+
+    return isMessageType(notification)
+      ? icons.message(notification.author)
+      : icons[notification.type as 'success' | 'failure' | 'warning']()
   }
 
   return (
     <div className="flex flex-row items-center p-4 bg-white rounded shadow-md space-x-2">
-      {icons[type]}
-      <span className="flex-grow text-left">{message}</span>
+      {renderIcon(notification)}
+      <span className="flex-grow text-left">{notification.message}</span>
       {
-        action && <Button type="primary" onClick={action.run}>{action.label}</Button>
+        notification.action && <Button type="primary" onClick={notification.action.run}>{notification.action.label}</Button>
       }
     </div>
   )
@@ -56,7 +68,7 @@ export function NotificationStack(){
     <div className="fixed bottom-0 right-0 w-1/3 m-2 space-y-2">
       {
         stack.map((notification) => (
-          <Notification key={notification.id} id={notification.id} message={notification.message} type={notification.type} action={notification.action} />)
+          <Notification key={notification.id} notification={notification} />)
         )
       }
     </div>

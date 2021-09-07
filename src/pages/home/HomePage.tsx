@@ -28,7 +28,7 @@ function Home ({state, hasSpells}: { state: State, hasSpells: boolean}) {
   return (
       <Layout>
         <div className="w-1/2 h-full m-3 space-y-4">
-          <Identity state={state} />
+          <Identity />
           <MyTraits />
           <BestSkills />
         </div>

@@ -2,20 +2,32 @@ import { RemoteData } from '@devexperts/remote-data-ts';
 import { BehaviorSubject } from 'rxjs';
 import { State } from './store/State';
 
-export type NotificationType = {
+export const notificationTypes = {
+  success: 'success',
+  failure: 'failure',
+  warning: 'warning',
+  message: 'message',
+} as const;
+
+type Type = keyof typeof notificationTypes;
+type Notification<T extends Type> = {
   id: string;
-  type: 'success' | 'failure' | 'warning' | 'message';
+  type: T;
   message: string;
   action?: {
     run: () => void;
     label: string;
   },
   showUntil?: (state: RemoteData<Error, State>) => boolean;
-};
+} & (T extends 'message' ? { author: {name: string; avatar: string} }: {});
+export type NotificationType = Notification<Type>;
+
+export const isMessageType = (notification: NotificationType): notification is Notification<'message'> => notification.type === 'message'; 
+export const isStatusType = (notification: NotificationType): notification is Notification<'success' | 'failure' | 'warning'> => ['success', 'failure', 'warning'].includes(notification.type); 
 
 const subject = new BehaviorSubject<Array<NotificationType>>([]);
 
-const add = ({ id, action, ...rest }: NotificationType) => {
+const add = <T extends Type>({ id, action, ...rest }: Notification<T>) => {
   if(subject.value.filter(notification => notification.id === id).length > 0) {
     return;
   }

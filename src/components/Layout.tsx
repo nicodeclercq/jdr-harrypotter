@@ -18,7 +18,7 @@ import { State } from '../store/State';
 import { useLockKey } from '../hooks/useLockKey';
 import { QuickActions } from '../pages/home/QuickActions';
 
-function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName;}) {
+function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName | React.ReactElement;}) {
   let match = useRouteMatch({
     path,
     exact: true,
@@ -32,7 +32,7 @@ function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string,
   return (
     <Link to={path}>
       <div className={`flex text-4xl flex-row space-x-2 py-2 px-4 items-center ${match ? style.active : style.inactive}`}>
-        <span aria-label={label}><Icon name={icon} /></span>
+        {typeof icon === 'string' ? <span aria-label={label}><Icon name={icon} /></span> : icon}
         {hovered && <span className="text-xl">{label}</span>}
       </div>
     </Link>
@@ -45,6 +45,14 @@ const displayLabel = (label: string | ((state: State) => string), state: State) 
   }
 
   return label(state);
+}
+
+const displayIcon = (icon: IconName | ((state: State) => React.ReactElement), state: State) => {
+  if(typeof icon === 'string'){
+    return icon;
+  }
+
+  return icon(state);
 }
 
 export function Layout ({ children }: { children: React.ReactNode }) {
@@ -69,7 +77,7 @@ export function Layout ({ children }: { children: React.ReactNode }) {
               .map(({path, label, icon}) => ({
                 path,
                 label: displayLabel(label, state),
-                icon,
+                icon: displayIcon(icon, state),
               }))
               .map(({path, label, icon}) => (
                 <div key={`${path}_${label}`}>
