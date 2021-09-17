@@ -1,6 +1,5 @@
 import React from 'react';
 import { pipe } from 'fp-ts/function';
-import { useTitle } from 'react-use';
 
 import { Layout } from '../../components/Layout';
 import { fromRemoteData, sequence } from '../../helpers/remoteData';
@@ -10,7 +9,6 @@ import { useMoney } from './useMoney';
 import { useObjects } from './useObjects';
 
 export function ObjectsPage(){
-  useTitle('Objets');
   const { getObjects } = useObjects();
   const { getMoney } = useMoney();
 

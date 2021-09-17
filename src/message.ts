@@ -3,13 +3,19 @@ import { formatValidationErrors } from 'io-ts-reporters';
 import { pipe, constVoid } from 'fp-ts/function';
 import * as Either from 'fp-ts/Either';
 
-const joinMessageDecoder = IO.type({
-  type: IO.literal('join'),
+const hasAlreadyJoinMessageDecoder = IO.type({
+  type: IO.literal('hasAlreadyJoined'),
   payload: IO.type({
-    name: IO.string,
+    recipient: IO.string,
   }),
 });
-type JoinMessage = IO.TypeOf<typeof joinMessageDecoder>;
+export type HasAlreadyJoinedMessage = IO.TypeOf<typeof hasAlreadyJoinMessageDecoder>;
+
+const joinMessageDecoder = IO.type({
+  type: IO.literal('join'),
+  payload: IO.undefined,
+});
+export type JoinMessage = IO.TypeOf<typeof joinMessageDecoder>;
 
 const quitMessageDecoder = IO.type({
   type: IO.literal('quit'),
@@ -17,7 +23,7 @@ const quitMessageDecoder = IO.type({
     name: IO.string,
   }),
 });
-type QuitMessage = IO.TypeOf<typeof quitMessageDecoder>;
+export type QuitMessage = IO.TypeOf<typeof quitMessageDecoder>;
 
 const rollMessageDecoder = IO.type({
   type: IO.literal('roll'),
@@ -27,16 +33,7 @@ const rollMessageDecoder = IO.type({
     value: IO.number,
   }),
 });
-type RollMessage = IO.TypeOf<typeof rollMessageDecoder>;
-
-const exchangeMoneyDecoder = IO.type({
-  type: IO.literal('exchangeMoney'),
-  payload: IO.type({
-    recipient: IO.string,
-    amount: IO.number,
-  })
-});
-type ExchangeMoneyMessage = IO.TypeOf<typeof exchangeMoneyDecoder>;
+export type RollMessage = IO.TypeOf<typeof rollMessageDecoder>;
 
 const chatDecoder = IO.type({
   type: IO.literal('chat'),
@@ -46,7 +43,7 @@ const chatDecoder = IO.type({
     needsConfirmation: IO.boolean,
   })
 });
-type ChatMessage = IO.TypeOf<typeof chatDecoder>;
+export type ChatMessage = IO.TypeOf<typeof chatDecoder>;
 
 const alertDecoder = IO.type({
   type: IO.literal('alert'),
@@ -57,7 +54,7 @@ const alertDecoder = IO.type({
     ])
   })
 });
-type AlertMessage = IO.TypeOf<typeof alertDecoder>;
+export type AlertMessage = IO.TypeOf<typeof alertDecoder>;
 
 const messageDecoder = IO.type({
   author: IO.type({
@@ -65,10 +62,10 @@ const messageDecoder = IO.type({
     avatar: IO.union([IO.string, IO.undefined, IO.null]),
   }),
   message: IO.union([
+    hasAlreadyJoinMessageDecoder,
     joinMessageDecoder,
     quitMessageDecoder,
     rollMessageDecoder,
-    exchangeMoneyDecoder,
     chatDecoder,
     alertDecoder,
   ])
@@ -77,10 +74,10 @@ const messageDecoder = IO.type({
 export type Message = IO.TypeOf<typeof messageDecoder>;
 
 export const fold = (currentUserName: string, fns: {
+  hasAlreadyJoined: (payload: HasAlreadyJoinedMessage['payload'], author: Message['author']) => void, 
   join: (payload: JoinMessage['payload'], author: Message['author']) => void,
   quit: (payload: QuitMessage['payload'], author: Message['author']) => void,
   roll: (payload: RollMessage['payload'], author: Message['author']) => void,
-  exchangeMoney: (payload: ExchangeMoneyMessage['payload'], author: Message['author']) => void,
   chat: (payload: ChatMessage['payload'], author: Message['author']) => void,
   alert: (payload: AlertMessage['payload'], author: Message['author']) => void,
 }) => (message: unknown) => pipe(
@@ -91,7 +88,7 @@ export const fold = (currentUserName: string, fns: {
   },
   messageDecoder.decode,
   Either.mapLeft((e) => {
-    console.log('error', formatValidationErrors(e));
+    console.log('error', message, formatValidationErrors(e));
     return Either.left('Wrong encoding');
   }),
   Either.filterOrElse(
@@ -101,6 +98,9 @@ export const fold = (currentUserName: string, fns: {
   Either.fold(
     constVoid,
     (data) => {
+      if (hasAlreadyJoinMessageDecoder.is(data.message)) {
+        fns.hasAlreadyJoined(data.message.payload, data.author);
+      }
       if (joinMessageDecoder.is(data.message)) {
         fns.join(data.message.payload, data.author);
       }
@@ -109,9 +109,6 @@ export const fold = (currentUserName: string, fns: {
       }
       if(rollMessageDecoder.is(data.message)) {
         fns.roll(data.message.payload, data.author);
-      }
-      if(exchangeMoneyDecoder.is(data.message)) {
-        fns.exchangeMoney(data.message.payload, data.author);
       }
       if(chatDecoder.is(data.message)) {
         fns.chat(data.message.payload, data.author);

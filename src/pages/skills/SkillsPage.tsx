@@ -1,6 +1,5 @@
 import React from 'react';
 import { pipe } from 'fp-ts/function';
-import { useTitle } from 'react-use';
 import { Card } from '../../components/Card';
 import { Layout } from '../../components/Layout';
 import { fromRemoteData } from '../../helpers/remoteData';
@@ -9,7 +8,6 @@ import { MyTraits } from './MyTraits';
 import { useSkill } from './useSkill';
 
 export function SkillsPage() {
-  useTitle('Compétences');
   const { getSkills } = useSkill();
 
   return pipe(

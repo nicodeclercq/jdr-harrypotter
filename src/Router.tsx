@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { Icon, IconName } from './components/icons/Icon';
 import { keys } from './helpers/object';
-import { fromRemoteData, sequence } from './helpers/remoteData';
+import { fromRemoteData } from './helpers/remoteData';
 import { ArithmancyPage } from './pages/arithmancy/arithmancyPage';
 import { CartomancyPage } from './pages/cartomancy/CartomancyPage';
 import { HomePage } from './pages/home/HomePage';
@@ -22,6 +22,9 @@ import { SocketMessageHandler } from './SocketMessageHandler';
 import { State } from './store/State';
 import { useLockKey } from './hooks/useLockKey';
 import { Avatar } from './components/Avatar';
+import { useStoreLoadState } from './hooks/useStore';
+import { Loader } from './components/Loader';
+import { useSocket } from './hooks/useSocket';
 
 type RouteDefinition = {
   label: ((state: State) => string) | string;
@@ -95,13 +98,17 @@ export const getAvailableRoutes = (unlockedKeys: State['lockKeys']) => routesDef
   .filter((path) => ROUTES[path].lockKey == null || unlockedKeys.includes(ROUTES[path].lockKey as string));
 
 
+let oldName: unknown;
 function SocketMessageHandlerRenderer(){
-  const { name, imageUrl } = useUser();
+  const { name } = useUser();
+  const { stream, emit } = useSocket();
+  console.log('rerender', oldName, name);
+  oldName = name;
 
   return pipe(
-    sequence({name, imageUrl}),
-    fromRemoteData(({name, imageUrl}) => <SocketMessageHandler currentUserName={name} currentUserAvatar={imageUrl ?? ''} />),
-  )
+    name,
+    fromRemoteData((name) => <SocketMessageHandler stream={stream} emit={emit} currentUserName={name} />),
+  );
 }
 
 function RouterRenderer(){
@@ -131,8 +138,11 @@ function RouterRenderer(){
 }
 
 export function Router() {
-  return <>
-    <SocketMessageHandlerRenderer />
-    <RouterRenderer />
-  </>;
+  const { loadState } = useStoreLoadState();
+  return loadState === 'success'
+    ? <>
+        <SocketMessageHandlerRenderer />
+        <RouterRenderer />
+      </>
+    : <Loader />;
 }

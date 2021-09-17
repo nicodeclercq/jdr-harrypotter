@@ -35,6 +35,7 @@ import { Ingredients } from './components/ingredients';
 import { Cauldron } from './components/cauldron';
 import { Sleepy } from './components/sleepy';
 import { Halt } from './components/halt';
+import { Pen } from './components/pen';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -73,6 +74,7 @@ export const ICONS = {
   CAULDRON: <Cauldron />,
   SLEEPY: <Sleepy />,
   HALT: <Halt />,
+  PEN: <Pen />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

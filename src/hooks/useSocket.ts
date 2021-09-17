@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { pipe } from 'fp-ts/function';
 import { BehaviorSubject } from 'rxjs';
 import { io } from 'socket.io-client';
 
 import { useUser } from '../pages/home/useUser';
 import { Message } from '../message';
-import { onSuccess } from '../helpers/remoteData';
+import { onSuccess, sequence } from '../helpers/remoteData';
 
 const DEFAULT_AUTHOR = 'Unknown';
 const DOMAIN = 'https://jdr-harrypotter-back.herokuapp.com/';
@@ -38,24 +38,24 @@ export const useSocket = () =>{
 
   useEffect(
     () => pipe(
-      name,
+      sequence({name, imageUrl}),
       onSuccess(
-        (name) => {
+        ({name, imageUrl}) => {
           if (author !== name) {
-            if(author === DEFAULT_AUTHOR) {
+            const isNotInit = author === DEFAULT_AUTHOR;
+            author = name;
+            avatar = imageUrl ?? '';
+            if(isNotInit) {
               emit({
                 type: 'join',
-                payload:{
-                  name,
-                }
+                payload: undefined,
               })
             }
-            author = name;
           }
         }
       )
     ),
-    [name]
+    [name, imageUrl]
   );
   useEffect(
     () => pipe(
@@ -70,9 +70,10 @@ export const useSocket = () =>{
     ),
     [imageUrl]
   );
-
-  return {
+  const result = useMemo(() => ({
     emit,
     stream,
-  };
+  }), []);
+
+  return result;
 }

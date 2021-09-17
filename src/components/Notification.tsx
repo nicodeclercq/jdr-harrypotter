@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { identity } from 'fp-ts/function';
 import { isMessageType, NotificationService, NotificationType } from '../NotificationService';
 import { useStore } from '../hooks/useStore';
 import { Button } from './Button';
-import { Icon } from './icons/Icon';
-import { identity } from 'fp-ts/function';
 import { State } from '../store/State';
 import { Avatar } from './Avatar';
 
@@ -13,11 +12,7 @@ function Notification({notification}: {notification: NotificationType}) {
       success: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-green-500 rounded-full shadow-inner">🎉</div>,
       failure: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-red-500 rounded-full shadow-inner">😈</div>,
       warning: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-yellow-500 rounded-full shadow-inner">⚠️</div>,
-      message: ({avatar, name}: {name: string, avatar: string}) => avatar
-        ? <Avatar text={name} url={avatar} />
-        : <div className="flex items-center justify-center w-10 h-10 p-2 bg-blue-500 rounded-full shadow-inner">
-            <Icon name="CHARACTER" />
-          </div>
+      message: ({avatar, name}: {name: string, avatar: string}) => <Avatar text={name} url={avatar} />
       
     } as const;
 
