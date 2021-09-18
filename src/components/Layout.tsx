@@ -69,7 +69,7 @@ export function Layout ({ children }: { children: React.ReactNode }) {
       state,
     }),
     fromRemoteData(({lockKeys, state}) => (
-      <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-blue-500 flex flex-col`}>
+      <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-blue-500 flex flex-col`} style={{zIndex: 1}}>
         <div className="flex-grow overflow-y-auto divide-y divide-blue-500">
           {
             getAvailableRoutes(lockKeys)
