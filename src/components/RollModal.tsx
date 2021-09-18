@@ -114,7 +114,6 @@ export function RollModal ({
         type: 'roll',
         payload: {
           title,
-          type: 'success',
           value
         }
       });
@@ -126,7 +125,6 @@ export function RollModal ({
           type: 'roll',
           payload: {
             title,
-            type: result.type,
             value
           }
         });
@@ -139,7 +137,6 @@ export function RollModal ({
           type: 'roll',
           payload: {
             title,
-            type: 'success',
             value
           }
         });

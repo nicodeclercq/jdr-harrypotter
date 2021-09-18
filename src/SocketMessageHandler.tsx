@@ -61,8 +61,8 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
     add({id: `quit_${name}`, type: 'success', message: `${name} vient de quitter la partie`});
   }, [add]);
 
-  const roll = useCallback(({title, type, value}: RollMessage['payload'], author: Message['author']) => {
-    add({id: `roll_${author}_${title}_${value}`, type, message: `"${title}": ${author} vient de faire ${value}`});
+  const roll = useCallback(({title, value}: RollMessage['payload'], author: Message['author']) => {
+    add({id: `roll_${author}_${title}_${value}`, type: 'message', message: `"${title}": ${author.name} vient de faire ${value}`, author: {name: author.name, avatar: author.avatar ?? ''}});
   }, [add]);
 
   const chat = useCallback(({ message, recipient, needsConfirmation }: ChatMessage['payload'], author: Message['author']) => {

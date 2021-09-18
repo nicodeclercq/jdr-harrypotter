@@ -29,7 +29,6 @@ const rollMessageDecoder = IO.type({
   type: IO.literal('roll'),
   payload: IO.type({
     title: IO.string,
-    type: IO.union([IO.literal('success'), IO.literal('failure')]),
     value: IO.number,
   }),
 });
