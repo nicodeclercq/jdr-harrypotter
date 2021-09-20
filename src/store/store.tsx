@@ -8,44 +8,61 @@ import { equals } from "../helpers/remoteData";
 import { State, retrieve } from "../store/State";
 import { ExternalStore } from "../store/ExternalStore";
 import { NameForm } from "../store/v1/NameForm";
-
-type StateDTO = {
-  state: unknown,
-  name: string | undefined;
-};
+import { lastUpdateLens } from './helper';
 
 export const subject = new BehaviorSubject<RemoteData.RemoteData<Error, State>>(RemoteData.initial);
 
-export const retrieveState = (): Promise<State> => 
-  Promise.resolve(window.localStorage.getItem('state'))
-    .then((currentState) => tryCatch(
-      () => JSON.parse(currentState || ''),
-      () => undefined
-    ))
-    .then((state): StateDTO | Promise<StateDTO> =>
-      state == null
-        ? ExternalStore.getEntries()
-          .catch((error) => {
-            console.error(error);
-            return [];
-          })
-          .then(
-            (names: string[]) => prompt<string>(
-              (callback: (result: string) => void) => <NameForm defaultValue="" names={names} callback={callback} />,
-              <>Qui est ton personnage ?</>
-            ).then(
-              (name) =>  (
-                names.includes(name)
-                    ? ExternalStore.read(name)
-                    : Promise.resolve(undefined)
-                )
-                .then((state) => ({state, name}))
-                .catch(() => ({state: undefined, name}))
-            )
-          )
-        : {state, name: undefined}
+const onNoLocalState = () => ExternalStore.getEntries()
+  .catch((error) => {
+    console.error(error);
+    return [];
+  })
+  .then(
+    (names: string[]) => prompt<string>(
+      (callback: (result: string) => void) => <NameForm defaultValue="" names={names} callback={callback} />,
+      <>Qui est ton personnage ?</>
+    ).then(
+      (name) =>  (
+        names.includes(name)
+            ? ExternalStore.read(name)
+            : Promise.resolve(undefined)
+        )
+        .then((state) => ({state, name}))
+        .catch(() => ({state: undefined, name}))
     )
-    .then(({state, name}) => retrieve(state, name));
+  )
+  .then(({state, name}) => retrieve(state, name));
+
+const onLocalState = (state: unknown) => retrieve(state, undefined)
+  .then(
+    (localState) => ExternalStore.read(localState.user.name)
+      .then((state) => retrieve(state, undefined))
+      .then((externalState) => {
+        const externalLastUpdate = lastUpdateLens.get(externalState);
+        const localLastUpdate = lastUpdateLens.get(localState);
+
+        if (localLastUpdate != null && externalLastUpdate != null) {
+          return externalLastUpdate > localLastUpdate
+            ? externalState
+            : localState;
+        } else {
+          return externalLastUpdate != null
+            ? externalState
+            : localState;
+        }
+      })
+      .catch(() => localState)
+  );
+
+export const retrieveState = (): Promise<State> => Promise.resolve(window.localStorage.getItem('state'))
+  .then((currentState) => tryCatch(
+    () => JSON.parse(currentState || ''),
+    () => undefined
+  ))
+  .then(state =>  state != null
+    ? onLocalState(state)
+    : onNoLocalState()
+  );
 
 subject
   .asObservable()

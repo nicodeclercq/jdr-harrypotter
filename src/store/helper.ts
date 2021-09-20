@@ -4,6 +4,7 @@ import { Decoder } from "io-ts";
 import { formatValidationErrors } from 'io-ts-reporters';
 import { AES, SHA256, enc } from 'crypto-js';
 import { secrets } from "../secrets";
+import { State } from './State';
 
 export function retrieveFromVersion<U>(
   version: string,
@@ -43,4 +44,9 @@ export const decrypt = (key: string) => (value: string )  => {
   const lockKey = getLockKey(key);
   const result = AES.decrypt(value, lockKey).toString(enc.Utf8)/*?*/;
   return JSON.parse(result/*?*/);
+}
+
+export const lastUpdateLens = {
+  get: (state: State) => state.lastUpdate ? new Date(Number.parseInt(state.lastUpdate)) : undefined,
+  set: (newDate: Date) => (state: State): State => ({...state, lastUpdate: `${newDate.getTime()}`}),
 }

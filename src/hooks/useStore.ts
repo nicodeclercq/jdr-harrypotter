@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import * as RX from 'rxjs/operators';
-import { constant, FunctionN, pipe } from "fp-ts/function";
+import { constant, FunctionN, pipe, flow } from "fp-ts/function";
 import * as RemoteData from '@devexperts/remote-data-ts';
 
 import { State } from "../store/State";
 import { subject, retrieveState } from "../store/store";
 import { equals } from "../helpers/remoteData";
+import { lastUpdateLens } from "../store/helper";
 
 const fetchStatePromise = retrieveState();
 
@@ -53,8 +54,10 @@ export const useStore = <T>([getter, setter]: Props<T>) => {
 
   const resultSetter = (newValue: T) => pipe(
     subject.value,
-    RemoteData.map(
-      currentState => setter(currentState, newValue)
+    RemoteData.map(flow(
+        (currentState) => setter(currentState, newValue),
+        lastUpdateLens.set(new Date()),
+      )
     ),
     newState => subject.next(newState),
   );
