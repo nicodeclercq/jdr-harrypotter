@@ -32,7 +32,7 @@ export function ChatBoxes ({users}: { users: Record<string, string | null | unde
     alignItems:'center',
     justifyContent: 'space-evenly',
     gap: '1rem',
-    position:'absolute',
+    position:'fixed',
     top: '0',
     left: '0',
     width: '100%',
