@@ -19,7 +19,7 @@ export function ChatBoxes ({users}: { users: Record<string, string | null | unde
     {
       Object.entries(users)
         .map(([user, image]) => (
-          <div key={user} title={user} style={{pointerEvents: 'auto'}}>
+          <div key={user}>
             <ChatBox image={image} user={user} />
           </div>
         ))

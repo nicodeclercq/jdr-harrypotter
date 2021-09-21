@@ -65,7 +65,7 @@ export function ChatBox ({user, image}: {user: string, image: string | null | un
 
   return (
     <div style={{position: 'relative', display:'flex', flexDirection: 'column', alignItems: 'center', filter:'drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))', transform: isVisible ? 'translateY(0)' : 'translateY(calc(-100% + 4.75rem))', transition: 'transform ease-in-out 0.2s'}}>
-      <div style={{background: 'white', minWidth: '8rem', padding: '0.125rem 0.5rem 1.5rem', borderBottomLeftRadius: '1rem', borderBottomRightRadius: '1rem'}}>
+      <div style={{background: 'white', minWidth: '8rem', padding: '0.125rem 0.5rem 1.5rem', borderBottomLeftRadius: '1rem', borderBottomRightRadius: '1rem', pointerEvents: 'auto'}}>
         <div className="p-2 my-2 bg-gray-100 rounded" style={{width: '100%', height: '10rem', overflow: 'auto'}}>
           {
             messages.map(({id, isSelf, text, date}) => (
@@ -105,7 +105,7 @@ export function ChatBox ({user, image}: {user: string, image: string | null | un
           fill="#FFFFFF"
         />
       </svg>
-      <div style={{position: 'absolute', bottom: '0.25rem', left: '50%', cursor: 'pointer', transform: 'translateX(-50%)'}}>
+      <div style={{position: 'absolute', bottom: '0.25rem', left: '50%', cursor: 'pointer', transform: 'translateX(-50%)', pointerEvents: 'auto'}}>
         <Avatar url={image} text={user} onClick={() => setIsVisible(!isVisible)} icon={isVisible ? 'UP' : 'DOWN'} />
       </div>
     </div>
