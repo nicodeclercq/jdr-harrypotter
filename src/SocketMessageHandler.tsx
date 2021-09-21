@@ -117,7 +117,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       chat,
       alert,
     })(message)
-  }, [alert, currentUserName, hasAlreadyJoined, join, quit, roll]);
+  }, [alert, chat, currentUserName, hasAlreadyJoined, join, quit, roll]);
 
   useEffect(() => {
     const subscription = connectedUsersSubject
