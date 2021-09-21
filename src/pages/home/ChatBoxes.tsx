@@ -11,8 +11,9 @@ export function ChatBoxes ({users}: { users: Record<string, string | null | unde
     position:'fixed',
     top: '0',
     left: '0',
-    width: '100%',
+    width: 'calc(100% - 5rem)',
     pointerEvents: 'none',
+    marginLeft: '5rem',
     zIndex: 1,
   }}>
     {
