@@ -1,11 +1,16 @@
+import { constVoid } from 'fp-ts/lib/function';
 import React from 'react';
-import { Icon } from './icons/Icon';
-
-type Props = {
+import { Icon, IconName } from './icons/Icon';
+type Clickable = {
+  onClick?: () => void;
+  icon: IconName;
+};
+type BaseProps = {
   text: string;
   url: string | undefined | null;
-  onClick?: () => void;
-}
+};
+
+type Props = BaseProps & ({} | Clickable);
 
 const randomColor = (str: string) => {
   const value = str
@@ -16,11 +21,17 @@ const randomColor = (str: string) => {
   return `hsl(${hue}, 25%, 50%)`;
 }
 
-export function Avatar({text, url, onClick}: Props) {
+const isClickable = (props: Props): props is BaseProps & Clickable => 'onClick' in props;
+
+export function Avatar(props: Props) {
   return (
-    <div title={text} onClick={onClick} className="relative flex items-center justify-center flex-none w-12 h-12 border-2 border-white rounded-full shadow" style={{ flex: 'none', backgroundColor: randomColor(text), backgroundImage: `url("${url}")`, backgroundPosition: 'center', backgroundSize: 'cover'}}>
-      {url ? '' : <Icon name="SORCERER" />}
-      {onClick && <button className="absolute flex items-center justify-center w-6 h-6 p-0 text-gray-700 bg-white border border-gray-500 rounded-full shadow" style={{bottom: '-0.5rem', right: '-0.5rem', fontSize: '1rem'}}><Icon name="PEN" /></button>}
+    <div title={props.text} onClick={isClickable(props) ? props.onClick : constVoid} className="relative flex items-center justify-center flex-none w-12 h-12 border-2 border-white rounded-full shadow" style={{ flex: 'none', backgroundColor: randomColor(props.text), backgroundImage: `url("${props.url}")`, backgroundPosition: 'center', backgroundSize: 'cover'}}>
+      {props.url ? '' : <Icon name="SORCERER" />}
+      {
+        isClickable(props) && (<button className="absolute flex items-center justify-center w-6 h-6 p-0 text-gray-700 bg-white border border-gray-500 rounded-full shadow" style={{bottom: '-0.5rem', right: '-0.5rem', fontSize: '1rem'}}>
+          <Icon name={props.icon} />
+        </button>)
+      }
     </div>
   );
 }

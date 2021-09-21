@@ -43,6 +43,7 @@ const chatDecoder = IO.type({
   })
 });
 export type ChatMessage = IO.TypeOf<typeof chatDecoder>;
+export const isChatMessage = chatDecoder.is;
 
 const alertDecoder = IO.type({
   type: IO.literal('alert'),

@@ -115,7 +115,7 @@ export function Identity(){
             <span className="flex-grow">
               <Title>
                 <div className="flex items-center space-x-2">
-                  <Avatar text={name} url={imageUrl} onClick={() => prompt<{imageUrl: string}>((callback) => <ImageUrlForm imageUrl={imageUrl ?? ''} onSubmit={callback}/>, 'Choisis ton avatar').then(({imageUrl}) => setImageUrl(imageUrl))} />
+                  <Avatar text={name} url={imageUrl} onClick={() => prompt<{imageUrl: string}>((callback) => <ImageUrlForm imageUrl={imageUrl ?? ''} onSubmit={callback}/>, 'Choisis ton avatar').then(({imageUrl}) => setImageUrl(imageUrl))} icon="PEN" />
                   <span>{name}</span>
                 </div>
               </Title>

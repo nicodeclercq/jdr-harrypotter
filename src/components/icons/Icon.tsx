@@ -36,6 +36,7 @@ import { Cauldron } from './components/cauldron';
 import { Sleepy } from './components/sleepy';
 import { Halt } from './components/halt';
 import { Pen } from './components/pen';
+import { PaperPlane } from './components/paper-plane';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -75,6 +76,7 @@ export const ICONS = {
   SLEEPY: <Sleepy />,
   HALT: <Halt />,
   PEN: <Pen />,
+  PAPER_PLANE: <PaperPlane />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { pipe } from 'fp-ts/function';
+import { pipe, constVoid } from 'fp-ts/function';
 
 import { useNotification } from './components/Notification';
-import { AlertMessage, ChatMessage, fold, HasAlreadyJoinedMessage, JoinMessage, Message, QuitMessage, RollMessage } from './message';
+import { AlertMessage, fold, HasAlreadyJoinedMessage, JoinMessage, Message, QuitMessage, RollMessage } from './message';
 import { useRole } from './hooks/useRole';
 import { remove } from './helpers/object';
 import { ChatBoxes } from './pages/home/ChatBoxes';
@@ -65,35 +65,6 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
     add({id: `roll_${author}_${title}_${value}`, type: 'message', message: `"${title}": ${author.name} vient de faire ${value}`, author: {name: author.name, avatar: author.avatar ?? ''}});
   }, [add]);
 
-  const chat = useCallback(({ message, recipient, needsConfirmation }: ChatMessage['payload'], author: Message['author']) => {
-    if(recipient === currentUserName){
-      add({
-        id: `chat_${message}_${author.name}`,
-        type: 'message',
-        message,
-        action: needsConfirmation
-          ? {
-            run: () => {
-              emit({
-                type: 'chat',
-                payload: {
-                  message: 'Bien reçu!',
-                  recipient: author.name,
-                  needsConfirmation: false,
-                }
-              })
-            },
-            label:'OK'
-          }
-          : undefined,
-          author: {
-            name: author.name,
-            avatar: author.avatar ?? ''
-          },
-      });
-    }
-  }, [add, currentUserName, emit]);
-
   const alert = useCallback(({type}: AlertMessage['payload'], author: Message['author']) => {
     if(type === 'playerIsAsleep') {
       pipe(
@@ -132,10 +103,10 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       join,
       quit,
       roll,
-      chat,
+      chat: constVoid,
       alert,
     })(message)
-  }, [alert, chat, currentUserName, hasAlreadyJoined, join, quit, roll]);
+  }, [alert, currentUserName, hasAlreadyJoined, join, quit, roll]);
 
   useEffect(() => {
     const subscription = connectedUsersSubject
