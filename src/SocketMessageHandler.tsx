@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { pipe, constVoid } from 'fp-ts/function';
+import { pipe } from 'fp-ts/function';
 
 import { useNotification } from './components/Notification';
-import { AlertMessage, fold, HasAlreadyJoinedMessage, JoinMessage, Message, QuitMessage, RollMessage } from './message';
+import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage } from './message';
 import { useRole } from './hooks/useRole';
 import { remove } from './helpers/object';
 import { ChatBoxes } from './pages/home/ChatBoxes';
@@ -61,8 +61,19 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
     add({id: `quit_${name}`, type: 'success', message: `${name} vient de quitter la partie`});
   }, [add]);
 
+  const chat =  useCallback(({message, recipient}: ChatMessage['payload'], author: Message['author']) => {
+    if(currentUserName === recipient){
+      add({id: `chat_${recipient}${message}`, type: 'message', message, author: {name: author.name, avatar: author.avatar ?? ''}});
+    }
+  }, [add, currentUserName]);
+
   const roll = useCallback(({title, value}: RollMessage['payload'], author: Message['author']) => {
-    add({id: `roll_${author}_${title}_${value}`, type: 'message', message: `"${title}": ${author.name} vient de faire ${value}`, author: {name: author.name, avatar: author.avatar ?? ''}});
+    add({
+      id: `roll_${author}_${title}_${value}`,
+      type: 'message',
+      message: `"${title}": ${author.name} vient de faire ${value}`,
+      author: {name: author.name, avatar: author.avatar ?? ''}
+    });
   }, [add]);
 
   const alert = useCallback(({type}: AlertMessage['payload'], author: Message['author']) => {
@@ -103,7 +114,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       join,
       quit,
       roll,
-      chat: constVoid,
+      chat,
       alert,
     })(message)
   }, [alert, currentUserName, hasAlreadyJoined, join, quit, roll]);
