@@ -76,6 +76,13 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       message: `"${title}": ${author.name} vient de faire ${value}`,
       author: {name: author.name, avatar: author.avatar ?? ''}
     });
+    if(value <= 5){
+      const sound = document.getElementById('sound-success') as HTMLAudioElement;
+      sound.play();
+    }else if(value >= 95){
+      const sound = document.getElementById('sound-failure') as HTMLAudioElement;
+      sound.play();
+    }
   }, [add]);
 
   const alert = useCallback(({type}: AlertMessage['payload'], author: Message['author']) => {
