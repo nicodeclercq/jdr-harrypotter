@@ -64,6 +64,8 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   const chat =  useCallback(({message, recipient}: ChatMessage['payload'], author: Message['author']) => {
     if(currentUserName === recipient){
       add({id: `chat_${recipient}${message}`, type: 'message', message, author: {name: author.name, avatar: author.avatar ?? ''}});
+      const sound = document.getElementById('sound-bip') as HTMLAudioElement;
+      sound.play();
     }
   }, [add, currentUserName]);
 
@@ -91,6 +93,8 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
                 avatar: author.avatar ?? ''
               },
             });
+            const sound = document.getElementById('sound-sleep') as HTMLAudioElement;
+            sound.play();
           }
         }),
       );
@@ -105,6 +109,8 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
           avatar: author.avatar ?? ''
         },
       });
+      const sound = document.getElementById('sound-error') as HTMLAudioElement;
+      sound.play();
     }
   }, [add, isMJ]);
 
