@@ -81,6 +81,28 @@ export function QuickActions() {
       fromRemoteData(isMJ => (
         <div style={{position: 'fixed', bottom: '1rem', right: '50%', transform: 'translateX(50%)'}} className="flex rounded-full flex-columns space-x-1">
           {
+            isMJ && <>
+              <QuickButton
+                background="bg-yellow-400"
+                color="text-yellow-900"
+                icon="TIME"
+                onClick={() => emit({
+                  type: 'time',
+                  payload: 10,
+                })}
+              />
+              <QuickButton
+                background="bg-orange-400"
+                color="text-orange-900"
+                icon="TIME"
+                onClick={() => emit({
+                  type: 'time',
+                  payload: 5,
+                })}
+              />
+            </>
+          }
+          {
             !isMJ && <QuickButton background="bg-orange-400" color="text-orange-900" icon="SLEEPY" onClick={() => emit({
               type: 'alert',
               payload: {

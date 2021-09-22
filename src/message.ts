@@ -56,6 +56,13 @@ const alertDecoder = IO.type({
 });
 export type AlertMessage = IO.TypeOf<typeof alertDecoder>;
 
+const timeMessageDecoder = IO.type({
+  type: IO.literal('time'),
+  payload: IO.number,
+});
+export type TimeMessage = IO.TypeOf<typeof timeMessageDecoder>;
+export const isTimeMessage = timeMessageDecoder.is;
+
 const messageDecoder = IO.type({
   author: IO.type({
     name: IO.string,
@@ -68,6 +75,7 @@ const messageDecoder = IO.type({
     rollMessageDecoder,
     chatDecoder,
     alertDecoder,
+    timeMessageDecoder,
   ])
 });
 
@@ -80,6 +88,7 @@ export const fold = (currentUserName: string, fns: {
   roll: (payload: RollMessage['payload'], author: Message['author']) => void,
   chat: (payload: ChatMessage['payload'], author: Message['author']) => void,
   alert: (payload: AlertMessage['payload'], author: Message['author']) => void,
+  time: (payload: TimeMessage['payload'], author: Message['author']) => void,
 }) => (message: unknown) => pipe(
   message,
   (m) => {
@@ -115,6 +124,9 @@ export const fold = (currentUserName: string, fns: {
       }
       if(alertDecoder.is(data.message)) {
         fns.alert(data.message.payload, data.author);
+      }
+      if(timeMessageDecoder.is(data.message)) {
+        fns.time(data.message.payload, data.author);
       }
     }
   )

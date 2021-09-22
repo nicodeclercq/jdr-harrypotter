@@ -33,7 +33,7 @@ window.addEventListener('beforeunload', () => {
   })
 });
 
-export const useSocket = () =>{
+export const useSocket = () => {
   const { name, imageUrl } = useUser();
 
   useEffect(

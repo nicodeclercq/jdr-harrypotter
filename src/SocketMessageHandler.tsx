@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { pipe } from 'fp-ts/function';
+import { constVoid, pipe } from 'fp-ts/function';
 
 import { useNotification } from './components/Notification';
 import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage } from './message';
@@ -9,6 +9,7 @@ import { ChatBoxes } from './pages/home/ChatBoxes';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { onSuccess } from './helpers/remoteData';
+import { Time } from './pages/home/Time';
 
 type Props = {
   currentUserName: string;
@@ -129,6 +130,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       roll,
       chat,
       alert,
+      time: constVoid,
     })(message)
   }, [alert, chat, currentUserName, hasAlreadyJoined, join, quit, roll]);
 
@@ -170,5 +172,6 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
 
   return (<>
     <ChatBoxes users={connectedUsers} />
+    <Time />
   </>);
 }
