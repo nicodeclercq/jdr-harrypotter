@@ -1,6 +1,6 @@
 import React from 'react';
 import {useTitle} from 'react-use'; 
-import { pipe } from 'fp-ts/lib/function';
+import { pipe, identity } from 'fp-ts/lib/function';
 
 import { Layout } from '../../components/Layout';
 import { useRouter } from '../../hooks/useRouter';
@@ -14,14 +14,15 @@ import { Identity } from './Identity';
 import { useLockKey } from '../../hooks/useLockKey';
 import { ObjectsForm } from '../objects/ObjectsForm';
 import { MoneyForm } from '../objects/MoneyForm';
-import { identity } from 'io-ts';
+import { useRole } from '../../hooks/useRole';
+import { OppositionRollTable } from './OppositionRollTable';
 
 const stateLens = [
   identity,
   (state: State, newState: State) => newState,
 ] as [(state: State) => State, (state: State, newState: State) => State];
 
-function Home ({state, hasSpells}: { state: State, hasSpells: boolean}) {
+function Home ({isMJ, state, hasSpells}: { isMJ: boolean, state: State, hasSpells: boolean}) {
   const { goTo } = useRouter();
   useTitle(`${state.user.name} - ${state.life.current}/${state.life.max} ♥`);
 
@@ -29,6 +30,7 @@ function Home ({state, hasSpells}: { state: State, hasSpells: boolean}) {
       <Layout>
         <div className="w-1/2 h-full m-3 space-y-4">
           <Identity />
+          {isMJ && <OppositionRollTable />}
           <MyTraits />
           <BestSkills />
         </div>
@@ -45,15 +47,16 @@ function Home ({state, hasSpells}: { state: State, hasSpells: boolean}) {
 
 export function HomePage(){
   useTitle('Loading...');
-
+  const { isMJ } = useRole();
   const [state] = useStore(stateLens);
   const { isUnlocked } = useLockKey();
 
   return pipe(
     sequence({
+      isMJ,
       state,
       hasSpells: isUnlocked('alohomora'),
     }),
-    fromRemoteData(({state, hasSpells}) => <Home state={state} hasSpells={hasSpells} />)
+    fromRemoteData(({isMJ, state, hasSpells}) => <Home isMJ={isMJ} state={state} hasSpells={hasSpells} />)
   );
 }
