@@ -9,13 +9,13 @@ import { useMoney } from './useMoney';
 import { useObjects } from './useObjects';
 
 export function ObjectsPage(){
-  const { getObjects } = useObjects();
-  const { getMoney } = useMoney();
+  const { objects } = useObjects();
+  const { money } = useMoney();
 
   return pipe(
     sequence({
-      objects: getObjects(),
-      money: getMoney(),
+      objects,
+      money,
     }),
     fromRemoteData(
       ({objects, money}) => (<Layout>

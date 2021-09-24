@@ -7,10 +7,8 @@ const objectsLens = lens<State, 'objects'>('objects');
 export const useObjects = () => {
   const [objects, setObjects] = useStore(objectsLens);
 
-  const getObjects = () => objects;
-
   return {
-    getObjects,
+    objects,
     setObjects,
   }
 }

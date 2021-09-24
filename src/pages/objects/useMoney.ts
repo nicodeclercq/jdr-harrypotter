@@ -10,8 +10,6 @@ const moneyLens = lens<State, 'money'>('money');
 export const useMoney = () => {
   const [money, setMoney] = useStore(moneyLens);
 
-  const getMoney = () => money;
-
   const addMoney = (newMoney: number) => {
     return pipe(
       money,
@@ -20,7 +18,7 @@ export const useMoney = () => {
   }
 
   return {
-    getMoney,
+    money,
     setMoney,
     addMoney,
   }
