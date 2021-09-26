@@ -17,7 +17,7 @@ export const ExternalStore = {
 
     return fetch(ROOT, requestOptions)
       .then(response => response.json())
-      .then((values: {baskets: string[]}) => values.baskets.map((v) => decode(v)));
+      .then((values: {baskets: {name: string}[]}) => values.baskets.map((v) => decode(v.name)));
   },
   create: (name: string) => {
     const requestOptions = {
