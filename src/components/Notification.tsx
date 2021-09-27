@@ -60,7 +60,7 @@ export function NotificationStack(){
   }, [remove, stack, state]);
 
   return (
-    <div className="fixed bottom-0 right-0 w-1/3 m-2 space-y-2">
+    <div className="fixed bottom-0 right-0 w-1/3 m-2 space-y-2" style={{zIndex: 2}}>
       {
         stack.map((notification) => (
           <Notification key={notification.id} notification={notification} />)
