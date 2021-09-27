@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { Icon, IconName } from './components/icons/Icon';
 import { keys } from './helpers/object';
-import { fromRemoteData } from './helpers/remoteData';
+import { fromRemoteData, sequence } from './helpers/remoteData';
 import { ArithmancyPage } from './pages/arithmancy/arithmancyPage';
 import { CartomancyPage } from './pages/cartomancy/CartomancyPage';
 import { HomePage } from './pages/home/HomePage';
@@ -25,12 +25,14 @@ import { Avatar } from './components/Avatar';
 import { useStoreLoadState } from './hooks/useStore';
 import { Loader } from './components/Loader';
 import { useSocket } from './hooks/useSocket';
+import { useRole } from './hooks/useRole';
+import { AmbiancePage } from './pages/ambiance/AmbiancePage';
 
 type RouteDefinition = {
   label: ((state: State) => string) | string;
   icon: IconName | ((state: State) => React.ReactElement);
   Component: () => React.ReactElement;
-  lockKey?: string; 
+  lockKey?: string | ((lockKeys: State['lockKeys'], role: State['role']) => boolean); 
 };
 
 export const ROUTES: Record<string, RouteDefinition> = {
@@ -40,6 +42,12 @@ export const ROUTES: Record<string, RouteDefinition> = {
       : <Icon name="SORCERER" />,
     label: (state: State) => state.user.name,
     Component: HomePage,
+  },
+  '/screens': {
+    icon: 'CLAPPER_BOARD',
+    label: 'Ambiance',
+    Component: AmbiancePage,
+    lockKey: (_lockKeys: State['lockKeys'], role: State['role']) => role === 'MJ',
   },
   '/skills': {
     icon: 'SKILLS',
@@ -89,14 +97,25 @@ export const ROUTES: Record<string, RouteDefinition> = {
 } as const;
 
 const routesDefOrder: Array<keyof typeof ROUTES> = [
-  '/', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/potions', '/objects', '/notes'
+  '/', '/screens', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/potions', '/objects', '/notes'
 ];
 
 export const ROUTE_NAMES = keys(ROUTES);
 
-export const getAvailableRoutes = (unlockedKeys: State['lockKeys']) => routesDefOrder
-  .filter((path) => ROUTES[path].lockKey == null || unlockedKeys.includes(ROUTES[path].lockKey as string));
-
+export const getAvailableRoutes = (lockKeys: State['lockKeys'], isMJ: State['role']) => routesDefOrder
+  .filter((path) => {
+    const lock = ROUTES[path].lockKey;
+    if(lock == null){
+      return true;
+    }
+    if(typeof lock === 'string'){
+      return lockKeys.includes(ROUTES[path].lockKey as string);
+    }
+    if(typeof lock === 'function'){
+      return lock(lockKeys, isMJ);
+    }
+    return false;
+  });
 
 let oldName: unknown;
 function SocketMessageHandlerRenderer(){
@@ -113,14 +132,18 @@ function SocketMessageHandlerRenderer(){
 
 function RouterRenderer(){
   const { lockKeys } = useLockKey();
+  const { role } = useRole();
 
   return pipe(
-      lockKeys,
-      fromRemoteData((unlockedKeys) => <>
+      sequence({
+        lockKeys,
+        role,
+      }),
+      fromRemoteData(({lockKeys, role}) => <>
         <BrowserRouter>
           <Switch>
             {
-              getAvailableRoutes(unlockedKeys)
+              getAvailableRoutes(lockKeys, role)
                 .reverse()
                 .map((path) => {
                   const { Component } = ROUTES[path];

@@ -79,7 +79,7 @@ export function QuickActions() {
     pipe(
       isMJ,
       fromRemoteData(isMJ => (
-        <div style={{position: 'fixed', bottom: '1rem', right: '50%', transform: 'translateX(50%)'}} className="flex rounded-full flex-columns space-x-1">
+        <div style={{zIndex: 1, position: 'fixed', bottom: '1rem', right: '50%', transform: 'translateX(50%)'}} className="flex rounded-full flex-columns space-x-1">
           {
             isMJ && <>
               <QuickButton

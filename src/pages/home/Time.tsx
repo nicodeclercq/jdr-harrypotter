@@ -49,7 +49,7 @@ export function Time(){
     return () => subscription.unsubscribe();
   }, [stream]);
 
-  return <div style={{position: 'fixed', fontSize: '20rem', color: getColor(time), textShadow: '1rem 1rem 1rem rgba(0,0,0,0.25)', pointerEvents: 'none', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
+  return <div style={{position: 'fixed', fontSize: '20rem', color: getColor(time), textShadow: '1rem 1rem 1rem rgba(0,0,0,0.25)', pointerEvents: 'none', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 2}}>
     {time != null ? time : ''}
   </div>;
 }

@@ -63,6 +63,14 @@ const timeMessageDecoder = IO.type({
 export type TimeMessage = IO.TypeOf<typeof timeMessageDecoder>;
 export const isTimeMessage = timeMessageDecoder.is;
 
+
+const imageDecoder = IO.type({
+  type: IO.literal('image'),
+  payload: IO.union([IO.string, IO.undefined]),
+});
+export type ImageMessage = IO.TypeOf<typeof imageDecoder>;
+export const isImageMessage = imageDecoder.is;
+
 const messageDecoder = IO.type({
   author: IO.type({
     name: IO.string,
@@ -76,8 +84,10 @@ const messageDecoder = IO.type({
     chatDecoder,
     alertDecoder,
     timeMessageDecoder,
+    imageDecoder,
   ])
 });
+
 
 export type Message = IO.TypeOf<typeof messageDecoder>;
 
@@ -89,6 +99,7 @@ export const fold = (currentUserName: string, fns: {
   chat: (payload: ChatMessage['payload'], author: Message['author']) => void,
   alert: (payload: AlertMessage['payload'], author: Message['author']) => void,
   time: (payload: TimeMessage['payload'], author: Message['author']) => void,
+  image: (payload: ImageMessage['payload'], author: Message['author']) => void,
 }) => (message: unknown) => pipe(
   message,
   (m) => {
@@ -127,6 +138,9 @@ export const fold = (currentUserName: string, fns: {
       }
       if(timeMessageDecoder.is(data.message)) {
         fns.time(data.message.payload, data.author);
+      }
+      if(imageDecoder.is(data.message)) {
+        fns.image(data.message.payload, data.author);
       }
     }
   )

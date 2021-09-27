@@ -25,6 +25,7 @@ export const useRole = () => {
   );
 
   return {
+    role,
     isMJ,
     isPlayer,
     setRole,

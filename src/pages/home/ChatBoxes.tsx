@@ -14,7 +14,7 @@ export function ChatBoxes ({users}: { users: Record<string, string | null | unde
     width: 'calc(100% - 5rem)',
     pointerEvents: 'none',
     marginLeft: '5rem',
-    zIndex: 1,
+    zIndex: 2,
   }}>
     {
       Object.entries(users)

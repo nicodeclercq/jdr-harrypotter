@@ -131,6 +131,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       chat,
       alert,
       time: constVoid,
+      image: constVoid,
     })(message)
   }, [alert, chat, currentUserName, hasAlreadyJoined, join, quit, roll]);
 

@@ -6,6 +6,7 @@ import { fromRemoteData } from '../../helpers/remoteData';
 import { MySkills } from './MySkills';
 import { MyTraits } from './MyTraits';
 import { useSkill } from './useSkill';
+import { Identity } from '../home/Identity';
 
 export function SkillsPage() {
   const { getSkills } = useSkill();
@@ -15,6 +16,7 @@ export function SkillsPage() {
     fromRemoteData((skills) => (
       <Layout>
         <div className="w-full h-full m-3 space-y-2">
+          <Identity />
           <MyTraits />
           <Card title={(
             <div className="flex space-x-2">

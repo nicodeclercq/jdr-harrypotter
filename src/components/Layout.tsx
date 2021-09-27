@@ -17,6 +17,8 @@ import { fromRemoteData, sequence } from '../helpers/remoteData';
 import { State } from '../store/State';
 import { useLockKey } from '../hooks/useLockKey';
 import { QuickActions } from '../pages/home/QuickActions';
+import { useRole } from '../hooks/useRole';
+import { ImagePreview } from './ImagePreview';
 
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName | React.ReactElement;}) {
   let match = useRouteMatch({
@@ -57,6 +59,7 @@ const displayIcon = (icon: IconName | ((state: State) => React.ReactElement), st
 
 export function Layout ({ children }: { children: React.ReactNode }) {
   const { lockKeys } = useLockKey();
+  const { role } = useRole();
   const [state] = useStore([
     identity,
     (state: State, newState: State) => newState,
@@ -65,14 +68,15 @@ export function Layout ({ children }: { children: React.ReactNode }) {
   const [rollModal, setRollModal] = useState<Dice[] | undefined>(undefined);
   const [hoverable] = useHover((hovered: boolean) => pipe(
     sequence({
+      role,
       lockKeys,
       state,
     }),
-    fromRemoteData(({lockKeys, state}) => (
-      <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-blue-500 flex flex-col`} style={{zIndex: 1}}>
+    fromRemoteData(({lockKeys, state, role}) => (
+      <div className={` ${getColor('secondary', 800 )} fixed h-full text-white divide-y divide-blue-500 flex flex-col`} style={{zIndex: 2}}>
         <div className="flex-grow overflow-y-auto divide-y divide-blue-500">
           {
-            getAvailableRoutes(lockKeys)
+            getAvailableRoutes(lockKeys, role)
               .map(path => ({path, ...ROUTES[path]}))
               .map(({path, label, icon}) => ({
                 path,
@@ -105,7 +109,8 @@ export function Layout ({ children }: { children: React.ReactNode }) {
       <div className="flex h-screen overflow-y-auto bg-gray-500">
         {hoverable}
         <div className="flex items-center justify-center flex-grow h-screen p-6 mt-16 ml-16 space-x-2">
-          {children}
+          <ImagePreview />
+          <div className="flex items-center justify-center flex-grow h-screen p-6 mt-16 ml-16 space-x-2" style={{zIndex: 1}}>{children}</div>
         </div>
       </div>
       {

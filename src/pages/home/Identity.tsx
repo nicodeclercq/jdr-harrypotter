@@ -111,15 +111,15 @@ export function Identity(){
     sequence({name, life, imageUrl}),
     fromRemoteData(({name, life, imageUrl}) => <Card>
         <div className="flex p-2 flex-column space-y-4">
-          <div className="flex flex-row items-center w-full space-x-2">
-            <span className="flex-grow">
+          <div className="flex flex-row flex-wrap items-center w-full space-x-2">
+            <div className="flex-grow">
               <Title>
                 <div className="flex items-center space-x-2">
                   <Avatar text={name} url={imageUrl} onClick={() => prompt<{imageUrl: string}>((callback) => <ImageUrlForm imageUrl={imageUrl ?? ''} onSubmit={callback}/>, 'Choisis ton avatar').then(({imageUrl}) => setImageUrl(imageUrl))} icon="PEN" />
                   <span>{name}</span>
                 </div>
               </Title>
-            </span>
+            </div>
             <LifeForm current={life.current} max={life.max} />
           </div>
         </div>
