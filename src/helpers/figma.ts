@@ -52,7 +52,7 @@ const findAllFrames = (file: File) =>
 const getFigmaNode = (fileKey: string, nodeIds: string[]) => {
   return fetch(
     `https://api.figma.com/v1/images/${fileKey}?ids=${nodeIds.join(',')}&format=png`,
-    { headers: { 'X-Figma-Token': secrets.figmapApiKey } }
+    { headers: { 'X-Figma-Token': secrets.figmaApiKey } }
   )
   .then(response => response.json());
 }
@@ -60,7 +60,7 @@ const getFigmaNode = (fileKey: string, nodeIds: string[]) => {
 const getFigmaFile = (fileKey: string) => {
   return fetch(
     `https://api.figma.com/v1/files/${fileKey}`,
-    { headers: { 'X-Figma-Token': secrets.figmapApiKey } }
+    { headers: { 'X-Figma-Token': secrets.figmaApiKey } }
   )
   .then(response => response.json());
 }
