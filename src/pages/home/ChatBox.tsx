@@ -6,6 +6,7 @@ import { BodyText } from '../../components/font/BodyText';
 import { Comment } from '../../components/font/Comment';
 import { Icon } from '../../components/icons/Icon';
 import { isDefined } from '../../helpers/nullable';
+import { useList } from '../../hooks/useList';
 import { useSocket } from '../../hooks/useSocket';
 import { isChatMessage } from '../../message';
 
@@ -19,8 +20,8 @@ type Message = {
   date: Date;
 }
 
-export function ChatBox ({user, image}: {user: string, image: string | null | undefined}) {
-  const [messages, setMessages] = useState<Message[]>([]);
+export function ChatBox ({me, user, image}: {me: string, user: string, image: string | null | undefined}) {
+  const {list: messages, prepend} = useList<Message>();
   const [isVisible, setIsVisible] = useState(false);
   const { stream, emit } = useSocket();
 
@@ -31,7 +32,7 @@ export function ChatBox ({user, image}: {user: string, image: string | null | un
   const send = (message: {text: string}) => {
     const text = message.text.trim();
     if(text) {
-      setMessages([{id: `${uid2++}`, isSelf: true, text, date: new Date()}, ...messages]);
+      prepend({id: `${uid2++}`, isSelf: true, text, date: new Date()});
       emit({
         type: 'chat',
         payload: {
@@ -52,16 +53,18 @@ export function ChatBox ({user, image}: {user: string, image: string | null | un
       .pipe(
         RX.skip(1), // removes the automatic subscribe event
         RX.filter(isDefined),
+        RX.filter(({author}) => author.name === user),
         RX.map(message => message.message),
         RX.filter(isChatMessage),
+        RX.filter(({payload: { recipient }}) => recipient === me),
         RX.distinctUntilChanged(),
         RX.timestamp()
       )
       .subscribe({next: ({timestamp, value: {payload:{ message: text}}}) => {
-        setMessages([{id: `${timestamp}`, isSelf: false, text, date: new Date()}, ...messages]);
+        prepend({id: `${timestamp}`, isSelf: false, text, date: new Date()});
       }});
     return () => subscription.unsubscribe();
-  }, [messages, stream]);
+  }, [prepend, stream, user, me]);
 
   return (
     <div style={{position: 'relative', display:'flex', flexDirection: 'column', alignItems: 'center', filter:'drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))', transform: isVisible ? 'translateY(0)' : 'translateY(calc(-100% + 4.75rem))', transition: 'transform ease-in-out 0.2s'}}>

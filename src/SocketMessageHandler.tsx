@@ -8,8 +8,9 @@ import { remove } from './helpers/object';
 import { ChatBoxes } from './pages/home/ChatBoxes';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { onSuccess } from './helpers/remoteData';
+import { fromRemoteData, onSuccess } from './helpers/remoteData';
 import { Time } from './pages/home/Time';
+import { useUser } from './pages/home/useUser';
 
 type Props = {
   currentUserName: string;
@@ -25,6 +26,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   const [connectedUsers, setConnectedUsers] = useState(connectedUsersSubject.value);
   const { add } = useNotification();
   const { isMJ } = useRole();
+  const { name } = useUser();
 
   const hasAlreadyJoined = useCallback(({recipient}: HasAlreadyJoinedMessage['payload'], author: Message['author']) => {
     if (recipient === currentUserName) {
@@ -171,8 +173,12 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserName]);
 
-  return (<>
-    <ChatBoxes users={connectedUsers} />
-    <Time />
-  </>);
+  return pipe(
+    name,
+    fromRemoteData((name) => <>
+      <ChatBoxes me={name} users={connectedUsers} />
+        <Time />
+      </>
+    )
+  );
 }

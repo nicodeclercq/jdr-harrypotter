@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChatBox } from './ChatBox';
 
-export function ChatBoxes ({users}: { users: Record<string, string | null | undefined>}) {
+export function ChatBoxes ({me, users}: {me: string, users: Record<string, string | null | undefined>}) {
   return <div style={{
     display:'flex',
     flexDirection:'row',
@@ -20,7 +20,7 @@ export function ChatBoxes ({users}: { users: Record<string, string | null | unde
       Object.entries(users)
         .map(([user, image]) => (
           <div key={user}>
-            <ChatBox image={image} user={user} />
+            <ChatBox me={me} image={image} user={user} />
           </div>
         ))
     }
