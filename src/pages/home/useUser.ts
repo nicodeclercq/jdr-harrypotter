@@ -27,6 +27,7 @@ export const useUser = () => {
   );
 
   return {
+    user,
     name,
     imageUrl,
     setImageUrl

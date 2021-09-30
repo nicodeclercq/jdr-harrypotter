@@ -1,7 +1,8 @@
 import React from 'react';
+import { State } from '../../store/State';
 import { ChatBox } from './ChatBox';
 
-export function ChatBoxes ({me, users}: {me: string, users: Record<string, string | null | undefined>}) {
+export function ChatBoxes ({me, users}: {me: State['user'], users: Record<string, string | null | undefined>}) {
   return <div style={{
     display:'flex',
     flexDirection:'row',

@@ -9,6 +9,7 @@ import { isDefined } from '../../helpers/nullable';
 import { useList } from '../../hooks/useList';
 import { useSocket } from '../../hooks/useSocket';
 import { isChatMessage } from '../../message';
+import { State } from '../../store/State';
 
 let uid1 = 0;
 let uid2 = 0;
@@ -20,7 +21,7 @@ type Message = {
   date: Date;
 }
 
-export function ChatBox ({me, user, image}: {me: string, user: string, image: string | null | undefined}) {
+export function ChatBox ({me, user, image}: {me: State['user'], user: string, image: string | null | undefined}) {
   const {list: messages, prepend} = useList<Message>();
   const [isVisible, setIsVisible] = useState(false);
   const { stream, emit } = useSocket();
@@ -56,7 +57,7 @@ export function ChatBox ({me, user, image}: {me: string, user: string, image: st
         RX.filter(({author}) => author.name === user),
         RX.map(message => message.message),
         RX.filter(isChatMessage),
-        RX.filter(({payload: { recipient }}) => recipient === me),
+        RX.filter(({payload: { recipient }}) => recipient === me.name),
         RX.distinctUntilChanged(),
         RX.timestamp()
       )
@@ -73,7 +74,13 @@ export function ChatBox ({me, user, image}: {me: string, user: string, image: st
           {
             messages.map(({id, isSelf, text, date}) => (
               <div key={id}>
-                <div><Comment>{isSelf ? 'Moi' : user} à {date.getHours()}:{date.getMinutes()}</Comment></div>
+                <Comment>
+                  <div className="flex items-center space-x-1">
+                    <Avatar size="small" url={isSelf ? me.imageUrl : image} text={user} />
+                    <span className="flex-grow">{isSelf ? me.name : user}</span>
+                    <span style={{fontSize: '0.66rem'}}>à {date.getHours()}:{date.getMinutes()}</span>
+                  </div>
+                </Comment>
                 <BodyText>{text}</BodyText>
               </div>
             ))

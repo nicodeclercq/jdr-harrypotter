@@ -26,7 +26,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   const [connectedUsers, setConnectedUsers] = useState(connectedUsersSubject.value);
   const { add } = useNotification();
   const { isMJ } = useRole();
-  const { name } = useUser();
+  const { user } = useUser();
 
   const hasAlreadyJoined = useCallback(({recipient}: HasAlreadyJoinedMessage['payload'], author: Message['author']) => {
     if (recipient === currentUserName) {
@@ -174,9 +174,9 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   }, [currentUserName]);
 
   return pipe(
-    name,
-    fromRemoteData((name) => <>
-      <ChatBoxes me={name} users={connectedUsers} />
+    user,
+    fromRemoteData((user) => <>
+      <ChatBoxes me={user} users={connectedUsers} />
         <Time />
       </>
     )
