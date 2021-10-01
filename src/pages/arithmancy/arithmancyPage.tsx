@@ -7,6 +7,7 @@ import { fromRemoteData } from '../../helpers/remoteData';
 import { State } from '../../store/State';
 import { Calculator } from './calculator';
 import { NumbersDefinition } from './numbersDefinition';
+import { Info } from '../../components/Info';
 
 const resultInterpretation: Interpretation[] = [
   {
@@ -60,7 +61,18 @@ function ArithmancyContent({numbers}: {numbers: State['arithmancy']['numbers']})
   return (
     <Layout>
       <div className="flex flex-row items-start w-full max-h-full overflow-y-auto space-x-4">
-        <div className="flex-grow">
+        <div className="flex-grow space-y-2">
+          <Info icon="ABACUS">
+            L'arythmancie est un art entre le sort et la rune.
+            L'arythmancien invoque dans sa tête des chiffres de pouvoirs qu'il forme ensuite dans l'air dans la direction souhaité.
+            <strong>Pour cela ses mains doivent être libres</strong>.
+            <br />
+            La formule généré à partir des chiffres invoqués doit se composer d'au minimum un "Nom" et un "Verbe".
+            L'arythmancien doit préalablement lier chaque chiffre qu'il souhaite invoquer à une définition.
+            Une fois la définition inscrite le chiffre ne pourra plus être modifié.
+            <br />
+            La force de la formule correpsond à la somme des chiffres invoqués (un chiffre utilisé en tant qu'inverse prendra une valeur négative).
+          </Info>
           <NumbersDefinition numbers={numbers} />
         </div>
         <Calculator numbers={numbers} roll={(title, percentage) => setRollModal({title, percentage})} />

@@ -10,6 +10,7 @@ import { useCard } from './useCard';
 import { getNRandomIndexFromFilteredArray } from '../../helpers/array';
 import { values } from '../../helpers/object';
 import { Button } from '../../components/Button';
+import { Info } from '../../components/Info';
 
 export function CartomancyPage() {
   const { getCardsNumber, getVisibleCards, getUsedCards, shuffleDeck, revealCard, playCard } = useCard();
@@ -37,6 +38,16 @@ export function CartomancyPage() {
     fromRemoteData((cards) => (
       <Layout>
         <div className="max-h-full overflow-y-auto space-y-4">
+        <Info icon="CARD">
+          La carthomancie est un art divinatoire.
+          Il permet d'anticiper des évènements et d'y faire face de manière adequat.
+          <br />
+          Le carthomancien doit prendre un moment pour tirer ses cartes (environ 10 minutes).
+          Il doit dans ce cas être dans une situation calme, il ne peut pas tirer de nouvelles cartes en pleine action.
+          <br />
+          Une fois une carte tirée, le carthomancien ne peut en tirer une autre tant que l'évènement annoncé ne s'est pas produit.
+          Plus le carthomancien est aguerri plus il pourra tourner de cartes simultanées.
+        </Info>
           <div className="p-4 grid grid-cols-3 gap-4">
             {
               cards.map(({isVisible, index}, key) => index != null

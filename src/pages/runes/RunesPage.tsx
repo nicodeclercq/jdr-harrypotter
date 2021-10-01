@@ -12,6 +12,7 @@ import { Icon } from '../../components/icons/Icon';
 import { useTraits } from '../home/useTraits';
 import { RollModal } from '../../components/RollModal';
 import { useNotification } from '../../components/Notification';
+import { Info } from '../../components/Info';
 
 function RuneForm({name, signification, addRune}: {name: RuneName; signification: string; addRune: () => void;}) {
   const { setSignification } = useRune();
@@ -82,6 +83,19 @@ export function RunesPage(){
       ({runesDefinition, knownRunes, traits}) => (
         <Layout>
           <div className="h-full p-2 space-y-2">
+            <Info icon="RUNE">
+              La magie des runes est un art complexe. Aucun livre ne peut être écrit sur les runes car il serait alors doté de pouvoir magiques incontrolables.
+              Pour cela cette magie ne se transmet que de bouche à oreille en utilisant des supports qui sont détruits au fur et à mesure.
+              <br />
+              Un sorcier qui apprend cette magie doit donc d'abord découvrir la signification de la rune qu'il souhaite utiliser avant de pouvoir l'utiliser convenablement.
+              <br />
+              Plus la rune sera gravée durablement plus sont effet sera puissant. L'inscription des runes se fait avec un couteau spécial nommé "Kriss".
+              Le sorcier perdant son Kriss ne pourra plus écrire de runes.
+              Écrire des runes sans utiliser le Kriss mettrais en danger l'auteur car celles-ci deviendraient incontrolables.
+              <br />
+              Le Kriss a une telle importance pour le runiste que celui-ci ne penserais même pas l'utiliser pour autre chose que ce pour quoi il est fait,
+              même s'il ferait une arme redoutable.
+            </Info>
             <div className="relative items-center w-full p-2 bg-gray-600 rounded grid grid-flow-col auto-cols-max gap-2" style={{minHeight: '25vh'}}>
               {
                 usedRunes.map((rune, index) => (
