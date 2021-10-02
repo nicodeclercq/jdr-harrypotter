@@ -39,6 +39,7 @@ import { Pen } from './components/pen';
 import { PaperPlane } from './components/paper-plane';
 import { Time } from './components/time';
 import { ClapperBoard } from './components/clapperboard';
+import { Help } from './components/help';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -81,6 +82,7 @@ export const ICONS = {
   PAPER_PLANE: <PaperPlane />,
   TIME: <Time />,
   CLAPPER_BOARD: <ClapperBoard />,
+  HELP: <Help />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

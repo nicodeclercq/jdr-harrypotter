@@ -24,6 +24,7 @@ export function PotionsPage() {
         <div className="w-1/2 h-full m-3 space-y-2">
           <Info icon="POTION">
             La création de potion est un art très puissant, malheureusement il demamde au sorcier qui désire l'utiliser beaucoup d'anticipation.
+            C'est pour cela que seuls les sorciers prévoyants excellent en cet art.
             Pour créer une potion le sorcier doit rester au calme pendant 1 heure. Il a besoin d'un certain nombre d'ingrédients et d'une fiole pour contenir la potion.
             Les potions ne peuvent rester longtemps dans un chaudron car celle-ci sont corrosives et abimerais leur contenant rendant ainsi les effets de la potion aléatoires.
             De la même façon les fioles utilisées pour contenir une potion ne sont pas toujours récupérables après utilisation.

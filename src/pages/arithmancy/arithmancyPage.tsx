@@ -63,13 +63,15 @@ function ArithmancyContent({numbers}: {numbers: State['arithmancy']['numbers']})
       <div className="flex flex-row items-start w-full max-h-full overflow-y-auto space-x-4">
         <div className="flex-grow space-y-2">
           <Info icon="ABACUS">
-            L'arythmancie est un art entre le sort et la rune.
-            L'arythmancien invoque dans sa tête des chiffres de pouvoirs qu'il forme ensuite dans l'air dans la direction souhaité.
+            Fin calculateur l'arythmancien utilise le pouvoir des nombres pour accomplir sa magie puissante.
+            Celui-ci invoque dans sa tête des chiffres de pouvoirs qu'il forme ensuite dans l'air dans la direction souhaité.
             <strong>Pour cela ses mains doivent être libres</strong>.
             <br />
             La formule généré à partir des chiffres invoqués doit se composer d'au minimum un "Nom" et un "Verbe".
             L'arythmancien doit préalablement lier chaque chiffre qu'il souhaite invoquer à une définition.
-            Une fois la définition inscrite le chiffre ne pourra plus être modifié.
+            Une fois la définition inscrite le chiffre ne pourra plus être modifié. Comme seuls 9 chiffres existent le cartomancien
+            doit savoir réfréner ses envies afin de libérer un plus grand pouvoir. Un sorcier trop hâtif ne produira jamais qu'une
+            magie simple et peu puissante.
             <br />
             La force de la formule correpsond à la somme des chiffres invoqués (un chiffre utilisé en tant qu'inverse prendra une valeur négative).
           </Info>
