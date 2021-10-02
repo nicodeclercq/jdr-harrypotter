@@ -38,7 +38,7 @@ export function Calculator({numbers, roll}: {roll: (value: string, percentage: n
   const getPhraseDisplay = () => calculation.map(v => getValue(v, isInverse)).map((v) => <div key={v}>{v}</div>);
 
   return (
-    <div className="p-4 bg-gray-600 border border-gray-800 rounded shadow" style={{width: '40rem'}}>
+    <div className="p-4 bg-gray-600 border border-gray-800 rounded shadow" style={{width: '20rem'}}>
       <div className="p-4 font-mono text-xl text-gray-200 bg-gray-700 border border-gray-400 rounded" style={{width: '100%'}}>
         <div className="flex flex-row flex-wrap items-end justify-end  space-x-2" style={{ minHeight: '5rem'}}>
           {
