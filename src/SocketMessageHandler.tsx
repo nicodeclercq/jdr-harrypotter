@@ -11,6 +11,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { fromRemoteData, onSuccess } from './helpers/remoteData';
 import { Time } from './pages/home/Time';
 import { useUser } from './pages/home/useUser';
+import { useSound } from './hooks/useSound';
 
 type Props = {
   currentUserName: string;
@@ -27,6 +28,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   const { add } = useNotification();
   const { isMJ } = useRole();
   const { user } = useUser();
+  const { play } = useSound();
 
   const hasAlreadyJoined = useCallback(({recipient}: HasAlreadyJoinedMessage['payload'], author: Message['author']) => {
     if (recipient === currentUserName) {
@@ -67,10 +69,9 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   const chat =  useCallback(({message, recipient}: ChatMessage['payload'], author: Message['author']) => {
     if(currentUserName === recipient){
       add({id: `chat_${recipient}${message}`, type: 'message', message: `“${message}”`, author: {name: author.name, avatar: author.avatar ?? ''}});
-      const sound = document.getElementById('sound-bip') as HTMLAudioElement;
-      sound.play();
+      play('bip');
     }
-  }, [add, currentUserName]);
+  }, [add, currentUserName, play]);
 
   const roll = useCallback(({title, value}: RollMessage['payload'], author: Message['author']) => {
     add({
@@ -80,13 +81,11 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       author: {name: author.name, avatar: author.avatar ?? ''}
     });
     if(value <= 5){
-      const sound = document.getElementById('sound-success') as HTMLAudioElement;
-      sound.play();
+      play('success');
     }else if(value >= 95){
-      const sound = document.getElementById('sound-failure') as HTMLAudioElement;
-      sound.play();
+      play('failure');
     }
-  }, [add]);
+  }, [add, play]);
 
   const alert = useCallback(({type}: AlertMessage['payload'], author: Message['author']) => {
     if(type === 'playerIsAsleep') {
@@ -103,8 +102,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
                 avatar: author.avatar ?? ''
               },
             });
-            const sound = document.getElementById('sound-sleep') as HTMLAudioElement;
-            sound.play();
+            play('sleep');
           }
         }),
       );
@@ -119,10 +117,9 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
           avatar: author.avatar ?? ''
         },
       });
-      const sound = document.getElementById('sound-error') as HTMLAudioElement;
-      sound.play();
+      play('error');
     }
-  }, [add, isMJ]);
+  }, [add, isMJ, play]);
 
   const onMessage = useCallback((message: unknown) => {
     return fold(currentUserName, {

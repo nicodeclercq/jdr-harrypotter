@@ -4,11 +4,13 @@ import * as RX from 'rxjs/operators';
 import { isDefined } from '../../helpers/nullable';
 
 import { useSocket } from '../../hooks/useSocket';
+import { useSound } from '../../hooks/useSound';
 import { isTimeMessage } from '../../message';
 
 export function Time(){
   const [time, setTime] = useState<number | undefined>(undefined);
   const { stream } = useSocket();
+  const { play } = useSound();
 
   const getColor = (time: number | undefined) => {
     if(time == null){
@@ -42,12 +44,11 @@ export function Time(){
       .subscribe({next: (time) => {
         setTime(time >= 0 ? time : undefined);
         if(time === 0){
-          const sound = document.getElementById('sound-time') as HTMLAudioElement;
-          sound.play();
+          play('time');
         }
       }});
     return () => subscription.unsubscribe();
-  }, [stream]);
+  }, [stream, play]);
 
   return <div style={{position: 'fixed', fontSize: '20rem', color: getColor(time), textShadow: '1rem 1rem 1rem rgba(0,0,0,0.25)', pointerEvents: 'none', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 2}}>
     {time != null ? time : ''}
