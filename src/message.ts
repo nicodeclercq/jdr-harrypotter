@@ -30,6 +30,13 @@ const rollMessageDecoder = IO.type({
   payload: IO.type({
     title: IO.string,
     value: IO.number,
+    type: IO.union([
+      IO.literal('critical-success'),
+      IO.literal('success'),
+      IO.literal('failure'),
+      IO.literal('critical-failure'),
+      IO.literal('free-throw'),
+    ]),
   }),
 });
 export type RollMessage = IO.TypeOf<typeof rollMessageDecoder>;

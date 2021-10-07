@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { constVoid, pipe } from 'fp-ts/function';
+import { BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { useNotification } from './components/Notification';
 import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage } from './message';
 import { useRole } from './hooks/useRole';
-import { remove } from './helpers/object';
 import { ChatBoxes } from './pages/home/ChatBoxes';
-import { BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { fromRemoteData, onSuccess } from './helpers/remoteData';
 import { Time } from './pages/home/Time';
 import { useUser } from './pages/home/useUser';
 import { useSound } from './hooks/useSound';
+import { useConnectedUsers } from './hooks/useConnectedUsers';
 
 type Props = {
   currentUserName: string;
@@ -19,12 +19,10 @@ type Props = {
   emit: (message: Message['message']) => void;
 }
 
-export const connectedUsersSubject = new BehaviorSubject<Record<string,string | null | undefined>>({});
-
 let runNb = 20;
 
 export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
-  const [connectedUsers, setConnectedUsers] = useState(connectedUsersSubject.value);
+  const { connectedUsers, add: connectUser, remove: disconnectUser } = useConnectedUsers();
   const { add } = useNotification();
   const { isMJ } = useRole();
   const { user } = useUser();
@@ -32,18 +30,12 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
 
   const hasAlreadyJoined = useCallback(({recipient}: HasAlreadyJoinedMessage['payload'], author: Message['author']) => {
     if (recipient === currentUserName) {
-      connectedUsersSubject.next({
-        ...connectedUsersSubject.value,
-        [author.name]: author.avatar,
-      });
+      connectUser(author.name, author.avatar);
     }
-  }, [currentUserName]);
+  }, [currentUserName, connectUser]);
 
   const join = useCallback((_: JoinMessage['payload'], author: Message['author']) => {
-    connectedUsersSubject.next({
-      ...connectedUsersSubject.value,
-      [author.name]: author.avatar,
-    });
+    connectUser(author.name, author.avatar);
     add({
       id: `join_${author.name}`,
       type: 'message',
@@ -59,12 +51,12 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
         recipient: author.name, 
       }
     });
-  }, [add, emit]);
+  }, [add, emit, connectUser]);
 
   const quit = useCallback(({name}: QuitMessage['payload'], author: Message['author']) => {
-    connectedUsersSubject.next(remove(author.name, connectedUsersSubject.value));
+    disconnectUser(author.name);
     add({id: `quit_${name}`, type: 'success', message: `${name} vient de quitter la partie`});
-  }, [add]);
+  }, [add, disconnectUser]);
 
   const chat =  useCallback(({message, recipient}: ChatMessage['payload'], author: Message['author']) => {
     if(currentUserName === recipient){
@@ -73,16 +65,24 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
     }
   }, [add, currentUserName, play]);
 
-  const roll = useCallback(({title, value}: RollMessage['payload'], author: Message['author']) => {
+  const roll = useCallback(({title, value, type}: RollMessage['payload'], author: Message['author']) => {
+    const types = {
+      'critical-success': 'Succés critique',
+      'success': 'Succés',
+      'failure': 'Échec',
+      'critical-failure': 'Échec critique',
+      'free-throw': 'Lancer libre',
+    } as const;
+    
     add({
       id: `roll_${author}_${title}_${value}`,
       type: 'message',
-      message: `"${title}": ${author.name} vient de faire ${value}`,
+      message: `"${title}": ${author.name} vient de faire ${value} (${types[type]})`,
       author: {name: author.name, avatar: author.avatar ?? ''}
     });
-    if(value <= 5){
+    if(type === 'critical-success'){
       play('success');
-    }else if(value >= 95){
+    }else if(type === 'critical-failure'){
       play('failure');
     }
   }, [add, play]);
@@ -133,16 +133,6 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       image: constVoid,
     })(message)
   }, [alert, chat, currentUserName, hasAlreadyJoined, join, quit, roll]);
-
-  useEffect(() => {
-    const subscription = connectedUsersSubject
-      .subscribe({
-        next: setConnectedUsers
-      });
-    return () => {
-      subscription.unsubscribe();
-    }
-  }, []);
 
   useEffect(() => {
     if (currentUserName) {

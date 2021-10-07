@@ -64,6 +64,11 @@ export const retrieveState = (): Promise<State> => Promise.resolve(window.localS
     : onNoLocalState()
   );
 
+export const retrieveUserState = (name: string): Promise<State> => ExternalStore.read(name)
+  .then((state) => ({state, name}))
+  .catch(() => ({state: undefined, name}))
+  .then(({state, name}) => retrieve(state, name));
+
 subject
   .asObservable()
   .pipe(

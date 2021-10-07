@@ -14,7 +14,7 @@ import { useSocket } from '../hooks/useSocket';
 export type Interpretation = {
   predicate: (value:number, percentage: number) => boolean;
   result: {
-    type: 'success' | 'failure',
+    type: 'success' | 'failure' | 'critical-success' | 'critical-failure',
     message: string;
   }
 };
@@ -63,7 +63,7 @@ const defaultInterpretation: Interpretation[] = [
   {
     predicate: (value:number, percentage: number) => value < percentage && value <= 5,
     result: {
-      type: 'success',
+      type: 'critical-success',
       message: '🎉 Réussite critique 🎉',
     }
   }, {
@@ -81,7 +81,7 @@ const defaultInterpretation: Interpretation[] = [
   }, {
     predicate: (value:number, percentage: number) => value > 95,
     result: {
-      type: 'failure',
+      type: 'critical-failure',
       message: '😈 Échec Critique 😈',
     }
   }
@@ -114,7 +114,8 @@ export function RollModal ({
         type: 'roll',
         payload: {
           title,
-          value
+          value,
+          type: 'free-throw',
         }
       });
     } else {
@@ -125,10 +126,11 @@ export function RollModal ({
           type: 'roll',
           payload: {
             title,
-            value
+            value,
+            type: interpretation.result.type,
           }
         });
-        result.type === 'success'
+        result.type === 'success' || result.type === 'critical-success'
           ? onRollEnd(Interaction.success(value))
           : onRollEnd(Interaction.emptyFailure());
       } else {
@@ -137,7 +139,8 @@ export function RollModal ({
           type: 'roll',
           payload: {
             title,
-            value
+            value,
+            type: 'free-throw',
           }
         });
       }
@@ -184,7 +187,8 @@ export function RollModal ({
                               getInterpretation(),
                               (interpretation) => interpretation != null
                                 ? <>
-                                    <span className="text-m">{interpretation.result.type === 'success'
+                                    <span className="text-m">{
+                                      interpretation.result.type === 'success' || interpretation.result.type === 'critical-success'
                                       ? '😀'
                                       : '🙁'
                                     }</span>
