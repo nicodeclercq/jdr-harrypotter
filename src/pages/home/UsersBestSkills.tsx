@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import * as RemoteData from '@devexperts/remote-data-ts';
+import React from 'react';
 import { pipe, flow } from 'fp-ts/function';
 import * as Record from 'fp-ts/Record';
 
@@ -7,19 +6,13 @@ import { Avatar } from '../../components/Avatar';
 import { Card } from '../../components/Card';
 import { Title } from '../../components/font/Title';
 import { useConnectedUsers } from '../../hooks/useConnectedUsers';
-import { retrieveUserState } from '../../store/store';
 import { State } from '../../store/State';
 import { fromRemoteData } from '../../helpers/remoteData';
 import { MySkills } from '../skills/MySkills';
+import { useUserSkills } from './useUserSkills';
 
 function UserBestSkills({name}: {name: string}) {
-  const [state, setState] = useState<RemoteData.RemoteData<Error, State>>(RemoteData.initial);
-
-  useEffect(() => {
-    retrieveUserState(name)
-      .then((state) => setState(RemoteData.success(state)))
-      .catch(error => setState(RemoteData.failure(error)));
-  }, [name]);
+  const [state] = useUserSkills(name);
 
   return pipe(
     state,
