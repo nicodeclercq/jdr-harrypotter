@@ -26,15 +26,16 @@ function RuneForm({name, signification, addRune}: {name: RuneName; signification
 
   return (
     <div key={name} className="flex flex-col items-center justify-center p-2 text-white space-x-2 space-y-2">
-      <button onClick={() => addRune()} className="flex items-center justify-center text-4xl border border-solid rounded filter drop-shadow-sm">
+      <button onClick={() => addRune()} className="flex items-center justify-center text-4xl bg-gray-700 border border-solid rounded filter drop-shadow-sm">
         <Rune name={name} />
       </button>
-      {name}
+      <div style={{textShadow: '0 2px 1px rgba(0,0,0,0.5)'}}>{name}</div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="signification"
           control={control}
           render={({value, onChange}) => (
+            <div className="bg-gray-400 rounded">
             <Input
               theme="neutral"
               type="text"
@@ -43,6 +44,7 @@ function RuneForm({name, signification, addRune}: {name: RuneName; signification
               value={value}
               width="10ch"
             />
+            </div>
           )}
         />
       </form>
@@ -112,7 +114,7 @@ export function RunesPage(){
                 </Button>
               </div>
             </div>
-            <div className="overflow-y-scroll grid grid-cols-8 gap-4" style={{maxHeight: '70vh'}}>
+            <div className="overflow-y-scroll grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4" style={{maxHeight: '70vh'}}>
               {
                 keys(RUNES)
                   .filter(rune => knownRunes.includes(rune))
