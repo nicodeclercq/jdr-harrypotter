@@ -73,7 +73,7 @@ export function Timer() {
         <Title>Temps de jeu</Title>
         <div className="flex space-x-2">
           <Button type="secondary" title="pause" onClick={togglePause}>
-            <Icon name={pauseDate ? 'HALT' : 'TIME'} />
+            <Icon name={pauseDate ? 'TIME' : 'HALT'} />
           </Button>
           <Button type="secondary" title="reset" onClick={() => setDate(new Date())}>
             <span className="flex items-center" style={{lineHeight: 1, fontSize: '0.5rem'}}>00:00</span>
@@ -81,7 +81,7 @@ export function Timer() {
         </div>
       </div>
     }>
-      <div className="flex justify-between px-2">
+      <div className="flex justify-between px-2 py-1">
         <Caption>{`${totalTime.hours}`.padStart(2, '0')}:{`${totalTime.minutes}`.padStart(2, '0')}:{`${totalTime.seconds}`.padStart(2, '0')}</Caption>
         <BodyText>{`${time.minutes}`.padStart(2, '0')}:{`${time.seconds}`.padStart(2, '0')}</BodyText>
       </div>

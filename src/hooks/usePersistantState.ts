@@ -17,7 +17,6 @@ export const stream = new BehaviorSubject<Partial<Record<Key,unknown>>>({});
 export function usePersistantState<T>(name: Key): [T, Dispatch<SetStateAction<T>>];
 export function usePersistantState<T>(name: Key, initialValue: T): [T, Dispatch<SetStateAction<T>>];
 export function usePersistantState<T = undefined>(name: Key, initialValue?: T): [T, Dispatch<SetStateAction<T>>] {
-  console.log(stream.value[name] ?? initialValue);
   const [state, setState] = useState(stream.value[name] ?? initialValue);
 
   const set = useCallback((newValue: T) => {
