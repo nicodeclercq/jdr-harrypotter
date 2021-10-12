@@ -106,7 +106,7 @@ export function Layout ({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div className="flex h-screen overflow-y-auto bg-gray-500">
+      <div className="flex h-screen overflow-y-auto bg-gray-500" style={{paddingBottom: '7rem'}}>
         {hoverable}
         <div className="flex items-center justify-center flex-grow h-screen p-6 mt-16 ml-16 space-x-2">
           <ImagePreview />
