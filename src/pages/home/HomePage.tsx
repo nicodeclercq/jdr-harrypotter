@@ -11,6 +11,7 @@ import { OppositionRollTable } from './OppositionRollTable';
 import { useLife } from './useLife';
 import { useUser } from './useUser';
 import { UsersBestSkills } from './UsersBestSkills';
+import { Timer } from '../../components/Timer';
 
 function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'], life: State['life']}) {
   useTitle(`${user} - ${life.current} / ${life.max} ♥`);
@@ -19,6 +20,7 @@ function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'],
       <Layout>
         <div className="w-1/2 h-full m-3 space-y-4">
         <div style={{position: 'absolute', bottom: '4rem', left: '6rem'}}><Identity /></div>
+          {isMJ && <Timer />}
           {isMJ && <OppositionRollTable />}
         </div>
         <div className="w-1/2 h-full m-3 space-y-4">
