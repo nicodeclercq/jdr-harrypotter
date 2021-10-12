@@ -2,7 +2,7 @@ import { remove as removeEntry } from './../helpers/object';
 import { useCallback } from 'react';
 import { usePersistantState } from './usePersistantState';
 
-type ConnectedUsers = Record<string,string | null | undefined>;
+export type ConnectedUsers = Record<string,string | null | undefined>;
 
 export function useConnectedUsers(){
   const [connectedUsers, setConnectedUsers] = usePersistantState<ConnectedUsers>('CONNECTED_USERS', {});

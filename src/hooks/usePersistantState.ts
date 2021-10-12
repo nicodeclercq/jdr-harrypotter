@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 const KEYS = [
   'CONNECTED_USERS',
   'USERS_SKILLS',
+  'INITIATIVE',
 ] as const;
 
 type Key = (typeof KEYS)[number];
