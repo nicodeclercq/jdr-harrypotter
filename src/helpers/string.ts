@@ -25,3 +25,11 @@ export const prepareStringForSearch = (text: string) => {
     .toLowerCase()
     .trim();
 };
+
+export const capitalize = <T extends string>(str: T) => 
+  str.split(' ')
+    .map((s) => {
+      const [head, ...tail] = s.split('');
+      return `${head.toUpperCase()}${tail.join('')}`;
+    })
+    .join('') as Capitalize<T>;

@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { useEffect, useMemo } from 'react';
 import { pipe } from 'fp-ts/function';
 import { BehaviorSubject } from 'rxjs';
@@ -33,8 +34,12 @@ window.addEventListener('beforeunload', () => {
   })
 });
 
+type CallBack<T extends Message> = (author: T['author'], message: T['message']['payload']) => void;
+type Listeners = Record<Message['message']['type'], CallBack<Message>[]>;
+
 export const useSocket = () => {
   const { name, imageUrl } = useUser();
+  const [listeners, setListeners] = useState<Listeners>({} as Listeners);
 
   useEffect(
     () => pipe(
@@ -70,10 +75,25 @@ export const useSocket = () => {
     ),
     [imageUrl]
   );
+
+  const on = useCallback(
+    <T extends Message>(type: T['message']['type'], fn: CallBack<T>) => {
+      const newListeners = {
+        ...listeners,
+        [type]: listeners[type] ? [fn] : [...listeners[type], fn],
+      };
+      setListeners(newListeners);
+      
+      return () => setListeners(listeners);
+    },
+    [listeners]
+  );
+
   const result = useMemo(() => ({
     emit,
+    on,
     stream,
-  }), []);
+  }), [on]);
 
   return result;
 }

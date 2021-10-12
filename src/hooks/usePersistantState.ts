@@ -15,14 +15,21 @@ const KEYS = [
   'RANDOM_PHOTO',
   'RANDOM_PNJ',
   'RANDOM_SPELLS',
+  'CONNECTED_USERS',
+  'USERS_SKILLS',
+  'IS_MICROPHONE_ACTIVE',
+  'IS_CAMERA_ACTIVE',
+  'PEERS',
 ] as const;
 
-type Key = (typeof KEYS)[number];
 type DateType = {
   type: 'DATE',
   value: Date
 }
 const isDate = (value: unknown): value is DateType => typeof value === 'object' && value != null && 'type' in value && (value as {type: string}).type === 'DATE';
+
+export type Key = (typeof KEYS)[number];
+
 
 export const stream = new BehaviorSubject<Partial<Record<Key,unknown>>>({});
 

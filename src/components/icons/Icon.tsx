@@ -47,6 +47,8 @@ import { Evil } from './components/evil';
 import { Chest } from './components/chest';
 import { Beer } from './components/beer';
 import { DiceTarget } from './components/dice-target';
+import { Microphone } from './components/microphone';
+import { VideoCamera } from './components/video-camera';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -97,6 +99,8 @@ export const ICONS = {
   CHEST: <Chest />,
   BEER: <Beer />,
   DICE_TARGET: <DiceTarget />,
+  MICROPHONE: <Microphone />,
+  VIDEO_CAMERA: <VideoCamera />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

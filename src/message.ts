@@ -2,6 +2,7 @@ import * as IO from 'io-ts';
 import { formatValidationErrors } from 'io-ts-reporters';
 import { pipe, constVoid } from 'fp-ts/function';
 import * as Either from 'fp-ts/Either';
+import { capitalize } from './helpers/string';
 
 const hasAlreadyJoinMessageDecoder = IO.type({
   type: IO.literal('hasAlreadyJoined'),
@@ -104,6 +105,33 @@ const messageDecoder = IO.type({
 
 
 export type Message = IO.TypeOf<typeof messageDecoder>;
+
+const isType = <T extends Message>(type: `on${Capitalize<T['message']['type']>}`) => (data: Message): data is T => `on${capitalize(data.message.type)}` === type;
+
+export const foldMessage = <T extends Message, U>(type: `on${Capitalize<T['message']['type']>}`) => (currentUserName: string, fn: (payload: T['message']['payload'], author: T['author']) => U) => (message: unknown) => pipe(
+  message,
+  (m) => {
+    console.log('received', m)
+    return m;
+  },
+  messageDecoder.decode,
+  Either.mapLeft((e) => {
+    console.log('error', message, formatValidationErrors(e));
+    return Either.left('Wrong encoding');
+  }),
+  Either.filterOrElse(
+    (data) => data.author.name !== currentUserName,
+    () => Either.left('Same user'),
+  ),
+  Either.filterOrElse(
+    (data) => isType(type)(data),
+    () => Either.left('Wrong type'),
+  ),
+  Either.fold(
+    constVoid,
+    (data) => fn(data['message']['payload'], data['author'])
+  ),
+);
 
 export const fold = (currentUserName: string, fns: {
   hasAlreadyJoined: (payload: HasAlreadyJoinedMessage['payload'], author: Message['author']) => void, 
