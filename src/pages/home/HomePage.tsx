@@ -13,6 +13,7 @@ import { useUser } from './useUser';
 import { UsersBestSkills } from './UsersBestSkills';
 import { Timer } from '../../components/Timer';
 import { Initiative } from '../../components/Initiative';
+import { MoneyConverter } from '../../components/MoneyConverter';
 
 function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'], life: State['life']}) {
   useTitle(`${user} - ${life.current} / ${life.max} ♥`);
@@ -21,6 +22,7 @@ function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'],
       <Layout>
         <div className="w-1/2 h-full m-3 space-y-4">
           {isMJ && <Timer />}
+          {isMJ && <MoneyConverter />}
           {isMJ && <OppositionRollTable />}
           <div style={{position: 'absolute', bottom: '4rem', left: '6rem'}}>
             <Identity />
