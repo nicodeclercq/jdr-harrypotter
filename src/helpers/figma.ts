@@ -68,20 +68,24 @@ const getFigmaFile = (fileKey: string) => {
 export const getFrames = (fileKey: string) => getFigmaFile(fileKey)
   .then(fileDecoder.decode)
   .then(Either.map(findAllFrames))
-  .then(Either.map(frames => frames.map(frame => frame.id)))
   .then(Either.fold(
     (e) => {
       throw e;
     },
     identity,
   ))
-  .then(ids => getFigmaNode(fileKey, ids))
-  .then(imagesDecoder.decode)
-  .then(Either.fold(
-    (e) => {
-      throw e;
-    },
-    identity,
-  ))
-  .then(result => Object.values(result.images))
+  .then(frames => {
+    const ids = frames.map(({id}) => id);
+    return getFigmaNode(fileKey, ids)
+      .then(imagesDecoder.decode)
+      .then(Either.fold(
+        (e) => {
+          throw e;
+        },
+        identity,
+      ))
+      .then(result => Object.values(result.images))
+      .then(images => images.map((image, index) => ({image, name: frames[index].name})));
+  })
+  
   
