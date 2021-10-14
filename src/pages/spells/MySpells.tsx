@@ -47,17 +47,19 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
       () => getNextLevelSpells(userSpells),
       nextLevelSpells => {
         if(nextLevelSpells.length) {
-          add({
-            id: `spellUpdate_${nextLevelSpells[0].name}`,
-            type: 'success',
-            message: `${nextLevelSpells.length} sort peut être amélioré`,
-            action:{
-              run: () => {
-                setNextLevelSpell(nextLevelSpells[0].spell);
+          nextLevelSpells.forEach(nextLevelSpell =>
+            add({
+              id: `spellUpdate_${nextLevelSpell.name}`,
+              type: 'success',
+              message: `“${nextLevelSpell.spell?.incantation ?? nextLevelSpell.name}” peut être amélioré`,
+              action:{
+                run: () => {
+                  setNextLevelSpell(nextLevelSpell.spell);
+                },
+                label: 'Améliorer',
               },
-              label: 'Choisir',
-            },
-          });
+            })
+          );
         }
       }
     );
@@ -85,6 +87,7 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
                   )}
                   roll={() => setRollModalSpell(spell)}
                   isOwned
+                  currentLevel={userSpells.knownSpells[spell?.name ?? '']?.currentLevel}
                 />
               ))
             : (<EmptyContent goTo={goTo}>

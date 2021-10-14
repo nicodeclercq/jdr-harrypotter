@@ -6,6 +6,7 @@ import { Accordion } from '../../components/Accordion';
 import * as SpellType from './domain/Spell';
 import { Button } from '../../components/Button';
 import { Icon, IconName } from '../../components/icons/Icon';
+import { Caption } from '../../components/font/Caption';
 
 const baseElements: Record<string, string> = {
   'feu': 'FEU',
@@ -46,9 +47,10 @@ type Props = {
   isOwned?: boolean;
   actions?: React.ReactNode;
   canBeAdded?: boolean;
+  currentLevel?: number;
 };
 
-export function Spell({spell, roll, actions, isOwned = false, canBeAdded = false}: Props) {
+export function Spell({spell, roll, actions, isOwned = false, canBeAdded = false, currentLevel}: Props) {
   return (
     <Accordion>
       {{
@@ -58,7 +60,11 @@ export function Spell({spell, roll, actions, isOwned = false, canBeAdded = false
               <Tag color="white" title={`Niveau ${spell.level}`}>{spell.level}</Tag>
               <Incantation>{spell.incantation}</Incantation>
               <div className="flex-grow">
-                <BodyText>{spell.name}</BodyText>
+                <BodyText>
+                  {spell.name}
+                  &nbsp;
+                  {currentLevel && <Caption>({currentLevel}%)</Caption>}
+                </BodyText>
               </div>
               {canBeAdded && <span className="text-green-600"><Icon name="CHECK" /></span>}
               <Tag title={spell.category} color={colors[spell.category]}>
