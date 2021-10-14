@@ -1,17 +1,17 @@
 import { remove as removeEntry } from './../helpers/object';
 import { useCallback } from 'react';
-import { usePersistantState } from './usePersistantState';
+import { usePersistantRecordState } from './usePersistantRecordState';
 
 export type ConnectedUsers = Record<string,string | null | undefined>;
 
 export function useConnectedUsers(){
-  const [connectedUsers, setConnectedUsers] = usePersistantState<ConnectedUsers>('CONNECTED_USERS', {});
+  const {record: connectedUsers, set: setConnectedUsers, add: addConnectedUser} = usePersistantRecordState<string | null | undefined>('CONNECTED_USERS');
 
   const add = useCallback(
     (name: string, imageUrl: string | null | undefined) => {
-      setConnectedUsers({...connectedUsers, [name]: imageUrl})
+      addConnectedUser(name, imageUrl);
     },
-    [connectedUsers, setConnectedUsers]
+    [addConnectedUser]
   );
 
   const remove = useCallback(

@@ -17,14 +17,14 @@ function shuffle(connectedUsers: ConnectedUsers){
     .sort(() => Math.random() - 0.5);
 }
 
-type InitiativeType = {
+type Initiative = {
   activeIndex: number | undefined;
   list: {name: string, avatar?: string | null}[]
 }
 
 export function Initiative(){
   const { connectedUsers } = useConnectedUsers();
-  const [{activeIndex, list}, setInitiative] = usePersistantState<InitiativeType>('INITIATIVE', {activeIndex: undefined, list: shuffle(connectedUsers)});
+  const [{activeIndex, list}, setInitiative] = usePersistantState<Initiative>('INITIATIVE', {activeIndex: undefined, list: shuffle(connectedUsers)});
 
   const reset = () => {
     setInitiative({

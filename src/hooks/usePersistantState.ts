@@ -4,8 +4,6 @@ import { useEffect, useCallback } from 'react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 const KEYS = [
-  'CONNECTED_USERS',
-  'USERS_SKILLS',
   'INITIATIVE',
 ] as const;
 
@@ -17,9 +15,10 @@ export const stream = new BehaviorSubject<Partial<Record<Key,unknown>>>({});
 export function usePersistantState<T>(name: Key): [T, Dispatch<SetStateAction<T>>];
 export function usePersistantState<T>(name: Key, initialValue: T): [T, Dispatch<SetStateAction<T>>];
 export function usePersistantState<T = undefined>(name: Key, initialValue?: T): [T, Dispatch<SetStateAction<T>>] {
-  const [state, setState] = useState(stream.value[name] ?? initialValue);
+  const [state, setState] = useState(name in stream.value ? stream.value[name] : initialValue);
 
   const set = useCallback((newValue: T) => {
+    console.log('Set', stream.value[name], newValue);
     stream.next({
       ...stream.value,
       [name]: newValue,
@@ -29,9 +28,12 @@ export function usePersistantState<T = undefined>(name: Key, initialValue?: T): 
   useEffect(() => {
     // INITIALIZE
     if(!(name in stream.value) && initialValue){
-      set(initialValue);
+      stream.next({
+        ...stream.value,
+        [name]: initialValue,
+      })
     }
-  }, [name, initialValue, set]);
+  }, [name, initialValue]);
 
   useEffect(() => {
     const subscription = stream
