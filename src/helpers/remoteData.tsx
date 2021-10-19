@@ -13,10 +13,10 @@ const Load = () => (
 
 export const sequence = sequenceS(RemoteData.remoteData);
 
-export const fromRemoteData = <T, U>(callback: (data: U) => JSX.Element ) => (remoteData: RemoteData.RemoteData<T, U>): JSX.Element => pipe(
+export const fromRemoteData = <T, U>(callback: (data: U) => JSX.Element, onInitial:() => JSX.Element = Load) => (remoteData: RemoteData.RemoteData<T, U>): JSX.Element => pipe(
   remoteData,
   RemoteData.fold(
-    Load,
+    onInitial,
     Load,
     Load,
     callback,

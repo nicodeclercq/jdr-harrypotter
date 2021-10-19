@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import { Input } from '../../components/Input';
 import { Layout } from '../../components/Layout';
+import { usePersistantState } from '../../hooks/usePersistantState';
 import { FigmaFrames } from './FigmaFrames';
 
 export function AmbiancePage(){
-  const [file, setFile] = useState(sessionStorage.getItem('figmaFile') ?? '');
+  const [file, setFile] = usePersistantState<string | undefined>('AMBIANCE_LINK', undefined);
+
   const { handleSubmit, control } = useForm<{file: string}>({
     defaultValues: {
       file,
@@ -37,7 +39,7 @@ export function AmbiancePage(){
             />)}
         />
       </form>
-      <FigmaFrames file={file}/>
+      <FigmaFrames file={file ?? ''}/>
     </div>
   </Layout>;
 }

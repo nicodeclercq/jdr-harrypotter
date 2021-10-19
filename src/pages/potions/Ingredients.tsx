@@ -126,17 +126,19 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
                       control={control}
                       rules={{ required: true, min: 0}}
                       render={({value, onChange }) => (
-                        <div className="flex flex-row items-start p-2 space-x-2">
-                          <Input
-                            id={`${field.id}_value`}
-                            theme="neutral"
-                            type="number"
-                            onChange={onChange}
-                            onBlur={handleSubmit(onSubmit)}
-                            value={value}
-                          />
-                          <Label htmlFor={`${field.id}_value`}>{field.name}</Label>
+                        <div>
                           <Tag title="" color={getScarcityColor(field.name)}>{getScarcityValue(field.name)}</Tag>
+                          <div className="flex flex-row items-start p-2 space-x-2">
+                            <Input
+                              id={`${field.id}_value`}
+                              theme="neutral"
+                              type="number"
+                              onChange={onChange}
+                              onBlur={handleSubmit(onSubmit)}
+                              value={value}
+                            />
+                            <Label htmlFor={`${field.id}_value`}>{field.name}</Label>
+                          </div>
                         </div>
                       )}
                     />
