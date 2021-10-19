@@ -6,6 +6,7 @@ import { Button } from './Button';
 import { Icon } from './icons/Icon';
 import { Caption } from './font/Caption';
 import { BodyText } from './font/BodyText';
+import { usePersistantState } from '../hooks/usePersistantState';
 
 type Time = {
   hours: number;
@@ -29,9 +30,9 @@ const DEFAULT_TIME = {hours: 0, minutes: 0, seconds: 0};
 
 export function Timer() {
   const [time, setTime] = useState<Time>(DEFAULT_TIME);
-  const [totalTime, setTotalTime] = useState<Time>(DEFAULT_TIME);
-  const [pauseDate, setPauseDate] = useState<Date>();
-  const [date, setDate] = useState(new Date());
+  const [totalTime, setTotalTime] = usePersistantState<Time>('TIMER_TOTAL_TIME', DEFAULT_TIME);
+  const [pauseDate, setPauseDate] = usePersistantState<Date | undefined>('TIMER_PAUSE_TIME', new Date());
+  const [date, setDate] = usePersistantState('TIMER_TIME', new Date());
 
   useEffect(() => {
     const interval = setInterval(() => pipe(
@@ -44,7 +45,7 @@ export function Timer() {
       },
     ), 500);
     return () => clearInterval(interval);
-  }, [date, pauseDate]);
+  }, [date, pauseDate, setTime]);
 
   useEffect(() => {
     const interval = setInterval(() => pipe(
@@ -55,7 +56,7 @@ export function Timer() {
       },
     ), 500);
     return () => clearInterval(interval);
-  }, []);
+  }, [setTotalTime]);
 
   const togglePause = () => {
     if (pauseDate) {
