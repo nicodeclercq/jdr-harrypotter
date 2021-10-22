@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { random } from '../../helpers/number';
+import { Avatar } from '../Avatar';
 import { Button } from '../Button';
 import { Card } from '../Card';
 import { BodyText } from '../font/BodyText';
 import { Title } from '../font/Title';
 import { Icon } from '../icons/Icon';
 import { characters, getRandomAge, sexes, colors, firstnames, lastnames, magics } from './character';
+import { useGeneratedPhoto } from './useGeneratedPhoto';
 
 type PNJType = {
   name: string;
   character: string[];
   age: number;
-  sex: string;
+  sex: 'Homme' | 'Femme';
   color: {name: string, color: string},
   magics: string;
 }
@@ -35,18 +37,33 @@ const makeCharacter = () => {
 
 export function PNJ(){
   const [current, setCurrent] = useState<PNJType>(makeCharacter());
+  const [avatar, regeneratePicture] = useGeneratedPhoto({
+    age: current.age,
+    genre: current.sex,
+  });
+
 
   return (
     <Card title={
-      <div className="flex justify-between">
-        <Title>{current.name} <Icon name={current.sex === 'Homme' ? 'MALE' : 'FEMALE'} /></Title>
-        <Button type="secondary" onClick={() => setCurrent(makeCharacter())} title="reset">
+      <div className="flex items-center justify-between">
+        <Title>
+          <div className="flex items-center flex-rows space-x-2">
+            <Avatar url={avatar} text={current.name} />
+            <span>{current.name}</span>
+            <Icon name={current.sex === 'Homme' ? 'MALE' : 'FEMALE'} />
+          </div>
+        </Title>
+        <Button type="secondary" onClick={() => {
+          const character = makeCharacter();
+          setCurrent(character);
+          regeneratePicture({age: character.age, genre: character.sex});
+        }} title="reset">
           <Icon name="DICE" />
         </Button>
       </div>
     } useDividers>
       <div className="px-2 py-1"><BodyText>{current.character.join(' | ')}</BodyText></div>
-      <div className="px-2 py-1"><BodyText>{current.age} ans</BodyText></div>
+      <div className="flex items-center px-2 py-1 flex-rows space-x-2"><BodyText>{current.age} ans</BodyText></div>
       <div className="px-2 py-1"><BodyText>{current.magics}</BodyText></div>
       <div className="flex items-center px-2 py-1 flex-rows space-x-2">
         <div className="w-8 h-8 border border-white rounded-full shadow" style={{background: `#${current.color.color}`}}></div>
