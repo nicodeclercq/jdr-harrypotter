@@ -44,6 +44,7 @@ import { Female } from './components/female';
 import { Male } from './components/male';
 import { Shop } from './components/shop';
 import { Evil } from './components/evil';
+import { Chest } from './components/chest';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -91,6 +92,7 @@ export const ICONS = {
   FEMALE: <Female />,
   SHOP: <Shop />,
   EVIL: <Evil />,
+  CHEST: <Chest />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

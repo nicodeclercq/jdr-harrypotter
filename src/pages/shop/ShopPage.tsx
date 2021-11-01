@@ -11,9 +11,9 @@ import { random } from "../../helpers/number";
 import { magicalObjects } from "./objects";
 import { ingredients, Ingredient } from "../potions/potions";
 
-const common = magicalObjects.filter(({cost, knowledge}) => cost < 100 || knowledge > 60 || knowledge <= 30);
-const usual = magicalObjects.filter(({cost, knowledge}) => (cost >= 100 && cost < 1000) || (knowledge > 30 && knowledge <=60));
-const rare = magicalObjects.filter(({cost, knowledge}) => cost >= 1000 || (knowledge > 30 && knowledge <= 60));
+export const common = magicalObjects.filter(({cost, knowledge}) => cost < 100 || knowledge > 60 || knowledge <= 30);
+export const usual = magicalObjects.filter(({cost, knowledge}) => (cost >= 100 && cost < 1000) || (knowledge > 30 && knowledge <=60));
+export const rare = magicalObjects.filter(({cost, knowledge}) => cost >= 1000 || (knowledge > 30 && knowledge <= 60));
 
 type ItemProps = {
   initialCost: number,
