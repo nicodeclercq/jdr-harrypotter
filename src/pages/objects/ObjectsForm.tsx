@@ -57,7 +57,7 @@ export function ObjectsForm({objects, columns, maxDisplayed}: {objects: Record<s
   return (
     <form  onSubmit={handleSubmit(onSubmit)}>
       <Card title="Objets">
-        <div className={`grid gap-2 ${fields.length === 0  || columns === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+        <div className={`grid gap-2 ${fields.length === 0  || columns === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
           {
             fields.length === 0 && (
               <EmptyContent>

@@ -29,7 +29,7 @@ function UserTraits({userTraits}: Props) {
         <div className="flex space-x-2">
           <span className="flex-grow">Caractéristiques</span>
         </div>)}>
-        <div className="grid grid-cols-2 gap-x-10 divide-y divide-solid">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 divide-y divide-solid">
           {
             entries(userTraits)
             .map(([key, value]) => (

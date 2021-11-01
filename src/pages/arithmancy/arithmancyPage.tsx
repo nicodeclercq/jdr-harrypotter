@@ -60,8 +60,8 @@ function ArithmancyContent({numbers}: {numbers: State['arithmancy']['numbers']})
 
   return (
     <Layout>
-      <div className="flex flex-row items-start w-full max-h-full overflow-y-auto space-x-4">
-        <div className="flex-grow space-y-2">
+      <div className="justify-center w-full max-h-full overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-x-4">
+        <div className="order-2 md:order-1 space-y-2">
           <Info icon="ABACUS">
             Fin calculateur l'arythmancien utilise le pouvoir des nombres pour accomplir sa magie puissante.
             Celui-ci invoque dans sa tête des chiffres de pouvoirs qu'il forme ensuite dans l'air dans la direction souhaité.
@@ -77,7 +77,9 @@ function ArithmancyContent({numbers}: {numbers: State['arithmancy']['numbers']})
           </Info>
           <NumbersDefinition numbers={numbers} />
         </div>
-        <Calculator numbers={numbers} roll={(title, percentage) => setRollModal({title, percentage})} />
+        <div className="order-1 md:order-2">
+          <Calculator numbers={numbers} roll={(title, percentage) => setRollModal({title, percentage})} />
+        </div>
         {
           rollModal != null && <RollModal
             resultsInterpretation={resultInterpretation}

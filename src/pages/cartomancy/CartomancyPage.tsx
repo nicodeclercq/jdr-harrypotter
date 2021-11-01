@@ -45,7 +45,7 @@ export function CartomancyPage() {
           Avant de tirer les cartes le cartomancien se retire dans un lieu calme où il pourra ouvrir son troisième oeil
           sans risque d'être dérangé. Une prediction lui prend une dizaine de minutes.
         </Info>
-          <div className="p-4 grid grid-cols-3 gap-4">
+          <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {
               cards.map(({isVisible, index}, key) => index != null
                   ? <PlayingCard

@@ -64,7 +64,7 @@ export function MySkills({ skills, showInColumns }: Props) {
 
   return (
       <>
-        <div className={`${showInColumns ? 'grid grid-cols-3 gap-x-10': ''} divide-y divide-solid`}>
+        <div className={`${showInColumns ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10': ''} divide-y divide-solid`}>
         {
           entries(skills).map(([skill, {currentLevel}]) => (
             <div key={`skills_${skill}`} className="flex items-center p-2 justify-evenly space-x-2">

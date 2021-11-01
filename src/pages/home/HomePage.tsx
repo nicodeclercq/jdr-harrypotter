@@ -21,18 +21,20 @@ function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'],
 
   return (
       <Layout>
-        <div className="w-1/2 h-full m-3 space-y-4">
-          {isMJ && <Timer />}
-          {isMJ && <MoneyConverter />}
-          {isMJ && <OppositionRollTable />}
-          <div style={{position: 'absolute', bottom: '4rem', left: '6rem'}}>
-            <Identity />
+        <div className="h-full grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="w-full space-y-4">
+            {isMJ && <Timer />}
+            {isMJ && <MoneyConverter />}
+            {isMJ && <OppositionRollTable />}
+            <div style={{position: 'absolute', bottom: '4rem', left: '6rem'}}>
+              <Identity />
+            </div>
           </div>
-        </div>
-        <div className="w-1/2 h-full m-3 space-y-4">
-          {isMJ && <Initiative />}
-          {isMJ && <PNJ />}
-          {isMJ && <UsersBestSkills />}
+          <div className="w-full space-y-4">
+            {isMJ && <Initiative />}
+            {isMJ && <PNJ />}
+            {isMJ && <UsersBestSkills />}
+          </div>
         </div>
       </Layout>
   );
