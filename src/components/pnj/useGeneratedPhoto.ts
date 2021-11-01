@@ -1,5 +1,4 @@
 import { useEffect, useCallback } from 'react';
-import { useState } from 'react';
 import { random } from '../../helpers/number';
 import { usePersistantState } from '../../hooks/usePersistantState';
 import { secrets } from '../../secrets';

@@ -40,5 +40,20 @@ export const getNRandomIndexFromFilteredArray = <T>(number: number, predicate: (
   return [indexes[randomIndex], ...getNRandomIndexFromFilteredArray(number - 1, (a: T, index: number) => index !== randomIndex && predicate(a, index), arr)];
 }
 
+export const getNRandomFromArray = <T>(number: number, arr: T[]): Array<T> => {
+  if(number === 0){
+    return [];
+  }
+  if(number >= arr.length) {
+    return new Array(number)
+      .fill(0)
+      .map((_, i) => arr[i]);
+  }
+  
+  const randomIndex = random(0, arr.length - 1);
+  return [arr[randomIndex], ...getNRandomFromArray(number - 1, arr.filter((_, i) => i !== randomIndex))];
+}
+
+
 export const createArray = (size: number) => new Array(size)
   .fill(0);

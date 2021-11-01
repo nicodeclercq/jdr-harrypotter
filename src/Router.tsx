@@ -27,6 +27,7 @@ import { Loader } from './components/Loader';
 import { useSocket } from './hooks/useSocket';
 import { useRole } from './hooks/useRole';
 import { AmbiancePage } from './pages/ambiance/AmbiancePage';
+import { ShopPage } from './pages/shop/ShopPage';
 
 type RouteDefinition = {
   label: ((state: State) => string) | string;
@@ -93,11 +94,17 @@ export const ROUTES: Record<string, RouteDefinition> = {
     label: 'Potions',
     Component: PotionsPage,
     lockKey: 'felix felicis'
+  },
+  '/shop': {
+    icon: 'SHOP',
+    label: 'Boutiques',
+    Component: ShopPage,
+    lockKey: (_lockKeys: State['lockKeys'], role: State['role']) => role === 'MJ',
   }
 } as const;
 
 const routesDefOrder: Array<keyof typeof ROUTES> = [
-  '/', '/screens', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/potions', '/objects', '/notes'
+  '/', '/screens', '/shop', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/potions', '/objects', '/notes'
 ];
 
 export const ROUTE_NAMES = keys(ROUTES);

@@ -9,6 +9,7 @@ import { D10 } from './dice/D10';
 import { D100 } from './dice/D100';
 import { D4 } from './dice/D4';
 import { D6 } from './dice/D6';
+import { D20 } from './dice/D20';
 import { Dice } from './dice/dice';
 import { RollModal } from './RollModal';
 import { Icon, IconName } from './icons/Icon';
@@ -96,6 +97,9 @@ export function Layout ({ children }: { children: React.ReactNode }) {
         <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d6'])}}>
             <D6 value={6} size={2} />
         </button>
+        <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d20'])}}>
+            <D20 value={20} size={2} />
+        </button>
         <button className={`${getColor('secondary', 900 )} flex p-2 justify-center items-center`} onClick={() => {setRollModal(['d100', 'd10'])}}>
             <D100 value={40} size={1.5} />
             <D10 value={2} size={1.5} />
@@ -110,7 +114,9 @@ export function Layout ({ children }: { children: React.ReactNode }) {
         {hoverable}
         <div className="flex items-center justify-center flex-grow h-screen p-6 mt-16 ml-16 space-x-2">
           <ImagePreview />
-          <div className="flex items-center justify-center flex-grow h-screen p-6 mt-16 ml-16 space-x-2" style={{zIndex: 1}}>{children}</div>
+          <div className="flex items-start justify-center flex-grow h-screen p-6 mt-16 ml-16 space-x-2" style={{zIndex: 1}}>
+            {children}
+          </div>
         </div>
       </div>
       {

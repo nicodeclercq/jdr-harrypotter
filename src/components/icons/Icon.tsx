@@ -42,6 +42,8 @@ import { ClapperBoard } from './components/clapperboard';
 import { Help } from './components/help';
 import { Female } from './components/female';
 import { Male } from './components/male';
+import { Shop } from './components/shop';
+import { Evil } from './components/evil';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -87,6 +89,8 @@ export const ICONS = {
   HELP: <Help />,
   MALE: <Male />,
   FEMALE: <Female />,
+  SHOP: <Shop />,
+  EVIL: <Evil />,
 } as const;
 
 export type IconName = keyof typeof ICONS;
@@ -97,6 +101,6 @@ type Props = {
 
 export function Icon({name}: Props) {
   return (
-    <span style={{display:'inline-block'}}>{ICONS[name]}</span>
+    <div style={{display:'inline-block'}}>{ICONS[name]}</div>
   );
 }
