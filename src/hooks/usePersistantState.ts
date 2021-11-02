@@ -11,7 +11,8 @@ const KEYS = [
   'TIMER_TIME',
   'TIMER_PAUSE_TIME',
   'INITIATIVE',
-  'RANDOM_PHOTO'
+  'RANDOM_PHOTO',
+  'RANDOM_PNJ',
 ] as const;
 
 type Key = (typeof KEYS)[number];

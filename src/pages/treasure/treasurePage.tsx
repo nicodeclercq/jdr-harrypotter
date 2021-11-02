@@ -34,28 +34,51 @@ export function TreasurePage(){
           {poor.map(p =>
             <Accordion>
               {{
-                header: <div className="flex justify-between"><div>{p.name}</div><div>({p.knowledge}%)</div></div>,
+                header: (
+                  <div className="flex justify-between">
+                    <div className="flex items-center space-x-2">
+                      {p.side === '+'
+                        ? <div className="text-gray-400"><Icon name='SORCERER'/></div>
+                        : <div className="text-red-400"><Icon name='EVIL'/></div>
+                      }
+                      <span>{p.name}</span>
+                    </div>
+                    <div>({p.knowledge}%)</div>
+                  </div>
+                ),
                 content: p.description
               }}
             </Accordion>
           )}
-          {poorIngredients.map(p => <div className=" px-4 py-2">{p.name}</div>)}
-          <div className="flex px-4 py-2 space-x-2">
-            <Money value={random(0, 30)} />
-          </div>
+          {poorIngredients.map(p => <div className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
+          { random(0,1) === 1 &&
+            <div className="flex px-6 py-2 space-x-2">
+              <Money value={random(0, 30)} />
+            </div>
+          }
         </Card>
         <Card title={<div className="flex justify-between"><Title>Normal</Title><Button type="secondary" onClick={() => {setNormal(getNormalItems()); setNormalIngredients(getNormalIngredients()) }}><Icon name="DICE" /></Button></div>} useDividers>
-          {
-          normal.map(p =>
+          {normal.map(p =>
             <Accordion>
               {{
-                header: <div className="flex justify-between"><div>{p.name}</div><div>({p.knowledge}%)</div></div>,
+                header: (
+                  <div className="flex justify-between">
+                    <div className="flex items-center space-x-2">
+                      {p.side === '+'
+                        ? <div className="text-gray-400"><Icon name='SORCERER'/></div>
+                        : <div className="text-red-400"><Icon name='EVIL'/></div>
+                      }
+                      <span>{p.name}</span>
+                    </div>
+                    <div>({p.knowledge}%)</div>
+                  </div>
+                ),
                 content: p.description
               }}
             </Accordion>
           )}
-          {normalIngredients.map(p => <div className=" px-4 py-2">{p.name}</div>)}
-          <div className="flex px-4 py-2 space-x-2">
+          {normalIngredients.map(p => <div className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
+          <div className="flex px-6 py-2 space-x-2">
             <Money value={random(10, 60)} />
           </div>
         </Card>
@@ -63,13 +86,24 @@ export function TreasurePage(){
           {rich.map(p =>
             <Accordion>
               {{
-                header: <div className="flex justify-between"><div>{p.name}</div><div>({p.knowledge}%)</div></div>,
+                header: (
+                  <div className="flex justify-between">
+                    <div className="flex items-center space-x-2">
+                      {p.side === '+'
+                        ? <div className="text-gray-400"><Icon name='SORCERER'/></div>
+                        : <div className="text-red-400"><Icon name='EVIL'/></div>
+                      }
+                      <span>{p.name}</span>
+                    </div>
+                    <div>({p.knowledge}%)</div>
+                  </div>
+                ),
                 content: p.description
               }}
             </Accordion>
           )}
-          {richIngredients.map(p => <div className=" px-4 py-2">{p.name}</div>)}
-          <div className="flex px-4 py-2 space-x-2">
+          {richIngredients.map(p => <div className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
+          <div className="flex px-6 py-2 space-x-2">
             <Money value={random(20, 100)} />
           </div>
         </Card>

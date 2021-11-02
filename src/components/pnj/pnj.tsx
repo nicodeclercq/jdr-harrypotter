@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { random } from '../../helpers/number';
+import { usePersistantState } from '../../hooks/usePersistantState';
 import { Avatar } from '../Avatar';
 import { Button } from '../Button';
 import { Card } from '../Card';
@@ -36,7 +37,7 @@ const makeCharacter = () => {
 }
 
 export function PNJ(){
-  const [current, setCurrent] = useState<PNJType>(makeCharacter());
+  const [current, setCurrent] = usePersistantState<PNJType>('RANDOM_PNJ', makeCharacter());
   const [avatar, regeneratePicture] = useGeneratedPhoto({
     age: current.age,
     genre: current.sex,

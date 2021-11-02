@@ -24,7 +24,7 @@ export function Money({value}: {value: number}) {
   const division = getDivisions((value || 0) * EURO_TO_NOISE_FACTOR);
 
   return (<>
-    <div className="flex items-center space-x-1" title="Gallion">
+    <div className="flex items-end space-x-1" title="Gallion">
       <span>{division.gallion}</span>
       <span style={{color: 'goldenrod'}}><Icon name="COIN" /></span>
     </div>
