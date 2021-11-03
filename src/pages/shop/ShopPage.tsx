@@ -111,8 +111,15 @@ export function ShopPage(){
 
   return (
     <Layout>
-      <div className="w-full grid lg:grid-cols-3 gap-2 md:grid-cols-2 sm:grid-cols-1">
-        <Card title={<div className="flex justify-between"><Title>Pauvre</Title><Button type="secondary" onClick={() => {setPoor(getPoorItems()); setPoorIngredients(getPoorIngredients()) }}><Icon name="DICE" /></Button></div>} useDividers>
+      <div className="w-full grid lg:grid-cols-4 gap-2 md:grid-cols-2 sm:grid-cols-1">
+        <Card title="Objets magiques">
+          {
+            magicalObjects.sort((a, b) => a.cost > b.cost ? 1 : -1).map(({cost, name, description, knowledge, side}) => (
+              <Item key={name} initialCost={cost} cost={random(cost - cost * 5 / 100, cost + cost * 5 / 100)} description={description} knowledge={knowledge} name={name} side={side}/>
+            ))
+          }
+        </Card>
+        <Card title={<div className="flex justify-between"><Title>Boutique Pauvre</Title><Button type="secondary" onClick={() => {setPoor(getPoorItems()); setPoorIngredients(getPoorIngredients()) }}><Icon name="DICE" /></Button></div>} useDividers>
           {
             poor.map(({cost, name, description, knowledge, side}) => (
               <Item key={name} initialCost={cost} cost={random(cost - cost * 5 / 100, cost + cost * 5 / 100)} description={description} knowledge={knowledge} name={name} side={side}/>
@@ -122,7 +129,7 @@ export function ShopPage(){
             poorIngredients.map(({name, scarcity}) => <IngredientItem key={name} percent={5} name={name} scarcity={scarcity} />)
           }
         </Card>
-        <Card title={<div className="flex justify-between"><Title>Normal</Title><Button type="secondary" onClick={() => {setNormal(getNormalItems()); setNormalIngredients(getNormalIngredients()) } }><Icon name="DICE" /></Button></div>} useDividers>
+        <Card title={<div className="flex justify-between"><Title>Boutique Normal</Title><Button type="secondary" onClick={() => {setNormal(getNormalItems()); setNormalIngredients(getNormalIngredients()) } }><Icon name="DICE" /></Button></div>} useDividers>
           {
             normal.map(({cost, name, description, knowledge, side}) => <Item key={name} initialCost={cost} cost={random(cost, cost + cost * 10 / 100)} description={description} knowledge={knowledge} name={name} side={side}/>)
           }
@@ -130,7 +137,7 @@ export function ShopPage(){
             normalIngredients.map(({name, scarcity}) => <IngredientItem key={name} percent={10} name={name} scarcity={scarcity} />)
           }
         </Card>
-        <Card title={<div className="flex justify-between"><Title>Riche</Title><Button type="secondary" onClick={() => { setRich(getRichItems()); setRichIngredients(getRichIngredients()) } }><Icon name="DICE" /></Button></div>} useDividers>
+        <Card title={<div className="flex justify-between"><Title>Boutique Riche</Title><Button type="secondary" onClick={() => { setRich(getRichItems()); setRichIngredients(getRichIngredients()) } }><Icon name="DICE" /></Button></div>} useDividers>
           {
             rich.map(({cost, name, description, knowledge, side}) => (<>
             <Item key={name} initialCost={cost} cost={random(cost, cost + cost * 20 / 100)} description={description} knowledge={knowledge} name={name} side={side}/>
