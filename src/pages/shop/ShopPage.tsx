@@ -8,12 +8,16 @@ import { Layout } from "../../components/Layout";
 import { Money } from "../../components/MoneyConverter";
 import { getNRandomFromArray } from "../../helpers/array";
 import { random } from "../../helpers/number";
-import { magicalObjects } from "./objects";
+import { magicalObjects, normalObjects } from "./objects";
 import { ingredients, Ingredient } from "../potions/potions";
 
-export const common = magicalObjects.filter(({cost, knowledge}) => cost < 100 || knowledge > 60 || knowledge <= 30);
-export const usual = magicalObjects.filter(({cost, knowledge}) => (cost >= 100 && cost < 1000) || (knowledge > 30 && knowledge <=60));
-export const rare = magicalObjects.filter(({cost, knowledge}) => cost >= 1000 || (knowledge > 30 && knowledge <= 60));
+export const commonMagical = magicalObjects.filter(({cost, knowledge}) => cost < 100 || knowledge > 60 || knowledge <= 30);
+export const usualMagical = magicalObjects.filter(({cost, knowledge}) => (cost >= 100 && cost < 1000) || (knowledge > 30 && knowledge <=60));
+export const rareMagical = magicalObjects.filter(({cost, knowledge}) => cost >= 1000 || (knowledge > 30 && knowledge <= 60));
+
+export const common = normalObjects.filter(({cost}) => cost < 100);
+export const usual = normalObjects.filter(({cost}) => cost >= 100 && cost < 200);
+export const rare = normalObjects.filter(({cost}) => cost >= 200);
 
 type ItemProps = {
   initialCost: number,
@@ -37,15 +41,18 @@ const Item = ({initialCost, cost, knowledge, name, description, side}: ItemProps
             }
             <div>{name}</div>
           </div>
-          <div>({knowledge}%)</div>
+          {knowledge !== 100 && <div>({knowledge}%)</div>}
         </div>
       ),
       content: (
       <div>
         <div>{description}</div>
-        <div className="flex justify-between space-x-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex p-1 border border-green-400 rounded space-x-2"><Money value={cost} /></div>
-          <div className="flex p-1 bg-gray-200 rounded space-x-2">(<Money value={initialCost}/>)</div>
+          <div className="p-1 bg-gray-200 rounded space-x-2">
+            <div className="flex"><Money value={initialCost}/></div>
+            <div className="flex p-1 bg-gray-300 rounded transform scale-75"><Money value={Math.round(initialCost / 2)}/></div>
+          </div>
         </div>
       </div>
       ),
@@ -76,8 +83,6 @@ const IngredientItem = ({percent, name, scarcity}: {percent: number, name: strin
           </div>
         ),
         content: (
-        <div>
-          <div>{scarcity}</div>
           <div className="flex justify-between space-x-2">
             <div className="flex p-1 border border-green-400 rounded space-x-2">
               <Money value={random(cost, cost + cost * percent)} />
@@ -86,16 +91,30 @@ const IngredientItem = ({percent, name, scarcity}: {percent: number, name: strin
               (<Money value={cost}/>)
             </div>
           </div>
-        </div>
         ),
       }}
     </Accordion>
   )
 }
 
-const getPoorItems = () => [...getNRandomFromArray(2, common), ...getNRandomFromArray(1, usual)];
-const getNormalItems = () => [...getNRandomFromArray(2, common), ...getNRandomFromArray(2, usual)];
-const getRichItems = () => [...getNRandomFromArray(3, usual), ...getNRandomFromArray(2, rare)];
+const getPoorItems = () => [
+  ...getNRandomFromArray(2, commonMagical),
+  ...getNRandomFromArray(1, usualMagical),
+  ...getNRandomFromArray(2, common),
+  ...getNRandomFromArray(1, usual)
+].sort(() => random(0,2) - 1);
+const getNormalItems = () => [
+  ...getNRandomFromArray(2, commonMagical),
+  ...getNRandomFromArray(2, usualMagical),
+  ...getNRandomFromArray(2, common),
+  ...getNRandomFromArray(2, usual)
+].sort(() => random(0,2) - 1);
+const getRichItems = () => [
+  ...getNRandomFromArray(3, usualMagical),
+  ...getNRandomFromArray(1, rareMagical),
+  ...getNRandomFromArray(3, usual),
+  ...getNRandomFromArray(1, rare)
+].sort(() => random(0,2) - 1);
 
 const getPoorIngredients = () => getNRandomFromArray(5, ingredients.filter(({scarcity}) => scarcity === 'Commun'));
 const getNormalIngredients = () => getNRandomFromArray(4, ingredients.filter(({scarcity}) => scarcity === 'Commun' || scarcity === 'Usuel'));
@@ -111,10 +130,17 @@ export function ShopPage(){
 
   return (
     <Layout>
-      <div className="w-full grid lg:grid-cols-4 gap-2 md:grid-cols-2 sm:grid-cols-1">
-        <Card title="Objets magiques">
+      <div className="w-full h-full grid lg:grid-cols-5 gap-2 md:grid-cols-3 sm:grid-cols-2">
+        <Card title="Objets magiques" useDividers>
           {
             magicalObjects.sort((a, b) => a.cost > b.cost ? 1 : -1).map(({cost, name, description, knowledge, side}) => (
+              <Item key={name} initialCost={cost} cost={random(cost - cost * 5 / 100, cost + cost * 5 / 100)} description={description} knowledge={knowledge} name={name} side={side}/>
+            ))
+          }
+        </Card>
+        <Card title="Objets" useDividers>
+          {
+            normalObjects.sort((a, b) => a.cost > b.cost ? 1 : -1).map(({cost, name, description, knowledge, side}) => (
               <Item key={name} initialCost={cost} cost={random(cost - cost * 5 / 100, cost + cost * 5 / 100)} description={description} knowledge={knowledge} name={name} side={side}/>
             ))
           }

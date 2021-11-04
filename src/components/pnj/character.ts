@@ -1265,7 +1265,21 @@ export const colors = [
   }
 ] as const;
 
-export const getRandomAge = () => random(16, 90);
+export const getRandomAge = () => {
+  const young = [16, 30] as const;
+  const medium = [31, 60] as const;
+  const old = [61, 80] as const;
+
+  const probability = random(0, 100);
+
+  if(probability < 40){
+    return random(...young);
+  }
+  if(probability < 80){
+    return random(...medium);
+  }
+  return random(...old);
+}
 
 export const firstnames = {
   Homme: [

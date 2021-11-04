@@ -9,11 +9,11 @@ import { Money } from '../../components/MoneyConverter';
 import { getNRandomFromArray } from '../../helpers/array';
 import { random } from '../../helpers/number';
 import { ingredients } from '../potions/potions';
-import { common, rare, usual } from '../shop/ShopPage';
+import { commonMagical, rareMagical, usualMagical } from '../shop/ShopPage';
 
-const getPoorItems = () => getNRandomFromArray(random(0, 1), [...common]);;
-const getNormalItems = () => getNRandomFromArray(random(0, 1), [...usual, ...common]);
-const getRichItems = () => getNRandomFromArray(random(1, 2), [...usual, ...rare]);
+const getPoorItems = () => getNRandomFromArray(random(0, 1), [...commonMagical]);;
+const getNormalItems = () => getNRandomFromArray(random(0, 1), [...usualMagical, ...commonMagical]);
+const getRichItems = () => getNRandomFromArray(random(1, 2), [...usualMagical, ...rareMagical]);
 
 const getPoorIngredients = () => getNRandomFromArray(random(0, 3), ingredients.filter(({scarcity}) => scarcity === 'Commun'));
 const getNormalIngredients = () => getNRandomFromArray(random(0, 3), ingredients.filter(({scarcity}) => scarcity === 'Commun' || scarcity === 'Usuel'));

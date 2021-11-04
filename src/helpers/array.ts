@@ -41,7 +41,7 @@ export const getNRandomIndexFromFilteredArray = <T>(number: number, predicate: (
 }
 
 export const getNRandomFromArray = <T>(number: number, arr: T[]): Array<T> => {
-  if(number === 0){
+  if(number === 0 || arr.length === 0){
     return [];
   }
   if(number >= arr.length) {

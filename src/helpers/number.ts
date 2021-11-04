@@ -17,3 +17,8 @@ export const roll = (diceNumber: number, diceType: 'd6' | 'd100') => {
     .map(() => dices[diceType]())
     .reduce(add, 0);
 }
+
+export const withNDecimals = (decimals: number, value: number) => {
+  const factor = new Array(decimals).fill(10).reduce((acc, cur) => acc * cur, 1);
+  return Math.round(value * factor) / factor;
+}
