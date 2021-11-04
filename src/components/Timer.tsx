@@ -14,8 +14,6 @@ type Time = {
   seconds: number;
 }
 
-const startDate = new Date();
-
 const getTimeValue = (time: number) => {
   const date = new Date(time);
 
@@ -30,6 +28,7 @@ const DEFAULT_TIME = {hours: 0, minutes: 0, seconds: 0};
 
 export function Timer() {
   const [time, setTime] = useState<Time>(DEFAULT_TIME);
+  const [startDate, setStartDate] = usePersistantState<Date | undefined>('TIMER_START_DATE', undefined);
   const [totalTime, setTotalTime] = usePersistantState<Time>('TIMER_TOTAL_TIME', DEFAULT_TIME);
   const [pauseDate, setPauseDate] = usePersistantState<Date | undefined>('TIMER_PAUSE_TIME', new Date());
   const [date, setDate] = usePersistantState('TIMER_TIME', new Date());
@@ -48,15 +47,17 @@ export function Timer() {
   }, [date, pauseDate, setTime]);
 
   useEffect(() => {
-    const interval = setInterval(() => pipe(
-      new Date().getTime() - startDate.getTime(),
-      getTimeValue,
-      (time) => {
-        setTotalTime(time)
-      },
-    ), 500);
-    return () => clearInterval(interval);
-  }, [setTotalTime]);
+    if(startDate){
+      const interval = setInterval(() => pipe(
+        new Date().getTime() - startDate.getTime(),
+        getTimeValue,
+        (time) => {
+          setTotalTime(time)
+        },
+      ), 500);
+      return () => clearInterval(interval);
+    }
+  }, [setTotalTime, startDate]);
 
   const togglePause = () => {
     if (pauseDate) {
@@ -83,7 +84,11 @@ export function Timer() {
       </div>
     }>
       <div className="flex justify-between px-2 py-1">
-        <Caption>{`${totalTime.hours}`.padStart(2, '0')}:{`${totalTime.minutes}`.padStart(2, '0')}:{`${totalTime.seconds}`.padStart(2, '0')}</Caption>
+        {
+          startDate
+            ? <Caption>{`${totalTime.hours}`.padStart(2, '0')}:{`${totalTime.minutes}`.padStart(2, '0')}:{`${totalTime.seconds}`.padStart(2, '0')}</Caption>
+            : <Button type="primary" onClick={() => {setStartDate(new Date())}}>Start</Button>
+        }
         <BodyText>{`${time.minutes}`.padStart(2, '0')}:{`${time.seconds}`.padStart(2, '0')}</BodyText>
       </div>
     </Card>
