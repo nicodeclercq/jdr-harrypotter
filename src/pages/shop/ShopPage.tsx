@@ -134,6 +134,7 @@ export function ShopPage(){
   return (
     <Layout>
       <div className="flex w-full h-full gap-2">
+        <div className="w-1/3">
         <Card title="Objets magiques" useDividers>
           {
             magicalObjects.sort((a, b) => a.cost > b.cost ? 1 : -1).map(({id, cost, name, description, knowledge, side}) => (
@@ -141,6 +142,8 @@ export function ShopPage(){
             ))
           }
         </Card>
+        </div>
+        <div className="w-1/3">
         <Card title="Objets normaux" useDividers>
           {
             normalObjects.sort((a, b) => a.cost > b.cost ? 1 : -1).map(({id, cost, name, description, knowledge, side}) => (
@@ -148,6 +151,7 @@ export function ShopPage(){
             ))
           }
         </Card>
+        </div>
         <div className="flex flex-col flex-grow gap-2">
           <Card title={(
             <div className="flex items-center gap-2">
