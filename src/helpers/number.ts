@@ -22,3 +22,6 @@ export const withNDecimals = (decimals: number, value: number) => {
   const factor = new Array(decimals).fill(10).reduce((acc, cur) => acc * cur, 1);
   return Math.round(value * factor) / factor;
 }
+
+export const addRandomPercent = (percent: number, value: number) =>
+  random(value, value + value * percent / 100);

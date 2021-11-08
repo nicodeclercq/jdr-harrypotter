@@ -1325,4 +1325,5 @@ export const magics = [
   'Chamanisme',
   'Magie spirituelle',
   'Abjuration (détournement de la magie)',
+  'Ensorceleur (création d\'objets magiques)',
 ];
