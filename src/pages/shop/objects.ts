@@ -295,7 +295,7 @@ export const foodAndDrinks = {
     {name: 'Chicken tika massala', cost: 10},
     {name: 'Toad in the hole (saucisse dans une pâte)', cost: 8},
     {name: 'Kedgerre (plat indien, riz haddock)', cost: 14},
-    {name: 'Gelly', cost: 6},
+    {name: 'Jelly', cost: 6},
     {name: 'English breakfast', cost: 6},
   ]
 };
