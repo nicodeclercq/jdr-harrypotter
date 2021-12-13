@@ -24,7 +24,7 @@ function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'],
         <div className="h-full grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="w-full space-y-4">
             {isMJ && <Timer />}
-            {isMJ && <MoneyConverter />}
+            {isMJ && <MoneyConverter showEuro />}
             {isMJ && <OppositionRollTable />}
             <div style={{position: 'absolute', bottom: '4rem', left: '6rem'}}>
               <Identity />

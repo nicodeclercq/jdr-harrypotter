@@ -7,6 +7,7 @@ import { MoneyForm } from './MoneyForm';
 import { ObjectsForm } from './ObjectsForm';
 import { useMoney } from './useMoney';
 import { useObjects } from './useObjects';
+import { MoneyConverter } from '../../components/MoneyConverter';
 
 export function ObjectsPage(){
   const { objects } = useObjects();
@@ -20,7 +21,10 @@ export function ObjectsPage(){
     fromRemoteData(
       ({objects, money}) => (<Layout>
         <div className="w-full h-full m-3 space-y-2">
-          <MoneyForm money={money} />
+          <div className="items-end grid grid-flow-col grid-cols-2 gap-4">
+            <MoneyForm money={money} />
+            <MoneyConverter />
+          </div>
           <ObjectsForm objects={objects} columns={2} />
         </div>
       </Layout>)

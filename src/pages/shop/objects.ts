@@ -139,6 +139,7 @@ export const magicalObjects = [
   {knowledge: 80, name: 'Miroir d\'emprisonnement recouvert d\'un tissu violet', description: 'Celui qui se regarde dedans s\'y retrouve enfermé', cost:60, side:'-'},
   {knowledge: 80, name: 'Filet', description: 'Permet de capturer des poissons, mais enferme le porteur si utiliser sur terre', cost:30, side:'-'},
   {knowledge: 80, name: 'Timbales de rapidité', description: 'Ralenti toute créature qui en entend le son', cost:90, side:'-'},
+  {knowledge: 80, name: 'Tapis volant', description: 'Transport de groupe confortable et rapide', cost:500, side:'+'},
 ].map((a, id) => ({...a, id: `${a.knowledge}${1}${id}`}));
 
 export const normalObjects = [
