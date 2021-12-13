@@ -3,6 +3,8 @@ import { State } from '../../store/State';
 import { ChatBox } from './ChatBox';
 
 export function ChatBoxes ({me, users}: {me: State['user'], users: Record<string, string | null | undefined>}) {
+  const userList = Object.entries(users);
+
   return <div style={{
     display:'flex',
     flexDirection:'row',
@@ -17,8 +19,13 @@ export function ChatBoxes ({me, users}: {me: State['user'], users: Record<string
     marginLeft: '5rem',
     zIndex: 2,
   }}>
+    {userList.length > 1 && (
+      <div>
+        <ChatBox me={me} image={undefined} user={'all'} />
+      </div>
+    )}
     {
-      Object.entries(users)
+      userList
         .map(([user, image]) => (
           <div key={user}>
             <ChatBox me={me} image={image} user={user} />
