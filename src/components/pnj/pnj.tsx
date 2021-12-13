@@ -1,14 +1,14 @@
 import React from 'react';
 import { random } from '../../helpers/number';
 import { usePersistantState } from '../../hooks/usePersistantState';
-import { Avatar } from '../Avatar';
+// import { Avatar } from '../Avatar';
 import { Button } from '../Button';
 import { Card } from '../Card';
 import { BodyText } from '../font/BodyText';
 import { Title } from '../font/Title';
 import { Icon } from '../icons/Icon';
 import { characters, getRandomAge, sexes, colors, firstnames, lastnames, magics } from './character';
-import { useGeneratedPhoto } from './useGeneratedPhoto';
+// import { useGeneratedPhoto } from './useGeneratedPhoto';
 
 type PNJType = {
   name: string;
@@ -38,18 +38,19 @@ const makeCharacter = () => {
 
 export function PNJ(){
   const [current, setCurrent] = usePersistantState<PNJType>('RANDOM_PNJ', makeCharacter());
+  /*
   const [avatar, regeneratePicture] = useGeneratedPhoto({
     age: current.age,
     genre: current.sex,
   });
-
+  */
 
   return (
     <Card title={
       <div className="flex items-center justify-between">
         <Title>
           <div className="flex items-center flex-rows space-x-2">
-            <Avatar url={avatar} text={current.name} />
+            {/*<Avatar url={avatar} text={current.name} />*/}
             <span>{current.name}</span>
             <Icon name={current.sex === 'Homme' ? 'MALE' : 'FEMALE'} />
           </div>
@@ -57,7 +58,7 @@ export function PNJ(){
         <Button type="secondary" onClick={() => {
           const character = makeCharacter();
           setCurrent(character);
-          regeneratePicture({age: character.age, genre: character.sex});
+          // regeneratePicture({age: character.age, genre: character.sex});
         }} title="reset">
           <Icon name="DICE" />
         </Button>
