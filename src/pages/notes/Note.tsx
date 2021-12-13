@@ -1,5 +1,6 @@
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { debounce } from '../../helpers/function';
 import { Accordion } from '../../components/Accordion';
 import { Button } from '../../components/Button';
 import { Label } from '../../components/font/Label';
@@ -23,6 +24,7 @@ export function Note({id, title, description}: Props) {
   });
 
   const onSubmit = ({title, description}: {title: string, description: string}) => {
+    console.log('called', description);
     setNote({id, title, description});
   }
 
@@ -39,6 +41,7 @@ export function Note({id, title, description}: Props) {
                 <Input
                   id={`${id}_title`}
                   value={value}
+                  onInput={debounce(handleSubmit(onSubmit), 1000)}
                   onChange={onChange}
                   onBlur={handleSubmit(onSubmit)}
                   width="100%"
@@ -58,6 +61,7 @@ export function Note({id, title, description}: Props) {
                 <Textarea
                   id={`${id}_description`}
                   value={value}
+                  onInput={debounce(handleSubmit(onSubmit), 1000)}
                   onChange={onChange}
                   onBlur={handleSubmit(onSubmit)}
                   theme="neutral"
