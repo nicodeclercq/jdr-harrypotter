@@ -15,6 +15,9 @@ const currency = `
   1M=${CurrencyDivisions.mornille / EURO_TO_NOISE_FACTOR}€,
   1N=${CurrencyDivisions.noise / EURO_TO_NOISE_FACTOR}€
 `;
+
+const simplifiedCurrency = `1G = +/- ${Math.round(CurrencyDivisions.gallion / EURO_TO_NOISE_FACTOR)}€`;
+
 const divisions = `
   1G=${CurrencyDivisions.gallion /CurrencyDivisions.mornille}M,
   1G=${CurrencyDivisions.gallion /CurrencyDivisions.noise}N,
@@ -141,9 +144,10 @@ export function MoneyConverter({showEuro=false}: { showEuro?: boolean}) {
   return (
     <Card
       title={
-        <div className="flex justify-between space-x-1">
+        <div className="flex items-center justify-between space-x-1">
           <div className="flex items-center space-x-1">
-            <Title>Calculatrice</Title>{showEuro && <Caption>({currency})</Caption>}
+            <Title>Calculatrice</Title>
+            <Caption>({showEuro ? currency : simplifiedCurrency})</Caption>
           </div>
           <Comment>{divisions}</Comment>
         </div>
