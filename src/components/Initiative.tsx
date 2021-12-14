@@ -11,7 +11,7 @@ import { Icon } from './icons/Icon';
 function shuffle(connectedUsers: ConnectedUsers){
   const pj = Object.entries(connectedUsers).map(([name, avatar]) => ({name, avatar}));
   const pnj = {name: 'PNJ', avatar: ''};
-  const ennemy = {name: 'Ennemie', avatar: ''};
+  const ennemy = {name: 'Ennemi', avatar: ''};
 
   return [...pj, pnj, ennemy]
     .sort(() => Math.random() - 0.5);

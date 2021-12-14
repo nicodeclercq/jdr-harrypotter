@@ -12,7 +12,6 @@ import { useLife } from './useLife';
 import { useUser } from './useUser';
 import { UsersBestSkills } from './UsersBestSkills';
 import { Timer } from '../../components/Timer';
-import { Initiative } from '../../components/Initiative';
 import { MoneyConverter } from '../../components/MoneyConverter';
 import { PNJ } from '../../components/pnj/pnj';
 
@@ -31,7 +30,6 @@ function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'],
             </div>
           </div>
           <div className="w-full space-y-4">
-            {isMJ && <Initiative />}
             {isMJ && <PNJ />}
             {isMJ && <UsersBestSkills />}
           </div>
