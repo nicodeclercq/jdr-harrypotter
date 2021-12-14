@@ -14,6 +14,7 @@ const KEYS = [
   'INITIATIVE',
   'RANDOM_PHOTO',
   'RANDOM_PNJ',
+  'RANDOM_SPELLS',
 ] as const;
 
 type Key = (typeof KEYS)[number];
