@@ -25,14 +25,18 @@ const randomColor = (str: string) => {
     .map(char => char.charCodeAt(0))
     .reduce((acc, cur) => acc + cur, 0);
   const hue = value % 360;
-  return `hsl(${hue}, 25%, 50%)`;
+  return `hsl(${hue}, 33%, 40%)`;
 }
 
 const isClickable = (props: Props): props is BaseProps & Clickable => 'onClick' in props;
 
 export function Avatar(props: Props) {
   return (
-    <div title={props.text} onClick={isClickable(props) ? props.onClick : constVoid} className={`relative flex items-center justify-center flex-none ${size[!isClickable(props) ? (props.size ?? 'medium') : 'medium']} border-2 border-white rounded-full shadow`} style={{ flex: 'none', backgroundColor: randomColor(props.text), backgroundImage: `url("${props.url}")`, backgroundPosition: 'center', backgroundSize: 'cover'}}>
+    <div
+      title={props.text}
+      onClick={isClickable(props) ? props.onClick : constVoid}
+      className={`relative flex items-center text-white justify-center flex-none ${size[!isClickable(props) ? (props.size ?? 'medium') : 'medium']} border-2 border-white rounded-full shadow`}
+      style={{ flex: 'none', backgroundColor: randomColor(props.text), backgroundImage: `url("${props.url}")`, backgroundPosition: 'center', backgroundSize: 'cover'}}>
       {props.url ? '' : <Icon name="SORCERER" />}
       {
         isClickable(props) && (<button className="absolute flex items-center justify-center w-6 h-6 p-0 text-gray-700 bg-white border border-gray-500 rounded-full shadow" style={{bottom: '-0.5rem', right: '-0.5rem', fontSize: '1rem'}}>
