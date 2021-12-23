@@ -78,6 +78,12 @@ const imageDecoder = IO.type({
 export type ImageMessage = IO.TypeOf<typeof imageDecoder>;
 export const isImageMessage = imageDecoder.is;
 
+const useBennyDecoder = IO.type({
+  type: IO.literal('useBenny'),
+});
+export type UseBennyMessage = IO.TypeOf<typeof useBennyDecoder>;
+export const isUseBennyMessage = useBennyDecoder.is;
+
 const messageDecoder = IO.type({
   author: IO.type({
     name: IO.string,
@@ -92,6 +98,7 @@ const messageDecoder = IO.type({
     alertDecoder,
     timeMessageDecoder,
     imageDecoder,
+    useBennyDecoder,
   ])
 });
 
@@ -107,6 +114,7 @@ export const fold = (currentUserName: string, fns: {
   alert: (payload: AlertMessage['payload'], author: Message['author']) => void,
   time: (payload: TimeMessage['payload'], author: Message['author']) => void,
   image: (payload: ImageMessage['payload'], author: Message['author']) => void,
+  useBenny: (payload: undefined, author: Message['author']) => void,
 }) => (message: unknown) => pipe(
   message,
   (m) => {
@@ -148,6 +156,9 @@ export const fold = (currentUserName: string, fns: {
       }
       if(imageDecoder.is(data.message)) {
         fns.image(data.message.payload, data.author);
+      }
+      if(useBennyDecoder.is(data.message)) {
+        fns.useBenny(undefined, data.author);
       }
     }
   )

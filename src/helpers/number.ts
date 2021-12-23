@@ -2,7 +2,15 @@ import { randomInt } from 'fp-ts/lib/Random';
 
 export const random = (min: number, max: number) => randomInt(min, max)();
 export const add = (a: number, b: number) => a + b;
-
+export const withinBounds = ({min, max}:{min: number, max: number}) => (value: number) => {
+  if(value < min){
+    return min;
+  }
+  if(value > max){
+    return max;
+  }
+  return value;
+}
 export const d6 = () => random(1, 6);
 export const d100 = () => random(0, 100);
 

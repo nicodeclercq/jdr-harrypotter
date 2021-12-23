@@ -70,6 +70,7 @@ export function ChatBox ({me, user, image}: {me: State['user'], user?: string, i
           author,
           message: message as ChatMessage,
         })),
+        RX.filter(({message}) => !/\[.*\]/g.test(message.payload.message)),
         RX.filter(({message: {payload: { recipient }}}) => recipient === me.name || (recipient === 'all' && user === 'all')),
         RX.distinctUntilChanged(),
         RX.timestamp()

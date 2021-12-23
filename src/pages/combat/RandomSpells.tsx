@@ -44,7 +44,7 @@ export function RandomSpells(){
           .map(([level, list]) => (
             <div key={level}>
               {
-                list.map((spell) => <Spell spell={spell} isOwned roll={() => {setRollModalSpell(spell)}} />)
+                list.map((spell) => <Spell key={spell.name} spell={spell} isOwned roll={() => {setRollModalSpell(spell)}} />)
               }
             </div>
           ))

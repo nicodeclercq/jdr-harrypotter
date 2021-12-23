@@ -1,5 +1,5 @@
 import { KeyOf, ValueOf } from '../helpers/object';
-import { State as CurrentState, stateDecoder as CurrentStateDecoder, retrieve as currentRetrieve } from './v9/v9';
+import { State as CurrentState, stateDecoder as CurrentStateDecoder, retrieve as currentRetrieve } from './v10/v10';
 
 export const retrieve = currentRetrieve;
 export const StateDecoder = CurrentStateDecoder;

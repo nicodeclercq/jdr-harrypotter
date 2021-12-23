@@ -3,7 +3,7 @@ import {useTitle} from 'react-use';
 import { pipe } from 'fp-ts/lib/function';
 
 import { Layout } from '../../components/Layout';
-import { fromRemoteData, sequence } from '../../helpers/remoteData';
+import { fromRemoteData, onSuccess, sequence } from '../../helpers/remoteData';
 import { State } from '../../store/State';
 import { Identity } from './Identity';
 import { useRole } from '../../hooks/useRole';
@@ -14,9 +14,12 @@ import { UsersBestSkills } from './UsersBestSkills';
 import { Timer } from '../../components/Timer';
 import { MoneyConverter } from '../../components/MoneyConverter';
 import { PNJ } from '../../components/pnj/pnj';
+import { Benny } from '../../components/Benny';
+import { useBenny } from '../../hooks/useBenny';
 
 function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'], life: State['life']}) {
   useTitle(`${user} - ${life.current} / ${life.max} ♥`);
+  const { bennies, moveBenny, removeBenny} = useBenny();
 
   return (
       <Layout>
@@ -34,6 +37,25 @@ function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'],
             {isMJ && <UsersBestSkills />}
           </div>
         </div>
+        {
+          pipe(
+            bennies,
+            onSuccess(bennies => bennies.map((position, index) => 
+              <Benny
+                position={position}
+                onDragStop={(endPosition) => {
+                  moveBenny(
+                    endPosition,
+                    index
+                  )
+                }}
+                onUse={() => {
+                  removeBenny(index);
+                }}
+              />
+            ))
+          )
+        }
       </Layout>
   );
 }

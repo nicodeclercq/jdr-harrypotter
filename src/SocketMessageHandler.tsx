@@ -11,6 +11,7 @@ import { fromRemoteData, onSuccess } from './helpers/remoteData';
 import { Time } from './pages/home/Time';
 import { useUser } from './pages/home/useUser';
 import { useSound } from './hooks/useSound';
+import { useBenny as useBennyHook } from './hooks/useBenny';
 import { useConnectedUsers } from './hooks/useConnectedUsers';
 
 type Props = {
@@ -27,6 +28,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   const { isMJ } = useRole();
   const { user } = useUser();
   const { play } = useSound();
+  const { addBenny } = useBennyHook();
 
   const hasAlreadyJoined = useCallback(({recipient}: HasAlreadyJoinedMessage['payload'], author: Message['author']) => {
     if (recipient === currentUserName) {
@@ -60,10 +62,15 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
 
   const chat =  useCallback(({message, recipient}: ChatMessage['payload'], author: Message['author']) => {
     if(currentUserName === recipient){
-      add({id: `chat_${recipient}${message}`, type: 'message', message: `“${message}”`, author: {name: author.name, avatar: author.avatar ?? ''}});
-      play('bip');
+      if(message === '[giveBenny]'){
+        add({id: `chat_${recipient}${message}`, type: 'message', message: `Tu as gagné un nouveau Joker`, author: {name: author.name, avatar: author.avatar ?? ''}});
+        addBenny();
+      }else{
+        add({id: `chat_${recipient}${message}`, type: 'message', message: `“${message}”`, author: {name: author.name, avatar: author.avatar ?? ''}});
+        play('bip');
+      }
     }
-  }, [add, currentUserName, play]);
+  }, [add, addBenny, currentUserName, play]);
 
   const roll = useCallback(({title, value, type}: RollMessage['payload'], author: Message['author']) => {
     const types = {
@@ -107,7 +114,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
         }),
       );
     }
-    if(type === 'playerNeedsPause'){
+    if (type === 'playerNeedsPause') {
       add({
         id: `halt_${author.name}`,
         type: 'message',
@@ -121,6 +128,26 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
     }
   }, [add, isMJ, play]);
 
+  const useBenny = useCallback((payload: undefined, author: Message['author']) => {
+    pipe(
+      isMJ,
+      onSuccess((isCurrentUserMJ) => {
+        if (isCurrentUserMJ) {
+          addBenny();
+        }
+        add({
+          id: `benny_${author.name}`,
+          type: 'message',
+          message: `${author.name} à utilisé un Joker`,
+          author: {
+            name: author.name,
+            avatar: author.avatar ?? ''
+          },
+        });
+      })
+    );
+  }, [add, addBenny, isMJ]);
+
   const onMessage = useCallback((message: unknown) => {
     return fold(currentUserName, {
       hasAlreadyJoined,
@@ -131,8 +158,9 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       alert,
       time: constVoid,
       image: constVoid,
+      useBenny,
     })(message)
-  }, [alert, chat, currentUserName, hasAlreadyJoined, join, quit, roll]);
+  }, [alert, chat, currentUserName, hasAlreadyJoined, join, quit, roll, useBenny]);
 
   useEffect(() => {
     if (currentUserName) {

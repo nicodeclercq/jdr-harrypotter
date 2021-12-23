@@ -12,7 +12,7 @@ export function FumblesList(){
     <Card title="Fumbles" useDividers>
       {
         fumbles.map(({name, effets, description}, index) => (
-          <Accordion>
+          <Accordion key={`${name}_${index}`}>
             {{
               header: (
                 <div className="flex items-center space-x-1">

@@ -4,7 +4,7 @@ export const tryCatch = <T>(fn: () => T, onCatch: (e: Error) => T) => {
   try{
     return fn();
   } catch(e){
-    return onCatch(e);
+    return onCatch(e instanceof Error ? e : new Error(`${e}`));
   }
 }
 
