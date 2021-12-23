@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 const sounds = [
   'bip',
   'sleep',
@@ -10,10 +11,10 @@ const sounds = [
 type Sound = (typeof sounds)[number];
 
 export function useSound() {
-  const play = (name: Sound) => {
+  const play = useCallback((name: Sound) => {
     const sound = document.getElementById(`sound-${name}`) as HTMLAudioElement;
     sound.play();
-  }
+  }, []);
 
   return {
     play,
