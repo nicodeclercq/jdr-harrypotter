@@ -26,7 +26,7 @@ const getNextLevelSkills = (skills: State['skills']) => {
 export function MySkills({ skills, showInColumns }: Props) {
   const [rollModalSkill, setRollModalSkill] = useState<{skill: string, currentLevel: number} | undefined>(undefined);
   const [nextLevelSkill, setNextLevelSkill] = useState<string | undefined>(undefined);
-  const { use, upgrade} = useSkill();
+  const { use, upgrade, remove} = useSkill();
   const { add } = useNotification();
 
   const onRollEnd = (skill: string) => (result: Interaction.Interaction<never, number>) => {
@@ -76,6 +76,9 @@ export function MySkills({ skills, showInColumns }: Props) {
             <div className="flex-grow text-sm">
               {skill} ({currentLevel}%)
             </div>
+            <Button type='tertiary' onClick={() => {remove(skill)}}>
+              <Icon name="CROSS" />
+            </Button>
           </div>
           ))
         }
