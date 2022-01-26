@@ -47,6 +47,7 @@ import { Evil } from './components/evil';
 import { Chest } from './components/chest';
 import { Beer } from './components/beer';
 import { DiceTarget } from './components/dice-target';
+import { Increase } from './components/increase';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -97,6 +98,7 @@ export const ICONS = {
   CHEST: <Chest />,
   BEER: <Beer />,
   DICE_TARGET: <DiceTarget />,
+  INCREASE: <Increase />,
 } as const;
 
 export type IconName = keyof typeof ICONS;
