@@ -10,6 +10,7 @@ import { Comment } from './font/Comment';
 import * as Interaction from '../helpers/interaction';
 import { Dice } from './dice/dice';
 import { useSocket } from '../hooks/useSocket';
+import { Input } from './Input';
 
 export type Interpretation = {
   predicate: (value:number, percentage: number) => boolean;
@@ -29,6 +30,7 @@ type Props = {
 }
 
 function DifficultySelection ({successPercentage, onSelection}: {successPercentage: number, onSelection: (value: number) => void}) {
+  const [customDifficulty, setCustomDifficulty] = useState(0);
   const successPercentages = {
     veryEasy: successPercentage + 20,
     easy: successPercentage + 10,
@@ -49,6 +51,27 @@ function DifficultySelection ({successPercentage, onSelection}: {successPercenta
         <Button disabled={successPercentages.normal <= 0} type="primary" onClick={() => onSelection(successPercentages.normal <= 100 ? successPercentages.normal : 100)}>Normal</Button>
         <Button disabled={successPercentages.hard <= 0} type="secondary" onClick={() => onSelection(successPercentages.hard <= 100 ? successPercentages.hard : 100)}>Difficile&nbsp;<Comment>(-10%)</Comment></Button>
         <Button disabled={successPercentages.veryHard <= 0} type="secondary" onClick={() => onSelection(successPercentages.veryHard <= 100 ? successPercentages.veryHard : 100)}>Très difficile&nbsp;<Comment>(-20%)</Comment></Button>
+        <hr />
+        <div className="flex flex-row items-center p-4 space-x-2">
+          <Input
+            theme="neutral"
+            width="25%"
+            min={-100}
+            max={100}
+            value={customDifficulty}
+            onChange={(newValue: number | undefined) => setCustomDifficulty(newValue && !isNaN(newValue) ? newValue : 0)}
+            type="number"
+          />
+          <div className="flex flex-col items-stretch flex-grow">
+            <Button
+              disabled={successPercentage + customDifficulty <= 0}
+              type="secondary"
+              onClick={() => onSelection(successPercentage + customDifficulty <= 100 ? successPercentage + customDifficulty : 100)}
+            >
+              Difficulté personalisée&nbsp;<Comment>({customDifficulty > 0 ? '+' : ''}{customDifficulty}%)</Comment>
+            </Button>
+          </div>
+        </div>
         <br/>
         <hr />
         <br/>
