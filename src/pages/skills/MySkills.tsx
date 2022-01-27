@@ -82,7 +82,8 @@ export function MySkills({ skills, showInColumns }: Props) {
               onClick={
                 () => {
                   confirm({
-                    message: `Êtes-vous sûr de vouloir supprimer la compétence "${skill}"?`,
+                    title: `Êtes-vous sûr de vouloir supprimer "${skill}"?`,
+                    message: `Vous devrez recréer la compétence manuellement si vous souhaitez revenir en arrière.`,
                     onConfirm: () => remove(skill)
                   }
               )}}
