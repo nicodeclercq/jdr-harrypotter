@@ -40,7 +40,7 @@ function UserTraits({userTraits}: Props) {
                   </Button>
                 </div>
                 <div className="flex-grow text-sm">
-                  {key} ({value})
+                  {key} ({value * 5}%)
                 </div>
               </div>
             ))
