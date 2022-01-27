@@ -12,6 +12,7 @@ import { confirm } from '../../helpers/io';
 import { noop } from '../../helpers/function';
 import { useNotification } from '../../components/Notification';
 import { UpgradeRollModal } from '../../components/UpgradeRollModal';
+import { ButtonIcon } from '../../components/ButtonIcon';
 
 type Props = {
   skills: State['skills'];
@@ -77,16 +78,16 @@ export function MySkills({ skills, showInColumns }: Props) {
             <div className="flex-grow text-sm">
               {skill} ({currentLevel}%)
             </div>
-            <Button type='tertiary' onClick={
-              () => {
-                confirm({
-                  message: `Êtes-vous sûr de vouloir supprimer la compétence "${skill}"?`,
-                  onConfirm: () => remove(skill)
-                }
+            <ButtonIcon
+              onClick={
+                () => {
+                  confirm({
+                    message: `Êtes-vous sûr de vouloir supprimer la compétence "${skill}"?`,
+                    onConfirm: () => remove(skill)
+                  }
               )}}
-            >
-              <Icon name="CROSS" />
-            </Button>
+              icon="CROSS"
+            />
           </div>
           ))
         }
