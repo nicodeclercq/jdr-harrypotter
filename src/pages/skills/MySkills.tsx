@@ -8,6 +8,7 @@ import { entries } from '../../helpers/object';
 import { State } from '../../store/State';
 import { useSkill, MIN_USE_FOR_UPGRADE } from './useSkill';
 import * as Interaction from '../../helpers/interaction';
+import { confirm } from '../../helpers/io';
 import { noop } from '../../helpers/function';
 import { useNotification } from '../../components/Notification';
 import { UpgradeRollModal } from '../../components/UpgradeRollModal';
@@ -76,7 +77,14 @@ export function MySkills({ skills, showInColumns }: Props) {
             <div className="flex-grow text-sm">
               {skill} ({currentLevel}%)
             </div>
-            <Button type='tertiary' onClick={() => {remove(skill)}}>
+            <Button type='tertiary' onClick={
+              () => {
+                confirm({
+                  message: `Êtes-vous sûr de vouloir supprimer la compétence "${skill}"?`,
+                  onConfirm: () => remove(skill)
+                }
+              )}}
+            >
               <Icon name="CROSS" />
             </Button>
           </div>
