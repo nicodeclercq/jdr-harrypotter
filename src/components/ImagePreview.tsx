@@ -34,8 +34,9 @@ export function ImagePreview(){
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         borderRadius: '0.5rem',
-        width: '100vmin',
-        height: '75vmin',
+        maxHeight: '100vh',
+        width: '100vw',
+        height: '100vw',
         pointerEvents: 'none',
       }}
     />
