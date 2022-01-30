@@ -21,7 +21,7 @@ export const useSkill = () => {
     skills,
     RemoteData.map(skills => ({
       ...skills,
-      [name]: {
+      [name.trim()]: {
         currentLevel,
         uses: 0,
       }
@@ -32,7 +32,7 @@ export const useSkill = () => {
   const remove = (name: string) => pipe(
     skills,
     RemoteData.map(skills => 
-      Objects.remove(name, skills)
+      Objects.remove(name.trim(), skills)
     ),
     onSuccess(setSkills),
   );
