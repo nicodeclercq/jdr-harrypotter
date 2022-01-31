@@ -1267,8 +1267,8 @@ export const colors = [
 
 export const getRandomAge = () => {
   const young = [16, 30] as const;
-  const medium = [31, 60] as const;
-  const old = [61, 80] as const;
+  const medium = [31, 50] as const;
+  const old = [51, 80] as const;
 
   const probability = random(0, 100);
 
