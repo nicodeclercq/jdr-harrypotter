@@ -52,7 +52,8 @@ export function PNJ(){
           <div className="flex items-center flex-rows space-x-2">
             {/*<Avatar url={avatar} text={current.name} />*/}
             <span>{current.name}</span>
-            <Icon name={current.sex === 'Homme' ? 'MALE' : 'FEMALE'} />
+            &nbsp;
+            {current.sex === 'Homme' ? '♂︎' : '♀︎'}
           </div>
         </Title>
         <Button type="secondary" onClick={() => {
