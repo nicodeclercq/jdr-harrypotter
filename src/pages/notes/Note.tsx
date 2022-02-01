@@ -41,7 +41,7 @@ export function Note({id, title, description}: Props) {
                 <Input
                   id={`${id}_title`}
                   value={value}
-                  onInput={debounce(handleSubmit(onSubmit), 1000)}
+                  onInput={debounce(handleSubmit(onSubmit), 250)}
                   onChange={onChange}
                   onBlur={handleSubmit(onSubmit)}
                   width="100%"
@@ -61,7 +61,7 @@ export function Note({id, title, description}: Props) {
                 <Textarea
                   id={`${id}_description`}
                   value={value}
-                  onInput={debounce(handleSubmit(onSubmit), 1000)}
+                  onInput={debounce(handleSubmit(onSubmit), 250)}
                   onChange={onChange}
                   onBlur={handleSubmit(onSubmit)}
                   theme="neutral"
