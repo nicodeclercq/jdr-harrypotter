@@ -30,6 +30,7 @@ import { AmbiancePage } from './pages/ambiance/AmbiancePage';
 import { ShopPage } from './pages/shop/ShopPage';
 import { TreasurePage } from './pages/treasure/treasurePage';
 import { CombatPage } from './pages/combat/CombatPage';
+import { PnjsPage } from './pages/pnjs/PnjsPage';
 
 type RouteDefinition = {
   label: ((state: State) => string) | string;
@@ -114,11 +115,17 @@ export const ROUTES: Record<string, RouteDefinition> = {
     label: 'Combat',
     Component: CombatPage,
     lockKey: (_lockKeys: State['lockKeys'], role: State['role']) => role === 'MJ',
+  },
+  '/pnjs': {
+    icon: 'TEAM',
+    label: 'PNJs',
+    Component: PnjsPage,
+    lockKey: (_lockKeys: State['lockKeys'], role: State['role']) => role === 'MJ',
   }
 } as const;
 
 const routesDefOrder: Array<keyof typeof ROUTES> = [
-  '/', '/screens', '/combat', '/treasure', '/shop', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/potions', '/objects', '/notes'
+  '/', '/screens', '/pnjs', '/combat', '/treasure', '/shop', '/skills', '/spells', '/runes', '/cartomancy', '/arithmancy', '/potions', '/objects', '/notes'
 ];
 
 export const ROUTE_NAMES = keys(ROUTES);

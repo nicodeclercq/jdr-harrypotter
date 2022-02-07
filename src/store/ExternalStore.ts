@@ -1,4 +1,4 @@
-import { encode, decode, decrypt, encrypt } from './helper';
+import { encode, decode, decrypt, encrypt } from '../helpers/crypto';
 import { State } from "./State";
 import { secrets } from '../secrets';
 

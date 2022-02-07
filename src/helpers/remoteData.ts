@@ -1,15 +1,7 @@
-import React from "react";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { sequenceS } from 'fp-ts/Apply';
 import { pipe, constVoid } from "fp-ts/function";
-
-import { Loader } from "../components/Loader";
-
-const Load = () => (
-  <div className="flex justify-center w-full h-full align-center">
-    <Loader />
-  </div>
-);
+import { Load } from "../components/Load";
 
 export const sequence = sequenceS(RemoteData.remoteData);
 

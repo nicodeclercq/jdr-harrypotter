@@ -10,9 +10,12 @@ import { useCallback } from 'react';
 import { random } from './helpers/number';
 import { useSocket } from './hooks/useSocket';
 import { useSkill } from './pages/skills/useSkill';
+import { ROUTES } from './Router';
+import { useRole } from './hooks/useRole';
 
 export function WindowShortcuts() {
   const { name } = useUser();
+  const { setRole } = useRole();
   const { setKnownRunes, learnAllRunes, setAllRunesDefinition } = useRune();
   const { setLockKeys: setKeys, unlock } = useLockKey();
   const { setNumber } = useArithmancy();
@@ -49,6 +52,14 @@ export function WindowShortcuts() {
   useEffect(() => {
     // @ts-ignore
     window.app = {
+      iAmMJ: () => {
+        Object.values(ROUTES)
+          .filter(({lockKey}) => typeof lockKey === 'string')
+          .map(({lockKey}) => unlock(lockKey as string));
+        setRole('MJ');
+        learnAllRunes();
+        setAllRunesDefinition();
+      },
       setKeys,
       setKnownRunes,
       learnAllRunes,
@@ -72,7 +83,7 @@ export function WindowShortcuts() {
       addSkill,
       removeSkill,
     }
-  }, [learnAllRunes, setAllRunesDefinition, setKeys, setKnownRunes, unlock, setNumber, distributeRandomNumber, emit, addSkill, removeSkill]);
+  }, [learnAllRunes, setRole, setAllRunesDefinition, setKeys, setKnownRunes, unlock, setNumber, distributeRandomNumber, emit, addSkill, removeSkill]);
 
   return (
     <></>

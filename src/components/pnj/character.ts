@@ -429,7 +429,7 @@ export const characters = [
   'Vrai',
 ] as const;
 
-export const sexes = [
+export const genders = [
   'Homme',
   'Femme',
 ] as const;
