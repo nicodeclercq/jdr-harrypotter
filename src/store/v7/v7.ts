@@ -61,7 +61,7 @@ function update(promise: Promise<V6.State>): Promise<State> {
         cardsNumber: 1,
       },
       arithmancy: {
-        numbers: createArray(9).map(() => undefined),
+        numbers: createArray(9, 0).map(() => undefined),
       },
     }));
 }

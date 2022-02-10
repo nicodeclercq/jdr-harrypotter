@@ -37,7 +37,7 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
     const MIDDLE = 12;
 
     const traits = keys(defaultTraits);
-    const randomValues = createArray(Math.floor(traits.length / 2))
+    const randomValues = createArray(Math.floor(traits.length / 2), 0)
       .map(() => random(0, 6));
 
     traits

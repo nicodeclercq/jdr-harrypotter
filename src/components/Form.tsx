@@ -7,6 +7,7 @@ import { Button } from './Button';
 import { Input } from './Input';
 import { Select } from './Select';
 import { Label } from './font/Label';
+import { createArray } from '../helpers/array';
 
 export type StringValue = {
   defaultValue: string;
@@ -38,11 +39,10 @@ type Props<T extends Record<string, string | number>, Key extends keyof T> = {
   fields: Record<Key, StringValue | ListValue<StringValue> | NumberValue | ListValue<NumberValue>>;
   onSubmit: (result: T) => void;
   onCancel?: () => void;
-  className?: string;
-  style?: React.CSSProperties;
+  template?: Array<Key | Key[]>;
 }
 
-export function Form<T extends Record<string, string | number>, Key extends keyof T>({ onCancel, style, className, fields, onSubmit }: Props<T, Key>) {
+export function Form<T extends Record<string, string | number>, Key extends keyof T>({ template, onCancel, fields, onSubmit }: Props<T, Key>) {
   const defaultValues = useMemo(() => pipe(
     fields,
     Record.map(
@@ -130,47 +130,80 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
 
   const submitHandler = (record: FieldValues) => onSubmit(record as T);
 
-  const defaultStyles = useMemo(() => ({
-    gridTemplateAreas: `${
-      Object.keys(fields)
-        .map((key) => `"label-${key} input-${key} input-${key} input-${key}"`).join(' ')}
-      ". . . ."
-      ". . cancel submit"
-    `,
-    gridTemplateColumns: 'max-content 1fr min-content min-content',
-    gridTemplateRows: `${Object.keys(fields).fill('min-content').join(' ')} 0.25rem 1fr`,
+  const columnsNb = useMemo(() => {
+    if(!template){
+      return 1;
+    }
+    return template
+      .map(row => row instanceof Array ? row : [row])
+      .reduce((acc, cur) => acc !== cur.length
+        ? acc * cur.length
+        : acc, 1);
+  }, [template]);
+  const gridTemplateColumns = useMemo(() =>
+    createArray(columnsNb, 'max-content 1fr').join(' ')
+  , [columnsNb]);
+  const gridTemplateRows = useMemo(() => template != undefined
+    ? template.map(() => 'min-content').join(' ')
+    : Object.keys(fields).fill('min-content').join(' ')
+  , [template, fields]);
+  const gridTemplateAreas = useMemo(() => {
+    if(!template){
+      return Object.keys(fields)
+        .map(fieldName => `"label-${fieldName} input-${fieldName}"`)
+        .join(' ')
+    }
+    return template
+      .map(row => row instanceof Array ? row : [row])
+      .map(row => {
+        const colSpan = (columnsNb * 2 - row.length) / row.length;
+        return row
+          .map((fieldName) => `label-${fieldName} ${createArray(colSpan, `input-${fieldName}`).join(' ')}`)
+          .join(' ');
+      })
+      .reduce((acc, cur) => `${acc} "${cur}"`, '');
+  }, [columnsNb, fields, template]);
+
+  const styles = useMemo(() => ({
+    gridTemplateAreas,
+    gridTemplateColumns,
+    gridTemplateRows,
     display: 'grid',
     gap: '1rem',
-  }), [fields]);
+  }), [gridTemplateColumns, gridTemplateRows, gridTemplateAreas]);
 
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
-      style={style || className ? style : defaultStyles}
-      className={className}
     >
-      {
-        entries(fields).map(([name, value]) => (<>
-          <Label key={`label-${name}`} htmlFor={`input-${name}`} gridArea={`label-${name}`}>{value.label}</Label>
-          <div key={`input-${name}`}  style={{gridArea: `input-${name}`}}>
-          {
-              isListValue(value)    ? (<ListInput name={name} options={toOptions(value)} isRequired={value.isRequired} />)
-            : isStringValue(value) ? (<StringInput id={`input-${name}`} name={name} config={value} />)
-            : isNumberValue(value)  ? (<NumberInput id={`input-${name}`} name={name} config={value} />)
-            : /* default */           (<></>)
-          }
-          </div>
-        </>))
-      }
-      {
-        onCancel && (
-          <div style={{gridArea: 'cancel'}}>
-            <Button onClick={onCancel} disabled={hasError} type="secondary">Annuler</Button>
-          </div>
-        )
-      }
-      <div style={{gridArea: 'submit'}}>
-        <Button onClick="submit" disabled={hasError} type="primary">Valider</Button>
+      <div
+        style={styles}
+      >
+        {
+          entries(fields).map(([name, value]) => (<>
+            <Label key={`label-${name}`} htmlFor={`input-${name}`} gridArea={`label-${name}`}>{value.label}</Label>
+            <div key={`input-${name}`}  style={{gridArea: `input-${name}`}}>
+            {
+                isListValue(value)    ? (<ListInput name={name} options={toOptions(value)} isRequired={value.isRequired} />)
+              : isStringValue(value) ? (<StringInput id={`input-${name}`} name={name} config={value} />)
+              : isNumberValue(value)  ? (<NumberInput id={`input-${name}`} name={name} config={value} />)
+              : /* default */           (<></>)
+            }
+            </div>
+          </>))
+        }
+      </div>
+      <div className="flex justify-end w-full pt-4 gap-2">
+        {
+          onCancel && (
+            <div style={{gridArea: 'cancel'}}>
+              <Button onClick={onCancel} disabled={hasError} type="secondary">Annuler</Button>
+            </div>
+          )
+        }
+        <div style={{gridArea: 'submit'}}>
+          <Button onClick="submit" disabled={hasError} type="primary">Valider</Button>
+        </div>
       </div>
     </form>
   );

@@ -66,7 +66,7 @@ export const useCard = () => {
       onSuccess((carthomancy => setCarthomancy({
           ...carthomancy,
           used: [],
-          visible: createArray(carthomancy.cardsNumber).map(() => undefined)
+          visible: createArray(carthomancy.cardsNumber, 0).map(() => undefined)
       }))),
     )
   };

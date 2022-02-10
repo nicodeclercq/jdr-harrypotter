@@ -75,6 +75,13 @@ export function PnjModal({ pnj, onSubmit, onCancel}: Props){
   return (
     <Modal header="Modifier le PNJ">
       <Form
+        template={[
+          'name',
+          'description',
+          ['gender', 'age'],
+          'character',
+          'magics'
+        ]}
         onCancel={onCancel}
         onSubmit={handleSubmit}
         fields={fields}

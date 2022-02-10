@@ -55,5 +55,5 @@ export const getNRandomFromArray = <T>(number: number, arr: T[]): Array<T> => {
 }
 
 
-export const createArray = (size: number) => new Array(size)
-  .fill(0);
+export const createArray = <T>(size: number, defaultValue: T) => new Array(size)
+  .fill(defaultValue);

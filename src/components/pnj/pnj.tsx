@@ -38,10 +38,6 @@ export function PNJ({pnj}: Props){
   const { add, remove, update } = usePNJ();
   const [current, setCurrent] = usePersistantState<PNJType>('RANDOM_PNJ', makeCharacter());
 
-  if(pnj){
-    console.log(pnj.name, pnj);
-  }
-
   return (<>
     <Card title={
       <div className="flex items-center justify-between">
