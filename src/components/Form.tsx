@@ -180,9 +180,9 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
         style={styles}
       >
         {
-          entries(fields).map(([name, value]) => (<>
-            <Label key={`label-${name}`} htmlFor={`input-${name}`} gridArea={`label-${name}`}>{value.label}</Label>
-            <div key={`input-${name}`}  style={{gridArea: `input-${name}`}}>
+          entries(fields).map(([name, value]) => (<React.Fragment key={name as string}>
+            <Label htmlFor={`input-${name}`} gridArea={`label-${name}`}>{value.label}</Label>
+            <div style={{gridArea: `input-${name}`}}>
             {
                 isListValue(value)    ? (<ListInput name={name} options={toOptions(value)} isRequired={value.isRequired} />)
               : isStringValue(value) ? (<StringInput id={`input-${name}`} name={name} config={value} />)
@@ -190,20 +190,16 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
               : /* default */           (<></>)
             }
             </div>
-          </>))
+          </React.Fragment>))
         }
       </div>
       <div className="flex justify-end w-full pt-4 gap-2">
         {
           onCancel && (
-            <div style={{gridArea: 'cancel'}}>
-              <Button onClick={onCancel} disabled={hasError} type="secondary">Annuler</Button>
-            </div>
+            <Button onClick={onCancel} disabled={hasError} type="secondary">Annuler</Button>
           )
         }
-        <div style={{gridArea: 'submit'}}>
-          <Button onClick="submit" disabled={hasError} type="primary">Valider</Button>
-        </div>
+        <Button onClick="submit" disabled={hasError} type="primary">Valider</Button>
       </div>
     </form>
   );
