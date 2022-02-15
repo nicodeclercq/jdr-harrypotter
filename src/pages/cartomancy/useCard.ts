@@ -24,6 +24,14 @@ export const useCard = () => {
     );
   };
 
+  const setVisibleCards = (number: number) => pipe(
+    carthomancy,
+    onSuccess(carthomancy => setCarthomancy({
+      ...carthomancy,
+      cardsNumber: number,
+    })),
+  );
+
   const getUsedCards = () => {
     return pipe(
       carthomancy,
@@ -75,6 +83,7 @@ export const useCard = () => {
     getCardsNumber,
     getVisibleCards,
     getUsedCards,
+    setVisibleCards,
     revealCard,
     playCard,
     shuffleDeck,

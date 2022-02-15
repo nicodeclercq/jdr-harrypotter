@@ -12,15 +12,17 @@ import { useSocket } from './hooks/useSocket';
 import { useSkill } from './pages/skills/useSkill';
 import { ROUTES } from './Router';
 import { useRole } from './hooks/useRole';
+import { useCard } from './pages/cartomancy/useCard';
 
 export function WindowShortcuts() {
   const { name } = useUser();
   const { setRole } = useRole();
   const { setKnownRunes, learnAllRunes, setAllRunesDefinition } = useRune();
   const { setLockKeys: setKeys, unlock } = useLockKey();
-  const { setNumber } = useArithmancy();
+  const { setNumber: setArithmancyNumber } = useArithmancy();
   const { emit } = useSocket();
   const { add: addSkill, remove: removeSkill} = useSkill();
+  const { setVisibleCards, shuffleDeck } = useCard();
   
   const distributeRandomNumber = useCallback(() => {
     const currentUserName = name;
@@ -72,7 +74,7 @@ export function WindowShortcuts() {
         // eslint-disable-next-line no-restricted-globals
         location.reload();
       },
-      setNumber,
+      setArithmancyNumber,
       distributeRandomNumber,
       chat: (message: string, recipient: string) => emit({
         type: 'chat',
@@ -82,8 +84,11 @@ export function WindowShortcuts() {
       }),
       addSkill,
       removeSkill,
+      setVisibleCards,
+      shuffleDeck,
     }
-  }, [learnAllRunes, setRole, setAllRunesDefinition, setKeys, setKnownRunes, unlock, setNumber, distributeRandomNumber, emit, addSkill, removeSkill]);
+  }, [learnAllRunes, setRole, setAllRunesDefinition, setKeys, setKnownRunes, unlock, setVisibleCards,
+    shuffleDeck, setArithmancyNumber, distributeRandomNumber, emit, addSkill, removeSkill]);
 
   return (
     <></>
