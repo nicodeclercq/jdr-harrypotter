@@ -81,7 +81,7 @@ export function PNJ({pnj}: Props){
         )}
       </div>
     } useDividers>
-      {pnj?.description && <div className="px-2 py-1"><BodyText>{pnj.description}</BodyText></div>}
+      {pnj?.description && <div className="px-2 py-1"><BodyText><Icon name="NOTEBOOK" />&nbsp;{pnj.description}</BodyText></div>}
       <div className="px-2 py-1"><BodyText>{(pnj ? pnj.character : current.character).join(' | ')}</BodyText></div>
       <div className="flex items-center px-2 py-1 flex-rows space-x-2"><BodyText>{pnj ? pnj.age : current.age} ans</BodyText></div>
       <div className="px-2 py-1"><BodyText>{pnj ? pnj.magics : current.magics}</BodyText></div>
