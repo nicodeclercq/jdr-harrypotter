@@ -83,7 +83,7 @@ export function ChatBox ({me, user, image}: {me: State['user'], user?: string, i
 
   return (
     <div style={{position: 'relative', display:'flex', flexDirection: 'column', alignItems: 'center', filter:'drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))', transform: isVisible ? 'translateY(0)' : 'translateY(calc(-100% + 4.75rem))', transition: 'transform ease-in-out 0.2s'}}>
-      <div style={{background: 'white', minWidth: '5rem', padding: '0.125rem 0.5rem 1.5rem', borderBottomLeftRadius: '1rem', borderBottomRightRadius: '1rem', pointerEvents: 'auto'}}>
+      <div style={{background: 'white', minWidth: '5rem', padding: '0.125rem 0.5rem 1.5rem', borderBottomLeftRadius: '1rem', borderBottomRightRadius: '1rem', pointerEvents: 'auto', maxWidth: '25rem'}}>
         <div className="p-2 my-2 bg-gray-100 rounded" style={{width: '100%', height: '10rem', overflow: 'auto'}}>
           {
             messages
@@ -110,15 +110,15 @@ export function ChatBox ({me, user, image}: {me: State['user'], user?: string, i
               ))
           }
         </div>
-        <form className="border-2 rounded border-gray" onSubmit={handleSubmit(send)}>
+        <form className="flex flex-row border-2 rounded border-gray" onSubmit={handleSubmit(send)}>
           <Controller
             name="text"
             control={control}
             defaultValue=""
             rules={{ required: true }}
-            render={(props) => <input id={uuid} className="px-2 py-1" type="text" {...props} />}
+            render={(props) => <input id={uuid} className="flex-grow px-2 py-1" type="text" {...props} />}
           />
-          <button  type="submit" className="px-2 py-1 border-l-2 border-gray">
+          <button  type="submit" className="flex-grow-0 px-2 py-1 border-l-2 border-gray">
             <Icon name="PAPER_PLANE" />
           </button>
         </form>
