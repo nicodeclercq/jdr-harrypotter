@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useForm, Controller, FieldError, FieldValues, UnpackNestedValue, DeepPartial } from 'react-hook-form';
+import { v4 as uuid } from 'uuid';
 import { pipe } from 'fp-ts/function';
 import * as Record from 'fp-ts/Record';
 import { entries } from '../helpers/object';
@@ -40,9 +41,11 @@ type Props<T extends Record<string, string | number>, Key extends keyof T> = {
   onSubmit: (result: T) => void;
   onCancel?: () => void;
   template?: Array<Key | Key[]>;
+  submitOnBlur?: boolean;
 }
 
-export function Form<T extends Record<string, string | number>, Key extends keyof T>({ template, onCancel, fields, onSubmit }: Props<T, Key>) {
+export function Form<T extends Record<string, string | number>, Key extends keyof T>({ template, onCancel, fields, onSubmit, submitOnBlur = false }: Props<T, Key>) {
+  const formId = uuid();
   const defaultValues = useMemo(() => pipe(
     fields,
     Record.map(
@@ -54,6 +57,8 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
     defaultValues: defaultValues as UnpackNestedValue<DeepPartial<T>>,
   });
 
+  const submitHandler = useCallback((record: FieldValues) => onSubmit(record as T), [onSubmit]);
+
   const NumberInput = useCallback(({name, id, config}: {
     name: Key;
     id: string;
@@ -61,6 +66,7 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
   }) => (
     <Controller
       name={name as string}
+      defaultValue={defaultValues[name as string]}
       control={control}
       rules={{ required: config.isRequired, min: config.min, max: config.max }}
       render={({value, onChange}) => (<>
@@ -73,11 +79,12 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
           max={config.max}
           min={config.min}
           onChange={onChange}
+          onBlur={submitOnBlur ? handleSubmit(submitHandler) : undefined}
           width="100%"
         />
       </>)}
     />
-  ), [control, errors]);
+  ), [control, defaultValues, errors, handleSubmit, submitHandler, submitOnBlur]);
   const StringInput = useCallback(({name, id, config}: {
     name: Key;
     id: string;
@@ -85,6 +92,7 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
   }) => (
     <Controller
       name={name as string}
+      defaultValue={defaultValues[name as string]}
       control={control}
       rules={{ required: config.isRequired, validate: config.validate }}
       render={({value, onChange}) => (<>
@@ -95,11 +103,12 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
           type="text"
           theme="neutral"
           onChange={onChange}
+          onBlur={submitOnBlur ? handleSubmit(submitHandler) : undefined}
           width="100%"
         />
       </>)}
     />
-  ), [control, errors]);
+  ), [control, defaultValues, errors, handleSubmit, submitHandler, submitOnBlur]);
   const ListInput = useCallback(({options, name, isRequired = false}: {
     options: {label: string; value: string | number}[];
     name: Key;
@@ -107,6 +116,7 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
   }) => (
     <Controller
       name={name as string}
+      defaultValue={defaultValues[name as string]}
       control={control}
       rules={{ required: isRequired }}
       render={({value, onChange}) => (<>
@@ -120,15 +130,13 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
         />
       </>)}
     />
-  ), [control]);
+  ), [control, defaultValues]);
   const toOptions = useCallback(<T extends PrimitiveValue>({values}: ListValue<T>): {label: string, value: string | number}[] => values.map((value) => typeof value === 'object'
     ? value
     : {label: `${value}`, value}
   ), []);
 
   const hasError = Object.keys(errors).length > 0;
-
-  const submitHandler = (record: FieldValues) => onSubmit(record as T);
 
   const columnsNb = useMemo(() => {
     if(!template){
@@ -185,8 +193,8 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
             <div style={{gridArea: `input-${name}`}}>
             {
                 isListValue(value)    ? (<ListInput name={name} options={toOptions(value)} isRequired={value.isRequired} />)
-              : isStringValue(value) ? (<StringInput id={`input-${name}`} name={name} config={value} />)
-              : isNumberValue(value)  ? (<NumberInput id={`input-${name}`} name={name} config={value} />)
+              : isStringValue(value)  ? (<StringInput id={`input-${name}-${formId}`} name={name} config={value} />)
+              : isNumberValue(value)  ? (<NumberInput id={`input-${name}-${formId}`} name={name} config={value} />)
               : /* default */           (<></>)
             }
             </div>
@@ -199,7 +207,7 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
             <Button onClick={onCancel} disabled={hasError} type="secondary">Annuler</Button>
           )
         }
-        <Button onClick="submit" disabled={hasError} type="primary">Valider</Button>
+        {!submitOnBlur && <Button onClick="submit" disabled={hasError} type="primary">Valider</Button>}
       </div>
     </form>
   );

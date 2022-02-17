@@ -33,7 +33,10 @@ export function PnjsPage(){
                     ))
                   }
                 </div>
-              </>)
+              </>),
+              (error) => (
+                <div>Oups {error.message}</div>
+              )
             )
           )
         }

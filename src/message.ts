@@ -84,6 +84,20 @@ const useBennyDecoder = IO.type({
 export type UseBennyMessage = IO.TypeOf<typeof useBennyDecoder>;
 export const isUseBennyMessage = useBennyDecoder.is;
 
+const playMusicDecoder = IO.type({
+  type: IO.literal('playMusic'),
+  payload: IO.type({
+    name: IO.string,
+    url: IO.string
+  })
+});
+export type PlayMusicMessage = IO.TypeOf<typeof playMusicDecoder>;
+
+const stopMusicDecoder = IO.type({
+  type: IO.literal('stopMusic'),
+});
+export type StopMusicMessage = IO.TypeOf<typeof playMusicDecoder>;
+
 const messageDecoder = IO.type({
   author: IO.type({
     name: IO.string,
@@ -99,6 +113,8 @@ const messageDecoder = IO.type({
     timeMessageDecoder,
     imageDecoder,
     useBennyDecoder,
+    playMusicDecoder,
+    stopMusicDecoder,
   ])
 });
 
@@ -115,6 +131,8 @@ export const fold = (currentUserName: string, fns: {
   time: (payload: TimeMessage['payload'], author: Message['author']) => void,
   image: (payload: ImageMessage['payload'], author: Message['author']) => void,
   useBenny: (payload: undefined, author: Message['author']) => void,
+  playMusic: (payload: PlayMusicMessage['payload'], author: Message['author']) => void,
+  stopMusic: (payload: undefined, author: Message['author']) => void,
 }) => (message: unknown) => pipe(
   message,
   (m) => {
@@ -159,6 +177,12 @@ export const fold = (currentUserName: string, fns: {
       }
       if(useBennyDecoder.is(data.message)) {
         fns.useBenny(undefined, data.author);
+      }
+      if(playMusicDecoder.is(data.message)) {
+        fns.playMusic(data.message.payload, data.author);
+      }
+      if(stopMusicDecoder.is(data.message)) {
+        fns.stopMusic(undefined, data.author);
       }
     }
   )

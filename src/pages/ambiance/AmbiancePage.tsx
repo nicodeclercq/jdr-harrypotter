@@ -1,45 +1,105 @@
-import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { v4 as uuid } from 'uuid';
-import { Input } from '../../components/Input';
+import React, { useState } from 'react';
+import { pipe } from 'fp-ts/function';
+import { Card } from '../../components/Card';
+import { Form } from '../../components/Form';
 import { Layout } from '../../components/Layout';
+import { fromReloadable } from '../../helpers/Reloadable';
+import { useMusic } from '../../hooks/useMusic';
 import { usePersistantState } from '../../hooks/usePersistantState';
 import { FigmaFrames } from './FigmaFrames';
+import { Button } from '../../components/Button';
+import { Icon } from '../../components/icons/Icon';
+import { MusicModal } from './MusicModal';
+import { isDefined } from '../../helpers/nullable';
+import { ButtonIcon } from '../../components/ButtonIcon';
 
-export function AmbiancePage(){
+type Music = {name: string, url: string};
+
+export function AmbiancePage() {
+  const [showMusicModal, setShowMusicModal] = useState<Music>();
   const [file, setFile] = usePersistantState<string | undefined>('AMBIANCE_LINK', undefined);
+  const {data, add, remove, update, stop, play, playingMusic} = useMusic();
 
-  const { handleSubmit, control } = useForm<{file: string}>({
-    defaultValues: {
-      file,
-    },
-  });
-
-  const id = uuid();
   const onSubmit = ({file}: {file: string}) => {
     setFile(file);
   }
 
+  const onSubmitMusic = ({name, url}: {name: string, url: string}) => {
+    if(isDefined(showMusicModal) && showMusicModal.name !== ''){
+      if(showMusicModal.name === name){
+        update(name, {name, url});
+      } else {
+        add(name, {name, url});
+        remove(showMusicModal.name);    
+      }
+    }else{
+      add(name, {name, url});
+    }
+    setShowMusicModal(undefined);
+  };
+
+  const onClickOnMusic = (name: string, url: string) => () => {
+    if(playingMusic === name){
+      stop();
+    } else{
+      play(name, url);
+    }
+  }
+
   return <Layout>
-    <div className="flex flex-col space-x-2">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="file"
-          control={control}
-          rules={{ required: true, min: 1 }}
-          render={({value, onChange}) => (
-            <Input
-              id={`${id}_file`}
-              value={value}
-              onChange={onChange}
-              onBlur={handleSubmit(onSubmit)}
-              width="100%"
-              theme="neutral"
-              type="text"
-            />)}
-        />
-      </form>
-      <FigmaFrames file={file ?? ''}/>
+    <div className="w-full gap-2" style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr max-content',
+    }}>
+      <Card fullWidth title="Images" grow>
+        <div className="flex flex-col p-2 overflow-scroll space-x-2" style={{height: '66vh'}}>
+          <Form onSubmit={onSubmit} fields={{file: { defaultValue: file ?? '', label: 'Lien figma' }}} submitOnBlur />
+          <FigmaFrames file={file ?? ''}/>
+        </div>
+      </Card>
+      <Card
+        fullWidth
+        title={(
+          <div className="flex items-center space-x-2">
+            <span className="flex-grow">Musique</span>
+            <Button type='secondary' onClick={() => setShowMusicModal({name: '', url: ''})}>
+              <Icon name="INCREASE" />
+            </Button>
+          </div>
+        )}
+        useDividers
+      >
+        {
+          pipe(
+            data,
+            fromReloadable(
+              (data) => <>{
+                data.map(({ name, url }) => (
+                  <div key={name} className="flex flex-row items-center w-full p-2 space-x-2">
+                    <ButtonIcon icon="PEN"  onClick={() => setShowMusicModal({name, url})} />
+                    <div className='flex-grow'>{name}</div>
+                    <Button type='secondary' onClick={onClickOnMusic(name, url)}>
+                      {playingMusic === name ? '◼︎' : '▶︎'}
+                    </Button>
+                  </div>
+                ))
+              }</>,
+              (error) => (
+                <div>Oups {error.message}</div>
+              )
+            )
+          )
+        }
+      </Card>
     </div>
+    {
+      showMusicModal && (
+        <MusicModal
+          value={showMusicModal}
+          onCancel={() => setShowMusicModal(undefined)}
+          onSubmit={onSubmitMusic}
+        />
+      )
+    }
   </Layout>;
 }

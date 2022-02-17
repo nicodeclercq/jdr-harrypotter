@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 const KEYS = [
   'AMBIANCE_LINK',
   'AMBIANCE_IMAGES',
+  'AMBIANCE_MUSIC',
   'AMBIANCE_SELECTED_IMAGE',
   'TIMER_START_DATE',
   'TIMER_TOTAL_TIME',

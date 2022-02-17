@@ -16,7 +16,7 @@ type Reloading<T> = {
 
 export type Reloadable<E, T> = Reloading<T> | RemoteData.RemoteData<E, T>;
 
-export const reloading = <T>(value: T) => ({
+export const reloading = <T extends unknown>(value: T) => ({
   _tag: TAG,
   value,
 }) as const;
@@ -68,12 +68,12 @@ export const fold = <E, A, B>(
     : RemoteData.fold(onInitial, onLoading, onFailure, onSuccess)(reloadable);
 };
 
-export const fromReloadable = <T, U>(callback: (data: U, isReloading: boolean) => JSX.Element, onInitial:() => JSX.Element = Load) => (reloadableData: Reloadable<T, U>): JSX.Element => pipe(
+export const fromReloadable = <T, U>(callback: (data: U, isReloading: boolean) => JSX.Element, onError: (error: T) => JSX.Element, onInitial:() => JSX.Element = Load) => (reloadableData: Reloadable<T, U>): JSX.Element => pipe(
   reloadableData,
   fold(
     onInitial,
     Load,
-    Load,
+    onError,
     (data) => callback(data, false),
     (data) => callback(data, true),
   )

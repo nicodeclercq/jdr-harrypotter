@@ -21,7 +21,7 @@ type Props= (NumberInputProps | OtherInputProps) & {
   width?: string;
 }
 
-export function Input ({onChange, type, theme, errors, disabled, messages, width, ...rest}: Props & Omit<
+export function Input ({onChange, type, theme, errors, disabled, messages, value, width, ...rest}: Props & Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'className' | 'style' | 'onChange'
 >) {
@@ -36,6 +36,7 @@ export function Input ({onChange, type, theme, errors, disabled, messages, width
     <div className="inline-flex flex-col" style={width ? {width} : {width: 'min-content', minWidth: '10rem', maxWidth: '100%'}}>
       <input
         {...rest}
+        defaultValue={value}
         disabled={disabled}
         type={type}
         className={`w-full focus:ring-4 h-7 ${

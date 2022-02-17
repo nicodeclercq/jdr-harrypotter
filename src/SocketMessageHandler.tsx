@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { constVoid, pipe } from 'fp-ts/function';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { useNotification } from './components/Notification';
-import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage } from './message';
+import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage, PlayMusicMessage } from './message';
 import { useRole } from './hooks/useRole';
 import { ChatBoxes } from './pages/home/ChatBoxes';
 import { fromRemoteData, onSuccess } from './helpers/remoteData';
@@ -29,6 +29,7 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   const { user } = useUser();
   const { play } = useSound();
   const { addBenny } = useBennyHook();
+  const musicRef = useRef<HTMLAudioElement>(null);
 
   const hasAlreadyJoined = useCallback(({recipient}: HasAlreadyJoinedMessage['payload'], author: Message['author']) => {
     if (recipient === currentUserName) {
@@ -148,6 +149,25 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
     );
   }, [add, addBenny, isMJ]);
 
+  useEffect(() => {
+    if(musicRef.current){
+      musicRef.current.volume = 0.1;
+    }
+  }, [musicRef])
+
+  const playMusic = useCallback(({url}: PlayMusicMessage['payload'], author: Message['author']) => {
+    if(musicRef.current) {
+      musicRef.current.src = url;
+      musicRef.current.play();
+    }
+  }, [musicRef]);
+  const stopMusic= useCallback((payload: undefined, author: Message['author']) => {
+    if(musicRef.current) {
+      musicRef.current.src = '';
+      musicRef.current.pause();
+    }
+  }, [musicRef]);
+
   const onMessage = useCallback((message: unknown) => {
     return fold(currentUserName, {
       hasAlreadyJoined,
@@ -159,8 +179,10 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       time: constVoid,
       image: constVoid,
       useBenny,
+      playMusic,
+      stopMusic,
     })(message)
-  }, [alert, chat, currentUserName, hasAlreadyJoined, join, quit, roll, useBenny]);
+  }, [alert, chat, currentUserName, hasAlreadyJoined, join, playMusic, quit, roll, stopMusic, useBenny]);
 
   useEffect(() => {
     if (currentUserName) {
@@ -193,6 +215,15 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
     fromRemoteData((user) => <>
       <ChatBoxes me={user} users={connectedUsers} />
         <Time />
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: '16rem',
+          transform: 'translateX(-50%)',
+          zIndex: 2,
+        }}>
+        <audio ref={musicRef} controls loop />
+        </div>
       </>
     )
   );
