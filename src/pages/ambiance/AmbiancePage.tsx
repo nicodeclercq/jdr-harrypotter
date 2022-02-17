@@ -67,29 +67,30 @@ export function AmbiancePage() {
             </Button>
           </div>
         )}
-        useDividers
       >
-        {
-          pipe(
-            data,
-            fromReloadable(
-              (data) => <>{
-                data.map(({ name, url }) => (
-                  <div key={name} className="flex flex-row items-center w-full p-2 space-x-2">
-                    <ButtonIcon icon="PEN"  onClick={() => setShowMusicModal({name, url})} />
-                    <div className='flex-grow'>{name}</div>
-                    <Button type='secondary' onClick={onClickOnMusic(name, url)}>
-                      {playingMusic === name ? '◼︎' : '▶︎'}
-                    </Button>
-                  </div>
-                ))
-              }</>,
-              (error) => (
-                <div>Oups {error.message}</div>
+        <div className="overflow-scroll divide-y" style={{height: '66vh'}}>
+          {
+            pipe(
+              data,
+              fromReloadable(
+                (data) => <>{
+                  data.map(({ name, url }) => (
+                    <div key={name} className="flex flex-row items-center w-full p-2 space-x-2">
+                      <ButtonIcon icon="PEN"  onClick={() => setShowMusicModal({name, url})} />
+                      <div className='flex-grow'>{name}</div>
+                      <Button type='secondary' onClick={onClickOnMusic(name, url)}>
+                        {playingMusic === name ? '◼︎' : '▶︎'}
+                      </Button>
+                    </div>
+                  ))
+                }</>,
+                (error) => (
+                  <div>Oups {error.message}</div>
+                )
               )
             )
-          )
-        }
+          }
+        </div>
       </Card>
     </div>
     {
