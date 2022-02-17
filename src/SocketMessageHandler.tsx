@@ -158,12 +158,14 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
   const playMusic = useCallback(({url}: PlayMusicMessage['payload'], author: Message['author']) => {
     if(musicRef.current) {
       musicRef.current.src = url;
+      musicRef.current.title= url;
       musicRef.current.play();
     }
   }, [musicRef]);
   const stopMusic= useCallback((payload: undefined, author: Message['author']) => {
     if(musicRef.current) {
       musicRef.current.src = '';
+      musicRef.current.title= '';
       musicRef.current.pause();
     }
   }, [musicRef]);
