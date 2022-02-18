@@ -145,12 +145,9 @@ export const getAvailableRoutes = (lockKeys: State['lockKeys'], isMJ: State['rol
     return false;
   });
 
-let oldName: unknown;
 function SocketMessageHandlerRenderer(){
   const { name } = useUser();
   const { stream, emit } = useSocket();
-  console.log('rerender', oldName, name);
-  oldName = name;
 
   return pipe(
     name,

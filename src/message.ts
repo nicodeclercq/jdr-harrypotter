@@ -118,8 +118,20 @@ const messageDecoder = IO.type({
   ])
 });
 
-
 export type Message = IO.TypeOf<typeof messageDecoder>;
+
+
+const shouldFilterSelfMessage = (currentUserName: string) => (message: Message) => {
+  const messagesAvailableForSelf = [
+    imageDecoder.is,
+    playMusicDecoder.is,
+    stopMusicDecoder.is,
+  ];
+
+  return message.author.name === currentUserName
+    ? messagesAvailableForSelf.reduce((acc, filterMessage) => acc || filterMessage(message.message), false)
+    : true;
+}
 
 export const fold = (currentUserName: string, fns: {
   hasAlreadyJoined: (payload: HasAlreadyJoinedMessage['payload'], author: Message['author']) => void, 
@@ -145,7 +157,7 @@ export const fold = (currentUserName: string, fns: {
     return Either.left('Wrong encoding');
   }),
   Either.filterOrElse(
-    (data) => data.author.name !== currentUserName,
+    shouldFilterSelfMessage(currentUserName),
     () => Either.left('Same user'),
   ),
   Either.fold(

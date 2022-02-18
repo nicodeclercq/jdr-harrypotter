@@ -64,7 +64,7 @@ export function FigmaFrames({file}: Props) {
             images[file] ?? RemoteData.initial,
             fromRemoteData((images) => <>{
               images.map(({image, name}) => (
-                <div>
+                <div key={name}>
                   <div
                     onClick={() => setSelectedView(image)}
                     className="p-2 m-1 mb-0 border border-white rounded-t"

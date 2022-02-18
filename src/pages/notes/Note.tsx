@@ -24,7 +24,6 @@ export function Note({id, title, description}: Props) {
   });
 
   const onSubmit = ({title, description}: {title: string, description: string}) => {
-    console.log('called', description);
     setNote({id, title, description});
   }
 

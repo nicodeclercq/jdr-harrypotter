@@ -44,7 +44,7 @@ export function usePersistantState<T = undefined>(name: Key, initialValue?: T): 
     // INITIALIZE
     if(!(name in stream.value)){
       const stored = sessionStorage.getItem(name);
-      const parsed = stored ? JSON.parse(stored) : initialValue;
+      const parsed = stored && stored !== 'undefined' ? JSON.parse(stored) : initialValue;
       stream.next({
         ...stream.value,
         [name]: isDate(parsed) ? new Date(parsed.value) : parsed,

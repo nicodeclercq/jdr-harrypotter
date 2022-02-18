@@ -20,6 +20,7 @@ let avatar: string = '';
 const emit = (message: Message['message']) => {
   console.log('send', {author: {name: author, avatar}, message});
   socket.emit('message', JSON.stringify({author: {name: author, avatar}, message}));
+  stream.next({author: {name: author, avatar}, message});
 };
 
 //@ts-ignore

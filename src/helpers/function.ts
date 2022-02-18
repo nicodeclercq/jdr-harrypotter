@@ -17,7 +17,6 @@ export const debounce = <T extends (...args: any[]) => void>(fn: T, time: number
     }
     timeout = setTimeout(
       () => {
-        console.log('called');
         fn.apply(null, args);
 		  },
       time

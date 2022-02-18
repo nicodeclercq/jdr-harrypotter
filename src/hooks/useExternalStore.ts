@@ -23,10 +23,6 @@ const decodeData = <T extends IO.Mixed, U extends IO.TypeOf<T>>(routeName: strin
   Either.chain(
     flow(
       ArrayFP.map(decrypt(routeName)),
-      (data) => {
-        console.log('[YOUPI] fetch', data)
-        return data;
-      },
       Either.traverseArray(decoder.decode),
       Either.bimap(
         errors => errors.toString(),

@@ -80,9 +80,6 @@ function update(_currentState: unknown, name: string | undefined): Promise<State
         <>Bienvenue sur ta fiche de personnage</>
       )
     )
-    .then(() => {
-      console.log('name', name)
-    })
     .then(() => 
       name
         ? name
