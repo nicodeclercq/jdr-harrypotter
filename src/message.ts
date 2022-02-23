@@ -16,6 +16,7 @@ const joinMessageDecoder = IO.type({
   payload: IO.undefined,
 });
 export type JoinMessage = IO.TypeOf<typeof joinMessageDecoder>;
+export const isJoinMessage = joinMessageDecoder.is;
 
 const quitMessageDecoder = IO.type({
   type: IO.literal('quit'),

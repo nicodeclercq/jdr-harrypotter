@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { io } from 'socket.io-client';
 
 import { useUser } from '../pages/home/useUser';
-import { Message } from '../message';
+import { isJoinMessage, Message } from '../message';
 import { onSuccess, sequence } from '../helpers/remoteData';
 
 const DEFAULT_AUTHOR = 'Unknown';
@@ -19,6 +19,9 @@ let avatar: string = '';
 
 const emit = (message: Message['message']) => {
   console.log('send', {author: {name: author, avatar}, message});
+  if(isJoinMessage(message)){
+    socket.emit('join', author);  
+  }
   socket.emit('message', JSON.stringify({author: {name: author, avatar}, message}));
   stream.next({author: {name: author, avatar}, message});
 };
