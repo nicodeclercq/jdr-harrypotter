@@ -49,6 +49,7 @@ import { Beer } from './components/beer';
 import { DiceTarget } from './components/dice-target';
 import { Increase } from './components/increase';
 import { Team } from './components/team';
+import { Game } from './components/game';
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -101,6 +102,7 @@ export const ICONS = {
   DICE_TARGET: <DiceTarget />,
   INCREASE: <Increase />,
   TEAM: <Team />,
+  GAME: <Game />,
 } as const;
 
 export type IconName = keyof typeof ICONS;

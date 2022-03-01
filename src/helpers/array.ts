@@ -54,6 +54,8 @@ export const getNRandomFromArray = <T>(number: number, arr: T[]): Array<T> => {
   return [arr[randomIndex], ...getNRandomFromArray(number - 1, arr.filter((_, i) => i !== randomIndex))];
 }
 
+export const createArrayOfIndex = (size: number) => new Array(size)
+  .fill(0).map((v, index) => index);
 
 export const createArray = <T>(size: number, defaultValue: T) => new Array(size)
   .fill(defaultValue);
