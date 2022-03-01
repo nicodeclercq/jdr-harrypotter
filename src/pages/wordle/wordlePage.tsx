@@ -107,10 +107,12 @@ function Success(){
     </div>
   )
 }
-function Failure(){
+function Failure({solution}:{solution: string}){
   return (
     <div className="p-2 text-red-200 bg-red-700 border shadow rounded-md">
       Pas de chance aujourd'hui... peut être une autre fois.
+      <br/>
+      The mot du jour était: "{solution}"
     </div>
   )
 }
@@ -190,7 +192,7 @@ export function WordlePage(){
       <div className='flex flex-col items-center gap-8'>
           {currentState === 'UNDONE' && <TheWord />}
           {currentState === 'SUCCESS' && <Success />}
-          {currentState === 'FAILURE' && <Failure />}
+          {currentState === 'FAILURE' && <Failure solution={puzzle.solution} />}
           {currentState === 'UNKNOWN_WORD' && <UnknownWord />}
           <div className='flex flex-col p-2 gap-4'>
             {

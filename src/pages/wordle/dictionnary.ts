@@ -20187,6 +20187,7 @@ export const words: string[] = [
   "TRIBUNE",
   "TRIBUNES",
   "TRIBUS",
+  "TRICHE",
   "TRICHER",
   "TRICOLORE",
   "TRICOT",
