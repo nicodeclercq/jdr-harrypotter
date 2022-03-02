@@ -15,7 +15,7 @@ export function PnjsPage(){
     <Layout>
       <div className="w-full space-y-4">
         <div className="flex items-center justify-center w-full">
-          <Input placeholder="🔎 Rechercher" type="search" theme="neutral" onChange={setSearchQuery} width="50%" />
+          <Input placeholder="🔎 Rechercher" type="search" theme="neutral" onChange={(value: string) => setSearchQuery(value.trim().toLowerCase())} width="50%" />
         </div>
         {
           pipe(
@@ -27,7 +27,7 @@ export function PnjsPage(){
                 </div>
                 <div className="w-full grid grid-cols-3 grid-flow-row auto-rows-max gap-2">
                   {pnjs
-                    .filter(pnj => pnj.name.includes(searchQuery) || (pnj.description ?? '').includes(searchQuery))
+                    .filter(pnj => pnj.name.toLowerCase().includes(searchQuery) || (pnj.description ?? '').toLowerCase().includes(searchQuery))
                     .map(pnj => (
                       <PNJ key={pnj.name} pnj={pnj} />
                     ))
