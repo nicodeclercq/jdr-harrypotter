@@ -1,3 +1,4 @@
+import { remove as removeEntry } from './../helpers/object';
 import { useState } from 'react';
 import { BehaviorSubject } from 'rxjs';
 import * as RX from 'rxjs/operators';
@@ -40,6 +41,14 @@ export function usePersistantRecordState<T>(name: Key) {
     })
   }, [name]);
 
+  const remove = useCallback((key: string) => {
+    const lastValue = (stream.value[name] ?? {}) as Record<string, T>;
+    stream.next({
+      ...stream.value,
+      [name]: removeEntry(key, lastValue),
+    })
+  }, [name]);
+
   useEffect(() => {
     // INITIALIZE
     if(!(name in stream.value)){
@@ -68,5 +77,6 @@ export function usePersistantRecordState<T>(name: Key) {
     set,
     get,
     add,
+    remove
   } as const;
 }
