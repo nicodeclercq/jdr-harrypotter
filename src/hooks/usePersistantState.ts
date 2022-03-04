@@ -17,6 +17,7 @@ const KEYS = [
   'RANDOM_PNJ',
   'RANDOM_SPELLS',
   'WORDLE_PUZZLE',
+  'BATTLEMAP_TOKENS',
 ] as const;
 
 type Key = (typeof KEYS)[number];
