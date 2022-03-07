@@ -7,6 +7,7 @@ import { useEffect, useCallback } from 'react';
 const KEYS = [
   'CONNECTED_USERS',
   'USERS_SKILLS',
+  'BATTLEMAP_TOKENS',
 ] as const;
 
 type Key = (typeof KEYS)[number];

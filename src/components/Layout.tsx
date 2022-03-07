@@ -20,7 +20,10 @@ import { useLockKey } from '../hooks/useLockKey';
 import { QuickActions } from '../pages/home/QuickActions';
 import { useRole } from '../hooks/useRole';
 import { ImagePreview } from './ImagePreview';
-
+/*import { entries } from '../helpers/object';
+import { AvatarToken } from './AvatarToken';
+import { useTokens } from '../hooks/useTokens';
+*/
 function NavLink ({hovered, path, label, icon}: {hovered: boolean, path: string, label: string, icon: IconName | React.ReactElement;}) {
   let match = useRouteMatch({
     path,
@@ -59,6 +62,7 @@ const displayIcon = (icon: IconName | ((state: State) => React.ReactElement), st
 }
 
 export function Layout ({ children }: { children: React.ReactNode }) {
+  // const { tokens } = useTokens();
   const { lockKeys } = useLockKey();
   const { role } = useRole();
   const [state] = useStore([
@@ -114,6 +118,11 @@ export function Layout ({ children }: { children: React.ReactNode }) {
         {hoverable}
         <div className="flex items-center justify-center flex-grow h-screen p-6 mt-16 ml-16 space-x-2">
           <ImagePreview />
+          {/*
+            entries(tokens).map(([name, {x, y, image}]) => (
+              <AvatarToken key={name} name={name}  x={x} y={y} image={image} />
+            ))
+            */}
           <div className="flex items-start justify-center flex-grow h-screen p-6 mt-16 ml-16 space-x-2" style={{zIndex: 1}}>
             {children}
           </div>

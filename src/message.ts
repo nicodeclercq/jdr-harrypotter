@@ -99,6 +99,17 @@ const stopMusicDecoder = IO.type({
 });
 export type StopMusicMessage = IO.TypeOf<typeof playMusicDecoder>;
 
+const setBattleMapTokensPositionDecoder = IO.type({
+  type: IO.literal('setBattleMapTokensPosition'),
+  payload: IO.record(IO.string, IO.type({
+    x: IO.number,
+    y: IO.number,
+    name: IO.string,
+    image: IO.union([IO.string, IO.undefined]),
+  }))
+});
+export type SetBattleMapTokensPosition = IO.TypeOf<typeof setBattleMapTokensPositionDecoder>;
+
 const messageDecoder = IO.type({
   author: IO.type({
     name: IO.string,
@@ -116,6 +127,7 @@ const messageDecoder = IO.type({
     useBennyDecoder,
     playMusicDecoder,
     stopMusicDecoder,
+    setBattleMapTokensPositionDecoder,
   ])
 });
 
@@ -146,6 +158,7 @@ export const fold = (currentUserName: string, fns: {
   useBenny: (payload: undefined, author: Message['author']) => void,
   playMusic: (payload: PlayMusicMessage['payload'], author: Message['author']) => void,
   stopMusic: (payload: undefined, author: Message['author']) => void,
+  setBattleMapTokensPosition: (payload: SetBattleMapTokensPosition['payload'], author: Message['author']) => void,
 }) => (message: unknown) => pipe(
   message,
   (m) => {
@@ -196,6 +209,9 @@ export const fold = (currentUserName: string, fns: {
       }
       if(stopMusicDecoder.is(data.message)) {
         fns.stopMusic(undefined, data.author);
+      }
+      if(setBattleMapTokensPositionDecoder.is(data.message)){
+        fns.setBattleMapTokensPosition(data.message.payload, data.author);
       }
     }
   )

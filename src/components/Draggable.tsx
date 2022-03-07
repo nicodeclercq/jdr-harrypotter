@@ -15,6 +15,7 @@ export type Position = {
 type Props = {
   children?: React.ReactNode;
   position: Position;
+  dragDisabled?: boolean;
   onDragStart?: (position: Position) => void;
   onDragMove?: (position: Position) => void;
   onDragStop?: (position: Position) => void;
@@ -47,12 +48,12 @@ const toScreenPositionInPercent = (mouseEvent: MouseEvent) => pipe(
   withinScreenBounds,
 );
 
-export function Draggable({children, position: initialPosition, onDragMove, onDragStart, onDragStop, style, ...otherProps}:Props){
+export function Draggable({children, position: initialPosition, onDragMove, onDragStart, onDragStop, style, dragDisabled = false, ...otherProps}:Props){
   const [position, setPosition] = useState(initialPosition);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && !dragDisabled) {
       const mouseDown = fromEvent<MouseEvent>(ref.current, 'mousedown');
       const mouseDrag = mouseDown.pipe(
         RX.tap(mouseEvent => {
@@ -88,7 +89,7 @@ export function Draggable({children, position: initialPosition, onDragMove, onDr
       const subscription = mouseDrag.subscribe(setPosition);
       return () => subscription.unsubscribe();
     }
-  }, [onDragMove, onDragStart, onDragStop]);
+  }, [onDragMove, onDragStart, onDragStop, dragDisabled]);
 
   const relativePosition = pipe(
     position,

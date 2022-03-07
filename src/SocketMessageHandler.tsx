@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { useNotification } from './components/Notification';
-import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage, PlayMusicMessage } from './message';
+import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage, PlayMusicMessage, SetBattleMapTokensPosition } from './message';
 import { useRole } from './hooks/useRole';
 import { ChatBoxes } from './pages/home/ChatBoxes';
 import { fromRemoteData, onSuccess } from './helpers/remoteData';
@@ -13,6 +13,7 @@ import { useUser } from './pages/home/useUser';
 import { useSound } from './hooks/useSound';
 import { useBenny as useBennyHook } from './hooks/useBenny';
 import { useConnectedUsers } from './hooks/useConnectedUsers';
+import { useTokens } from './hooks/useTokens';
 
 type Props = {
   currentUserName: string;
@@ -23,6 +24,7 @@ type Props = {
 let runNb = 20;
 
 export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
+  const { setTokens } = useTokens();
   const { connectedUsers, add: connectUser, remove: disconnectUser } = useConnectedUsers();
   const { add } = useNotification();
   const { isMJ } = useRole();
@@ -170,6 +172,17 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
     }
   }, [musicRef]);
 
+  const setBattleMapTokensPosition = useCallback((payload: SetBattleMapTokensPosition['payload'], author: Message['author']) => {
+    pipe(
+      isMJ,
+      onSuccess((isCurrentUserMJ) => {
+        if(!isCurrentUserMJ){
+          setTokens(payload);
+        }
+      }),
+    );
+  }, [isMJ, setTokens]);
+
   const onMessage = useCallback((message: unknown) => {
     return fold(currentUserName, {
       hasAlreadyJoined,
@@ -183,8 +196,9 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       useBenny,
       playMusic,
       stopMusic,
+      setBattleMapTokensPosition,
     })(message)
-  }, [alert, chat, currentUserName, hasAlreadyJoined, join, playMusic, quit, roll, stopMusic, useBenny]);
+  }, [alert, chat, currentUserName, hasAlreadyJoined, join, playMusic, quit, roll, stopMusic, useBenny, setBattleMapTokensPosition]);
 
   useEffect(() => {
     if (currentUserName) {

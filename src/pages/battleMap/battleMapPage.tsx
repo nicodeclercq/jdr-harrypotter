@@ -1,39 +1,61 @@
-import React from 'react';
-import { Avatar } from '../../components/Avatar';
-import { Draggable } from '../../components/Draggable';
+import React, { useEffect } from 'react';
+import { AvatarToken } from '../../components/AvatarToken';
+import { Button } from '../../components/Button';
 import { Layout } from '../../components/Layout';
 import { entries } from '../../helpers/object';
-import { useTokens } from './useTokens';
-
-export function Token ({x, y , name, image, onDragStop}: {
-    x: number,
-    y: number,
-    name: string,
-    image?: string,
-    onDragStop: (newPosition: {x: number, y: number}) => void;
-  }
-) {
-  return (
-    <Draggable position={{y, x}} onDragStop={onDragStop}>
-      <Avatar text={name} url={image} />
-    </Draggable>
-  )
-}
+import { useConnectedUsers } from '../../hooks/useConnectedUsers';
+import { usePersistantState } from '../../hooks/usePersistantState';
+import { useSocket } from '../../hooks/useSocket';
+import { useTokens } from '../../hooks/useTokens';
 
 export function BattleMapPage() {
-  const { tokens } = useTokens();
+  const { tokens, updateToken } = useTokens();
+  const { connectedUsers } = useConnectedUsers();
+
+  useEffect(() => {
+    if(connectedUsers) {
+      entries(connectedUsers)
+        .forEach(([name, image]) => {
+          if(!(name in tokens)){
+            updateToken(name, {
+              x: 50,
+              y: 50,
+              name,
+              image: image ?? undefined,
+            })
+          }
+        });
+    }
+  }, [tokens, connectedUsers, updateToken]);
+
+  const [show, setShow] = usePersistantState('BATTLEMAP_SHOW', false);
+  const { emit } = useSocket();
 
   const onDragStop = (name: string) => (newPosition: {x: number, y: number}) => {
-    console.log(name, newPosition);
+    if(show){
+      emit({
+        type: 'setBattleMapTokensPosition',
+        payload: tokens
+      });
+      console.log('[YOUPI] update', {...tokens[name], ...newPosition })
+      updateToken(name, {...tokens[name], ...newPosition });
+    }
   };
+
+  const addToken = () => console.log('add token');
 
   return (
     <Layout>
-      {
-        entries(tokens).map(([name, {x, y, image}]) => (
-          <Token key={name} name={name}  x={x} y={y} image={image} onDragStop={onDragStop(name)} />
-        ))
-      }
+      <div className='w-full h-full' onDoubleClick={addToken}>
+        <Button type='primary' onClick={() => setShow(!show)}>
+          {show ? 'Cacher' : 'Montrer'}
+        </Button>
+        {
+          entries(tokens).map(([name, {x, y, image}]) => (
+            <AvatarToken key={name} name={name}  x={x} y={y} image={image} onDragStop={onDragStop(name)} />
+          ))
+        }
+      </div>
     </Layout>
   )
 }
