@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as RX from 'rxjs/operators';
 import { isDefined } from '../helpers/nullable';
+import { usePersistantState } from '../hooks/usePersistantState';
 import { useSocket } from '../hooks/useSocket';
 import { isImageMessage } from '../message';
 
 export function ImagePreview(){
-  const [background, setBackground] = useState<string | undefined>();
+  const [background, setBackground] = usePersistantState<string | undefined>('AMBIANCE_SELECTED_IMAGE');
   const { stream } = useSocket();
 
   useEffect(() => {
