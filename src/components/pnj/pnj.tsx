@@ -8,7 +8,7 @@ import { Card } from '../Card';
 import { BodyText } from '../font/BodyText';
 import { Title } from '../font/Title';
 import { Icon } from '../icons/Icon';
-import { characters, getRandomAge, genders, colors, firstnames, lastnames, magics } from './character';
+import { speechSpecificity, psychologic, getRandomAge, genders, colors, firstnames, lastnames, magics } from './character';
 import { PnjModal } from './PnjModal';
 // import { useGeneratedPhoto } from './useGeneratedPhoto';
 import { PNJ as PNJType } from './pnj.entity';
@@ -18,8 +18,8 @@ const makeCharacter = () => {
 
   return {
     character: [
-      characters[random(0, characters.length -1)],
-      characters[random(0, characters.length -1)]
+      psychologic[random(0, psychologic.length -1)],
+      speechSpecificity[random(0, speechSpecificity.length -1)]
     ],
     gender,
     age: getRandomAge(),
