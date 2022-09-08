@@ -22,6 +22,8 @@ export function ImagePreview(){
         setBackground(payload);
       }});
     return () => subscription.unsubscribe();
+  // TODO: fix this
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stream]);
 
   return (
