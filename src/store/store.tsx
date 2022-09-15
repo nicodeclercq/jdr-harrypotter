@@ -6,13 +6,13 @@ import { tryCatch } from "../helpers/function";
 import { prompt } from "../helpers/io";
 import { equals } from "../helpers/remoteData";
 import { State, retrieve } from "../store/State";
-import { ExternalStore } from "../store/ExternalStore";
+import { ExternalStoreManager } from "./externalStores/ExternalStoreManager";
 import { NameForm } from "../store/v1/NameForm";
 import { lastUpdateLens } from './helper';
 
 export const subject = new BehaviorSubject<RemoteData.RemoteData<Error, State>>(RemoteData.initial);
 
-const onNoLocalState = () => ExternalStore.getEntries()
+const onNoLocalState = () => ExternalStoreManager.getEntries()
   .catch((error) => {
     console.error(error);
     return [];
@@ -24,7 +24,7 @@ const onNoLocalState = () => ExternalStore.getEntries()
     ).then(
       (name) =>  (
         names.includes(name)
-            ? ExternalStore.read(name)
+            ? ExternalStoreManager.read(name)
             : Promise.resolve(undefined)
         )
         .then((state) => ({state, name}))
@@ -35,7 +35,7 @@ const onNoLocalState = () => ExternalStore.getEntries()
 
 const onLocalState = (state: unknown) => retrieve(state, undefined)
   .then(
-    (localState) => ExternalStore.read(localState.user.name)
+    (localState) => ExternalStoreManager.read(localState.user.name)
       .then((state) => retrieve(state, undefined))
       .then((externalState) => {
         const externalLastUpdate = lastUpdateLens.get(externalState);
@@ -64,7 +64,7 @@ export const retrieveState = (): Promise<State> => Promise.resolve(window.localS
     : onNoLocalState()
   );
 
-export const retrieveUserState = (name: string): Promise<State> => ExternalStore.read(name)
+export const retrieveUserState = (name: string): Promise<State> => ExternalStoreManager.read(name)
   .then((state) => ({state, name}))
   .catch(() => ({state: undefined, name}))
   .then(({state, name}) => retrieve(state, name));
@@ -78,7 +78,7 @@ subject
   .subscribe({
     next: (newState) => {
       if (RemoteData.isSuccess(newState)) {
-        ExternalStore.update(newState.value.user.name, newState.value)
+        ExternalStoreManager.update(newState.value.user.name, newState.value)
           .catch((error) => console.error('Unable to save remotely', error));
         window.localStorage.setItem('state', JSON.stringify(newState.value));
       }

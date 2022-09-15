@@ -4,7 +4,7 @@ import { pipe, constVoid } from 'fp-ts/function';
 import { useArithmancy } from './pages/arithmancy/useArithmancy';
 import { useUser } from './pages/home/useUser';
 import { useRune } from './pages/runes/useRune';
-import { ExternalStore } from './store/ExternalStore';
+import { ExternalStoreManager } from './store/externalStores/ExternalStoreManager';
 import { useLockKey } from './hooks/useLockKey';
 import { useCallback } from 'react';
 import { random } from './helpers/number';
@@ -26,7 +26,7 @@ export function WindowShortcuts() {
   
   const distributeRandomNumber = useCallback(() => {
     const currentUserName = name;
-    ExternalStore.getEntries()
+    ExternalStoreManager.getEntries()
       .then(names => pipe(
         currentUserName,
         RemoteData.map(curName => names.filter(n => n !== curName)),
@@ -67,8 +67,8 @@ export function WindowShortcuts() {
       learnAllRunes,
       setAllRunesDefinition,
       unlock,
-      getUserList: ExternalStore.getEntries,
-      deleteUser: ExternalStore.delete,
+      getUserList: ExternalStoreManager.getEntries,
+      deleteUser: ExternalStoreManager.delete,
       clear: () => {
         window.localStorage.removeItem('state');
         // eslint-disable-next-line no-restricted-globals

@@ -5,7 +5,7 @@ import { prompt } from '../../helpers/io';
 import { retrieveFromVersion } from '../helper';
 import { Welcome } from './Welcome';
 import { NameForm } from './NameForm';
-import { ExternalStore } from '../ExternalStore';
+import { ExternalStoreManager } from '../externalStores/ExternalStoreManager';
 import { NotificationService } from '../../NotificationService';
 
 const version = 'V1';
@@ -105,7 +105,7 @@ export function retrieve(currentState: unknown, name: string | undefined): Promi
       currentState,
       s => update(s, name)
         .then((s) => {
-          ExternalStore.create(s.user.name)
+          ExternalStoreManager.create(s.user.name)
             .catch((error) => {
               console.error('Unable to create user remotely', error);
               NotificationService.add({
@@ -114,7 +114,7 @@ export function retrieve(currentState: unknown, name: string | undefined): Promi
                 type: 'failure',
                 action: {
                   label: 'Réessayer',
-                  run: () => ExternalStore.create(s.user.name),
+                  run: () => ExternalStoreManager.create(s.user.name),
                 }
               })
             });

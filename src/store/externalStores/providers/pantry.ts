@@ -1,6 +1,6 @@
-import { encode, decode, decrypt, encrypt } from '../helpers/crypto';
-import { State } from "./State";
-import { secrets } from '../secrets';
+import { encryptStore } from '../encryptStore';
+import { CryptedExternalStore } from '../ExternalStore';
+import { secrets } from '../../../secrets';
 
 const ROOT = `https://getpantry.cloud/apiv1/pantry/${secrets.apiKey}`;
 
@@ -8,7 +8,7 @@ const headers = new Headers();
 headers.append('Content-Type', 'application/json');
 headers.append('Access-Control-Allow-Origin', '*');
 
-export const ExternalStore = {
+export const PantryStore: CryptedExternalStore = encryptStore({
   getEntries: () => {
     const requestOptions = {
       method: 'GET',
@@ -17,7 +17,7 @@ export const ExternalStore = {
 
     return fetch(ROOT, requestOptions)
       .then(response => response.json())
-      .then((values: {baskets: {name: string}[]}) => values.baskets.map((v) => decode(v.name)));
+      .then((values: {baskets: {name: string}[]}) => values.baskets.map(({name}) => name));
   },
   create: (name: string) => {
     const requestOptions = {
@@ -26,7 +26,7 @@ export const ExternalStore = {
       body: '{}',
     };
 
-    return fetch(`${ROOT}/basket/${encode(name)}`, requestOptions)
+    return fetch(`${ROOT}/basket/${name}`, requestOptions)
       .then(() => {});
   },
   read: (name: string) => {
@@ -35,24 +35,20 @@ export const ExternalStore = {
       headers,
     };
 
-    return fetch(`${ROOT}/basket/${encode(name)}`, requestOptions)
+    return fetch(`${ROOT}/basket/${name}`, requestOptions)
       .then(response => response.json())
-      .then(({value}) => value)
-      .then(decrypt(name));
+      .then(({value}) => value);
   },
-  update: (name: string, state: State) => {
+  update: (name: string, state: string) => {
     const requestOptions = {
       method: 'PUT',
       headers,
-      body: JSON.stringify({
-        value: encrypt(name)(state)
-      }),
+      body: state,
     };
 
-    return fetch(`${ROOT}/basket/${encode(name)}`, requestOptions)
+    return fetch(`${ROOT}/basket/${name}`, requestOptions)
       .then(response => response.json()) 
-      .then(({value}) => value)
-      .then(decrypt(name));
+      .then(({value}) => value);
   },
   delete: (name: string) => {
     const requestOptions = {
@@ -60,6 +56,6 @@ export const ExternalStore = {
       headers,
     };
 
-    return fetch(`${ROOT}/basket/${encode(name)}`, requestOptions);
+    return fetch(`${ROOT}/basket/${name}`, requestOptions);
   }
-}
+});
