@@ -1,6 +1,6 @@
 import React from 'react';
 import { random } from '../../helpers/number';
-import { Form, ListValue, NumberValue, StringValue } from '../Form';
+import { Form, ValueFromList, NumberValue, StringValue } from '../Form';
 import { Modal } from '../Modal';
 import { colors } from './character';
 import { PNJ } from './pnj.entity';
@@ -16,7 +16,7 @@ type Fields = {
   description: StringValue;
   character: StringValue;
   age: NumberValue;
-  gender: ListValue<StringValue>;
+  gender: ValueFromList<StringValue>;
   magics: StringValue;
 };
 
@@ -57,7 +57,7 @@ export function PnjModal({ pnj, onSubmit, onCancel}: Props){
       description: string;
       character: string;
       age: number;
-      gender: 'Homme' | 'Femme';
+      gender: string;
       magics: string;
   }) => {
     const result: PNJ = {
@@ -65,7 +65,7 @@ export function PnjModal({ pnj, onSubmit, onCancel}: Props){
       age: record.age,
       character: record.character.split('|').map((v) => v.trim()),
       color: pnj?.color ?? colors[random(0, colors.length -1)],
-      gender: record.gender,
+      gender: record.gender as 'Homme' | 'Femme',
       magics: record.magics,
       description: record.description,
     }

@@ -99,7 +99,7 @@ export function NumberDefinitionForm({ onSubmit }: { onSubmit: (result: NumberTy
         {label: 'Inverse', value: 'inverse'},
       ]}
       onChange={(value) => {
-        setType(value === '' ? undefined : value);
+        setType(value === '' ? undefined : value as NumberType['type']);
       }}
     />
     {

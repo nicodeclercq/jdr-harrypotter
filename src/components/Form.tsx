@@ -25,39 +25,57 @@ export type NumberValue = {
   validate?: (a: number) => boolean;
 }
 type PrimitiveValue = StringValue | NumberValue;
-type FormValue = PrimitiveValue | ListValue<PrimitiveValue>;
-export type ListValue<T extends PrimitiveValue> = Omit<T, 'validate'> & {
+type FormValue = PrimitiveValue | ValueFromList<PrimitiveValue> | ValuesFromList<PrimitiveValue>;
+export type ValueFromList<T extends PrimitiveValue> = Omit<T, 'validate'> & {
   values: T extends StringValue
     ? Array<{label:string, value: string} | string>
     : Array<{label:string, value: number} | number>;
   validate?: T extends StringValue ? (a: string) => boolean : (a: number) => boolean;
 }
+export type ValuesFromList<T extends PrimitiveValue> = Omit<T, 'validate' | 'defaultValue'> & {
+  defaultValue: T['defaultValue'][];
+  values: T extends StringValue
+    ? Array<{label:string, value: string} | string>
+    : Array<{label:string, value: number} | number>;
+  validate?: T extends StringValue ? (a: string[]) => boolean : (a: number[]) => boolean;
+}
 const isStringValue = (a: FormValue): a is StringValue => typeof a.defaultValue === 'string' && !('values' in a);
 const isNumberValue = (a: FormValue): a is NumberValue => typeof a.defaultValue === 'number' && !('values' in a);
-const isListValue = (a: FormValue): a is ListValue<PrimitiveValue> => 'values' in a;
+const isValueFromList = <P extends PrimitiveValue>(a: FormValue): a is ValueFromList<P> => 'values' in a;
+const isValuesFromList = <P extends PrimitiveValue>(a: FormValue): a is ValuesFromList<P> => 'values' in a && a['values'] instanceof Array;
 
-type Props<T extends Record<string, string | number>, Key extends keyof T> = {
-  fields: Record<Key, StringValue | ListValue<StringValue> | NumberValue | ListValue<NumberValue>>;
-  onSubmit: (result: T) => void;
+type Fields<T extends string> = {[key in T]: FormValue};
+export type ValuesFromDefintion<T extends Fields<string>> = {
+  [key in keyof T]: T[key]['defaultValue']
+};
+type Props<F extends Fields<Key>, Key extends string> = {
+  fields: F;
+  onSubmit: (result: ValuesFromDefintion<F>) => void;
   onCancel?: () => void;
   template?: Array<Key | Key[]>;
   submitOnBlur?: boolean;
 }
 
-export function Form<T extends Record<string, string | number>, Key extends keyof T>({ template, onCancel, fields, onSubmit, submitOnBlur = false }: Props<T, Key>) {
+export function Form<T extends Fields<Key>, Key extends string>({ template, onCancel, fields, onSubmit, submitOnBlur = false }: Props<T, Key>) {
   const formId = uuid();
   const defaultValues = useMemo(() => pipe(
     fields,
     Record.map(
-      ({defaultValue}) => defaultValue,
-    )
+      (definition: FormValue) => definition.defaultValue,
+    ),
+    a => a as ValuesFromDefintion<T>,
   ), [fields]);
 
   const { handleSubmit, control, errors } = useForm<T>({
     defaultValues: defaultValues as UnpackNestedValue<DeepPartial<T>>,
   });
 
-  const submitHandler = useCallback((record: FieldValues) => onSubmit(record as T), [onSubmit]);
+  const submitHandler = useMemo(() => 
+    handleSubmit(
+      (record: FieldValues) => onSubmit(record as ValuesFromDefintion<T>)
+    ),
+    [handleSubmit, onSubmit]
+  );
 
   const NumberInput = useCallback(({name, id, config}: {
     name: Key;
@@ -66,7 +84,7 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
   }) => (
     <Controller
       name={name as string}
-      defaultValue={defaultValues[name as string]}
+      defaultValue={defaultValues[name]}
       control={control}
       rules={{ required: config.isRequired, min: config.min, max: config.max }}
       render={({value, onChange}) => (<>
@@ -79,20 +97,20 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
           max={config.max}
           min={config.min}
           onChange={onChange}
-          onBlur={submitOnBlur ? handleSubmit(submitHandler) : undefined}
+          onBlur={submitOnBlur ? submitHandler : undefined}
           width="100%"
         />
       </>)}
     />
-  ), [control, defaultValues, errors, handleSubmit, submitHandler, submitOnBlur]);
+  ), [control, defaultValues, errors, submitHandler, submitOnBlur]);
   const StringInput = useCallback(({name, id, config}: {
     name: Key;
     id: string;
     config: StringValue;
   }) => (
     <Controller
-      name={name as string}
-      defaultValue={defaultValues[name as string]}
+      name={name}
+      defaultValue={defaultValues[name]}
       control={control}
       rules={{ required: config.isRequired, validate: config.validate }}
       render={({value, onChange}) => (<>
@@ -103,35 +121,37 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
           type="text"
           theme="neutral"
           onChange={onChange}
-          onBlur={submitOnBlur ? handleSubmit(submitHandler) : undefined}
+          onBlur={submitOnBlur ? submitHandler : undefined}
           width="100%"
         />
       </>)}
     />
-  ), [control, defaultValues, errors, handleSubmit, submitHandler, submitOnBlur]);
-  const ListInput = useCallback(({options, name, isRequired = false}: {
+  ), [control, defaultValues, errors, submitHandler, submitOnBlur]);
+  const ListInput = useCallback(({options, name, isRequired = false, isMulti = false}: {
     options: {label: string; value: string | number}[];
     name: Key;
-    isRequired?: boolean
+    isMulti?: boolean;
+    isRequired?: boolean;
   }) => (
     <Controller
-      name={name as string}
-      defaultValue={defaultValues[name as string]}
+      name={name}
+      defaultValue={defaultValues[name]}
       control={control}
       rules={{ required: isRequired }}
       render={({value, onChange}) => (<>
         <Select
-          id={`input-${name}`}
+          id={`input-${name as string}`}
           value={value}
           theme="neutral"
           onChange={onChange}
           options={options}
+          multiple={isMulti}
           width="100%"
         />
       </>)}
     />
   ), [control, defaultValues]);
-  const toOptions = useCallback(<T extends PrimitiveValue>({values}: ListValue<T>): {label: string, value: string | number}[] => values.map((value) => typeof value === 'object'
+  const toOptions = useCallback(<T extends PrimitiveValue>({values}: ValueFromList<T> | ValuesFromList<T>): {label: string, value: string | number}[] => values.map((value) => typeof value === 'object'
     ? value
     : {label: `${value}`, value}
   ), []);
@@ -166,7 +186,7 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
       .map(row => {
         const colSpan = (columnsNb * 2 - row.length) / row.length;
         return row
-          .map((fieldName) => `label-${fieldName} ${createArray(colSpan, `input-${fieldName}`).join(' ')}`)
+          .map((fieldName) => `label-${fieldName as string} ${createArray(colSpan, `input-${fieldName as string}`).join(' ')}`)
           .join(' ');
       })
       .reduce((acc, cur) => `${acc} "${cur}"`, '');
@@ -181,21 +201,20 @@ export function Form<T extends Record<string, string | number>, Key extends keyo
   }), [gridTemplateColumns, gridTemplateRows, gridTemplateAreas]);
 
   return (
-    <form
-      onSubmit={handleSubmit(submitHandler)}
-    >
+    <form onSubmit={submitHandler}>
       <div
         style={styles}
       >
         {
           entries(fields).map(([name, value]) => (<React.Fragment key={name as string}>
-            <Label htmlFor={`input-${name}`} gridArea={`label-${name}`}>{value.label}</Label>
-            <div style={{gridArea: `input-${name}`}}>
+            <Label htmlFor={`input-${name as string}`} gridArea={`label-${name as string}`}>{value.label}</Label>
+            <div style={{gridArea: `input-${name as string}`}}>
             {
-                isListValue(value)    ? (<ListInput name={name} options={toOptions(value)} isRequired={value.isRequired} />)
-              : isStringValue(value)  ? (<StringInput id={`input-${name}-${formId}`} name={name} config={value} />)
-              : isNumberValue(value)  ? (<NumberInput id={`input-${name}-${formId}`} name={name} config={value} />)
-              : /* default */           (<></>)
+                isValuesFromList(value)   ? (<ListInput name={name} isMulti={true} options={toOptions(value)} isRequired={value.isRequired} />)
+              : isValueFromList(value)    ? (<ListInput name={name} isMulti={false} options={toOptions(value)} isRequired={value.isRequired} />)
+              : isStringValue(value)      ? (<StringInput id={`input-${name as string}-${formId}`} name={name} config={value} />)
+              : isNumberValue(value)      ? (<NumberInput id={`input-${name as string}-${formId}`} name={name} config={value} />)
+              : /* default */               (<></>)
             }
             </div>
           </React.Fragment>))
