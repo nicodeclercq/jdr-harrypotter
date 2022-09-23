@@ -11,9 +11,7 @@ export const encryptStore = (store: ExternalStore): CryptedExternalStore => ({
   update: (name: string, state: State) => store
     .update(
       encode(name),
-      JSON.stringify({
-        value: encrypt(name)(state)
-      })
+      encrypt(name)(state)
     )
       .then(decrypt(name)),
   delete: (name: string) => store.delete(encode(name))

@@ -1,3 +1,4 @@
+import { constVoid } from 'fp-ts/lib/function';
 import { encryptStore } from '../encryptStore';
 import { CryptedExternalStore } from '../ExternalStore';
 import { secrets } from '../../../secrets';
@@ -43,12 +44,12 @@ export const PantryStore: CryptedExternalStore = encryptStore({
     const requestOptions = {
       method: 'PUT',
       headers,
-      body: state,
+      body: JSON.stringify({ value: state }),
     };
 
     return fetch(`${ROOT}/basket/${name}`, requestOptions)
       .then(response => response.json()) 
-      .then(({value}) => value);
+      .then(({value}: {value: string}) => value);
   },
   delete: (name: string) => {
     const requestOptions = {
@@ -56,6 +57,6 @@ export const PantryStore: CryptedExternalStore = encryptStore({
       headers,
     };
 
-    return fetch(`${ROOT}/basket/${name}`, requestOptions);
+    return fetch(`${ROOT}/basket/${name}`, requestOptions).then(constVoid);
   }
 });
