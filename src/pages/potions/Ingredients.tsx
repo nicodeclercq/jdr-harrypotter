@@ -1,5 +1,7 @@
-import React from 'react';
-import { useFieldArray, useForm, Controller } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { constant, pipe } from 'fp-ts/function';
+
 import { usePotions } from './usePotions';
 import { Card } from '../../components/Card';
 import { Accordion } from '../../components/Accordion';
@@ -9,7 +11,15 @@ import { Tag } from '../../components/Tag';
 import { ingredients } from './potions';
 import { Icon } from '../../components/icons/Icon';
 import { Title } from '../../components/font/Title';
-import { useEffect } from 'react';
+import { getOrElse } from '../../helpers/number';
+
+const scarcity = {
+  "Très rare": 'purple',
+  "Insolite": 'red',
+  "Usuel": 'yellow',
+  "Commun": 'green',
+  undefined: 'gray',
+} as const;
 
 type Props = {
   ownedIngredients: {
@@ -20,68 +30,64 @@ type Props = {
 }
 
 type Form = {
-  ingredients: {
-    name: string,
-    number: number,
-  }[],
-  emptyBottles: number,
-};
+    [name in typeof ingredients[number]['name']]: number;
+  }
+  & {
+    emptyBottles: number,
+  };
 
 export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
   const { setOwnedIngredientsAndBottles } = usePotions();
   const { handleSubmit, control, getValues, setValue } = useForm<Form>({
     defaultValues: {
-      ingredients: ingredients.map(ingredient => ({
-        name: ingredient.name,
-        number: ownedIngredients.find(owned => owned.name === ingredient.name)?.number ?? 0
-      })),
+      ...(ingredients.reduce(
+        (acc, ingredient) => ({
+          ...acc,
+          [ingredient.name]: ownedIngredients.find(owned => owned.name === ingredient.name)?.number ?? 0
+        }),
+        {} as Form
+      )),
       emptyBottles: ownedBottles,
     },
   });
-  const { fields } = useFieldArray({
-    control,
-    name: 'ingredients',
-  });
 
   useEffect(() => {
+    // keeps ownedBottles in sync with form value
     const currentValues = getValues();
+
     if(ownedBottles !== currentValues.emptyBottles){
       setValue('emptyBottles', ownedBottles);
     }
-    ownedIngredients.forEach((ingredient, index) => {
-      if(ingredient.number !== currentValues.ingredients[index]?.number){
-        setValue(`ingredients.${index}.number`, ingredient.number);
+  }, [getValues, ownedBottles, setValue]);
+
+  useEffect(() => {
+    // keeps ownedIngredients in sync with form value
+    const currentValues = getValues();
+
+    ownedIngredients.forEach((ingredient) => {
+      if(ingredient.number !== currentValues[ingredient.name]){
+        setValue(ingredient.name, ingredient.number);
       }
     });
-  }, [ownedIngredients, ownedBottles, getValues, setValue]);
+  }, [ownedIngredients, getValues, setValue]);
 
-  const onSubmit = ({ingredients: newIngredients, emptyBottles}: Form) => {
+  const onSubmit = ({emptyBottles, ...newIngredients}: Form) => {
+    const newValues = Object
+      .entries(newIngredients)
+      .map(([name, number]) => ({
+        name,
+        number: pipe(number, getOrElse(constant(0))),
+      }))
+      .filter(({number}) => number > 0);
+    
     setOwnedIngredientsAndBottles(
-      newIngredients
-        .map(({number}, i) => ({
-          name: ingredients[i].name,
-          number,
-        }))
-        .filter(({number}) => number > 0),
+      newValues,
       emptyBottles,
     );
   };
 
-  const getScarcityColor = (ingredient: string) => {
-    const scarcity = {
-      "Très rare": 'purple',
-      "Insolite": 'red',
-      "Usuel": 'yellow',
-      "Commun": 'green',
-      undefined: 'gray',
-    } as const;
-
-    return scarcity[getScarcityValue(ingredient) ?? 'undefined'];
-  }
-
-  const getScarcityValue = (ingredient: string) => {
-    return ingredients.find(i => i.name === ingredient)?.scarcity;
-  }
+  const getScarcityColor = (ingredient: string) => scarcity[getScarcityValue(ingredient) ?? 'undefined'];
+  const getScarcityValue = (ingredient: string) => ingredients.find(i => i.name === ingredient)?.scarcity;
 
   return (
     <Card fullWidth>
@@ -118,26 +124,26 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
                 />
               </div>
               {
-                fields.map((field, index) => (
-                  <div key={field.id}>
+                ingredients.map((ingredient) => (
+                  <div key={ingredient.name}>
                     <Controller
-                      name={`ingredients.${index}.number`}
-                      defaultValue={field.number}
+                      name={ingredient.name}
+                      // defaultValue={0}
                       control={control}
                       rules={{ required: true, min: 0}}
                       render={({value, onChange }) => (
                         <div>
-                          <Tag title="" color={getScarcityColor(field.name)}>{getScarcityValue(field.name)}</Tag>
+                          <Tag title="" color={getScarcityColor(ingredient.name)}>{getScarcityValue(ingredient.name)}</Tag>
                           <div className="flex flex-row items-start p-2 space-x-2">
                             <Input
-                              id={`${field.id}_value`}
+                              id={`${ingredient.name}_value`}
                               theme="neutral"
                               type="number"
                               onChange={onChange}
                               onBlur={handleSubmit(onSubmit)}
                               value={value}
                             />
-                            <Label htmlFor={`${field.id}_value`}>{field.name}</Label>
+                            <Label htmlFor={`${ingredient.name}_value`}>{ingredient.name}</Label>
                           </div>
                         </div>
                       )}

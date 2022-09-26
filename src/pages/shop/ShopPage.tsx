@@ -163,7 +163,7 @@ export function ShopPage(){
           >
             {
               foodAndDrinks.drinks.map(({name, cost}) => (
-                <div className="flex justify-between px-6 py-2">
+                <div key={name} className="flex justify-between px-6 py-2">
                   <div>{name}</div>
                   <div className="flex gap-1"><Money value={random(cost - cost * 5 / 100, cost + cost * 5 / 100)} /></div>
                 </div>
@@ -172,7 +172,7 @@ export function ShopPage(){
             <hr className="border border-6"/>
             {
               foodAndDrinks.food.map(({name, cost}) => (
-                <div className="flex justify-between px-6 py-2">
+                <div key={name} className="flex justify-between px-6 py-2">
                   <div>{name}</div>
                   <div className="flex gap-1"><Money value={random(cost - cost * 5 / 100, cost + cost * 5 / 100)} /></div>
                 </div>

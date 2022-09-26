@@ -1,3 +1,4 @@
+import { FunctionN } from 'fp-ts/function';
 import { randomInt } from 'fp-ts/lib/Random';
 
 export const random = (min: number, max: number) => randomInt(min, max)();
@@ -33,3 +34,5 @@ export const withNDecimals = (decimals: number, value: number) => {
 
 export const addRandomPercent = (percent: number, value: number) =>
   random(value, value + value * percent / 100);
+
+export const getOrElse = (orElse: FunctionN<[], number>) => (value: number) => isNaN(value) ? orElse() : value;

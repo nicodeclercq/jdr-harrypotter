@@ -64,8 +64,8 @@ export function TreasurePage(){
     <Layout>
       <div className="w-full grid lg:grid-cols-3 gap-2 md:grid-cols-2 sm:grid-cols-1">
         <Card title={<div className="flex justify-between"><Title>Pauvre</Title><Button type="secondary" onClick={() => {setPoor(getPoorItems()); setPoorIngredients(getPoorIngredients()) }}><Icon name="DICE" /></Button></div>} useDividers>
-          {poor.map(Item)}
-          {poorIngredients.map(p => <div className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
+          {poor.map(p => <Item key={p.id} {...p}/>)}
+          {poorIngredients.map(p => <div key={p.name} className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
           { random(0,1) === 1 &&
             <div className="flex px-6 py-2 space-x-2">
               <Money value={random(0, 30)} />
@@ -73,15 +73,15 @@ export function TreasurePage(){
           }
         </Card>
         <Card title={<div className="flex justify-between"><Title>Normal</Title><Button type="secondary" onClick={() => {setNormal(getNormalItems()); setNormalIngredients(getNormalIngredients()) }}><Icon name="DICE" /></Button></div>} useDividers>
-          {normal.map(Item)}
-          {normalIngredients.map(p => <div className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
+          {normal.map(p => <Item key={p.id} {...p}/>)}
+          {normalIngredients.map(p => <div key={p.name} className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
           <div className="flex px-6 py-2 space-x-2">
             <Money value={random(10, 60)} />
           </div>
         </Card>
         <Card title={<div className="flex justify-between"><Title>Riche</Title><Button type="secondary" onClick={() => {setRich(getRichItems()); setRichIngredients(getRichIngredients()) }}><Icon name="DICE" /></Button></div>} useDividers>
-          {rich.map(Item)}
-          {richIngredients.map(p => <div className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
+          {rich.map(p => <Item key={p.id} {...p}/>)}
+          {richIngredients.map(p => <div key={p.name} className="flex px-6 py-2 space-x-2"><div className="text-green-400"><Icon name='PLANT'/></div><span>{p.name}</span></div>)}
           <div className="flex px-6 py-2 space-x-2">
             <Money value={random(20, 100)} />
           </div>

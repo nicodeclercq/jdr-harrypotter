@@ -9,11 +9,11 @@ import { Label } from '../../components/font/Label';
 import { skills } from '../../pages/skills/skills';
 import { entries } from '../../helpers/object';
 
+const REPARTITION_POINTS = 200;
 const defaultSkills = entries(skills);
-const repartitionPoints = 200;
 
 export function Form({state: { traits }, callback}: {state: State,callback: (result: {skills: Skills}) => void}) {
-  const [remainingPoints, setRemainingPoints] = useState(repartitionPoints);
+  const [remainingPoints, setRemainingPoints] = useState(REPARTITION_POINTS);
   const { handleSubmit, control, errors, setValue, getValues } = useForm<Record<string, number>>({
     defaultValues: defaultSkills.reduce((acc, [name, {min, baseTrait}]) => ({
         ...acc,
@@ -72,7 +72,7 @@ export function Form({state: { traits }, callback}: {state: State,callback: (res
           <div className="overflow-y-auto" style={{height: '70vh'}}>
             {
               defaultSkills.map(([skill]) => (
-                <div className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
+                <div key={skill} className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1">
                   <Label htmlFor={`input-${skill}`}>{skill}</Label>
                   <Controller
                     name={skill}

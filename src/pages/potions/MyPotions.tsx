@@ -24,7 +24,7 @@ export function MyPotions({emptyBottles, cookedPotions, ownedIngredients}: Props
               {{
                 emoji: 'POTION',
                 title: 'Tu n\'as aucune potion',
-                description: 'faites chauffer les chaudrons'
+                description: 'faites chauffer les chaudrons!!!'
               }}
             </EmptyContent>
       }

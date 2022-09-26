@@ -79,7 +79,7 @@ export function Potion({ number, emptyBottles, ownedIngredients, potion, isOwned
                 <div className="space-x-2">
                   <Table
                     headers={['Ingrédient 1', 'Ingrédient 2', 'Ingrédient 3']}
-                    values={[potion.ingredients.map(ingredient => (<div className="space-x-2">
+                    values={[potion.ingredients.map(ingredient => (<div key={ingredient} className="space-x-2">
                       {
                         hasIngredient(ingredient) 
                           ? <span className="text-green-600"><Icon name="CHECK" /></span>

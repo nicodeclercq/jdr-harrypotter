@@ -78,7 +78,7 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
         </div>)}>
         {
           knownSpells.length
-            ? knownSpells.map(({name, spell}) => (
+            ? knownSpells.map(({spell}) => (
                 <Spell
                   key={`${spell?.name}_${spell?.level}`}
                   spell={spell as SpellType.Spell}

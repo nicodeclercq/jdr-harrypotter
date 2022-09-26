@@ -42,6 +42,7 @@ function Home ({isMJ, user, life}: { isMJ: boolean, user: State['user']['name'],
             bennies,
             onSuccess(bennies => bennies.map((position, index) => 
               <Benny
+                key={`benny_${index}`}
                 position={position}
                 onDragStop={(endPosition) => {
                   moveBenny(

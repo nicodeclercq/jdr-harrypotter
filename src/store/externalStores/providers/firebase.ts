@@ -13,7 +13,7 @@ const firebaseConfig = {
   projectId: secrets.firebaseProjectId,
   storageBucket: secrets.firebaseStorageBucket,
   messagingSenderId: secrets.firebaseMessagingSenderId,
-  appId: secrets.firebaseAppId
+  appId: secrets.firebaseAppId,
 };
 
 const app = initializeApp(firebaseConfig);

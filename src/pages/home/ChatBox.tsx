@@ -26,7 +26,13 @@ type Message = {
   date: Date;
 }
 
-export function ChatBox ({me, user, image}: {me: State['user'], user?: string, image: string | null | undefined}) {
+type Props = {
+  as?: keyof JSX.IntrinsicElements,
+  me: State['user'],
+  user?: string,
+  image: string | null | undefined
+};
+export function ChatBox ({me, user, image, as: As = 'div'}: Props) {
   const {list: messages, prepend} = useList<Message>();
   const [isVisible, setIsVisible] = useState(false);
   const { stream, emit } = useSocket();
@@ -82,9 +88,38 @@ export function ChatBox ({me, user, image}: {me: State['user'], user?: string, i
   }, [prepend, stream, user, me]);
 
   return (
-    <div style={{position: 'relative', display:'flex', flexDirection: 'column', alignItems: 'center', filter:'drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))', transform: isVisible ? 'translateY(0)' : 'translateY(calc(-100% + 4.75rem))', transition: 'transform ease-in-out 0.2s'}}>
-      <div style={{background: 'white', minWidth: '5rem', padding: '0.125rem 0.5rem 1.5rem', borderBottomLeftRadius: '1rem', borderBottomRightRadius: '1rem', pointerEvents: 'auto', maxWidth: '25rem'}}>
-        <div className="p-2 my-2 bg-gray-100 rounded" style={{width: '100%', height: '10rem', overflow: 'auto'}}>
+    <As
+      style={{
+        position: 'relative',
+        display:'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        filter:'drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))',
+        transform: isVisible ? 'translateY(0)' : 'translateY(calc(-100% + 4.75rem))',
+        transition: 'transform ease-in-out 0.2s',
+        minWidth: '5rem',
+        maxWidth: '15rem',
+      }}
+    >
+      <div
+        style={{
+          background: 'white',
+          padding: '0.125rem 0.5rem 1.5rem',
+          borderBottomLeftRadius: '1rem',
+          borderBottomRightRadius: '1rem',
+          pointerEvents: 'auto',
+          width: '100%',
+        }}
+      >
+        <div
+          className="p-2 my-2 bg-gray-100 rounded"
+          style={{
+            width: '100%',
+            height: '10rem',
+            overflowY: 'auto',
+            wordBreak: 'break-word',
+          }}
+        >
           {
             messages
               .sort((a, b) => {
@@ -110,15 +145,15 @@ export function ChatBox ({me, user, image}: {me: State['user'], user?: string, i
               ))
           }
         </div>
-        <form className="flex flex-row border-2 rounded border-gray" onSubmit={handleSubmit(send)}>
+        <form className="flex flex-row w-full border-2 rounded border-gray" onSubmit={handleSubmit(send)}>
           <Controller
             name="text"
             control={control}
             defaultValue=""
             rules={{ required: true }}
-            render={(props) => <input id={uuid} className="flex-grow px-2 py-1" type="text" {...props} />}
+            render={(props) => <input id={uuid} className="flex-grow flex-shrink w-full px-2 py-1" type="text" {...props} />}
           />
-          <button  type="submit" className="flex-grow-0 px-2 py-1 border-l-2 border-gray">
+          <button  type="submit" className="flex-grow-0 px-2 py-1 border-l-2 w-fit border-gray">
             <Icon name="PAPER_PLANE" />
           </button>
         </form>
@@ -150,6 +185,6 @@ export function ChatBox ({me, user, image}: {me: State['user'], user?: string, i
             : <Avatar size="small" url={image} text={user || ''} onClick={() => setIsVisible(!isVisible)} icon={isVisible ? 'UP' : 'DOWN'} />
         }
       </div>
-    </div>
+    </As>
   );
 }

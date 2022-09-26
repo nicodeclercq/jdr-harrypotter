@@ -29,7 +29,11 @@ export function NameForm({defaultValue, names = [], callback}: Props) {
     callback(formValues.name ? formValues.name : formValues.newName);
   }
 
-  const options = ['', ...names].map((name) => name ? ({label: name, value: name}) : ({label: '-', value: ''}));
+  const options = ['', ...names]
+    .map((name) => name
+      ? ({label: name, value: name})
+      : ({label: '-', value: ''})
+    );
 
   return (
     <form  onSubmit={handleSubmit(onSubmit)}>
