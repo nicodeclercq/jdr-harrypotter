@@ -5,6 +5,7 @@ import { useStore } from '../hooks/useStore';
 import { Button } from './Button';
 import { State } from '../store/State';
 import { Avatar } from './Avatar';
+import { RichText } from './font/RichText';
 
 function Notification({notification}: {notification: NotificationType}) {
   const renderIcon = (notification: NotificationType) => {
@@ -24,7 +25,9 @@ function Notification({notification}: {notification: NotificationType}) {
   return (
     <div className="flex flex-row items-center p-4 bg-white rounded shadow-md space-x-2">
       {renderIcon(notification)}
-      <span className="flex-grow text-left">{notification.message}</span>
+      <span className="flex-grow text-left">
+        <RichText>{notification.message}</RichText>
+      </span>
       {
         notification.action && <Button type="primary" onClick={notification.action.run}>{notification.action.label}</Button>
       }

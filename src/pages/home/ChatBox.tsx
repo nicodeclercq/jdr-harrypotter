@@ -5,6 +5,7 @@ import { Avatar } from '../../components/Avatar';
 import { AvatarList } from '../../components/AvatarList';
 import { BodyText } from '../../components/font/BodyText';
 import { Comment } from '../../components/font/Comment';
+import { RichText } from '../../components/font/RichText';
 import { Icon } from '../../components/icons/Icon';
 import { isDefined } from '../../helpers/nullable';
 import { useConnectedUsers } from '../../hooks/useConnectedUsers';
@@ -140,7 +141,9 @@ export function ChatBox ({me, user, image, as: As = 'div'}: Props) {
                       <span style={{fontSize: '0.66rem'}}>à {date.getHours()}:{date.getMinutes()}</span>
                     </div>
                   </Comment>
-                  <BodyText>{text}</BodyText>
+                  <BodyText>
+                    <RichText>{text}</RichText>
+                  </BodyText>
                 </div>
               ))
           }

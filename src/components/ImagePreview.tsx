@@ -41,6 +41,7 @@ export function ImagePreview(){
         width: '100vw',
         height: '100vw',
         pointerEvents: 'none',
+        aspectRatio: '4 / 3',
       }}
     />
   )
