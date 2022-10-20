@@ -66,7 +66,7 @@ export const useSpell = () => {
           },
           points: {
             ...userSpells.points,
-            [spell.category]: (userSpells.points[spell.category] ?? 0) + factor * ((spell.level ?? 0)+1)
+            [spell.category]: (userSpells.points[spell.category] ?? 0) + factor * ((spell.level ?? 0)+2)
           }
         };
       }),

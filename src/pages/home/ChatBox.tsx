@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as RX from 'rxjs/operators';
+import {v4 as uuid} from 'uuid';
 import { Avatar } from '../../components/Avatar';
 import { AvatarList } from '../../components/AvatarList';
 import { BodyText } from '../../components/font/BodyText';
 import { Comment } from '../../components/font/Comment';
 import { RichText } from '../../components/font/RichText';
 import { Icon } from '../../components/icons/Icon';
+import { RemoteDataFold } from '../../components/RemoteDataFold';
 import { isDefined } from '../../helpers/nullable';
 import { useConnectedUsers } from '../../hooks/useConnectedUsers';
 import { useList } from '../../hooks/useList';
+import { useRole } from '../../hooks/useRole';
 import { useSocket } from '../../hooks/useSocket';
-import { ChatMessage, isChatMessage } from '../../message';
+import { ChatMessage, COMMAND_MESSAGE, isChatMessage } from '../../message';
 import { State } from '../../store/State';
-
-let uid1 = 0;
-let uid2 = 0;
 
 type Message = {
   id: string;
@@ -38,6 +38,8 @@ export function ChatBox ({me, user, image, as: As = 'div'}: Props) {
   const [isVisible, setIsVisible] = useState(false);
   const { stream, emit } = useSocket();
   const { connectedUsers } = useConnectedUsers();
+  const { isMJ } = useRole();
+  const id = useMemo(() => `${uuid()}_chat`, []);
 
   const { handleSubmit, setValue, control } = useForm<{text: string}>({
     defaultValues: {text: ''},
@@ -46,20 +48,18 @@ export function ChatBox ({me, user, image, as: As = 'div'}: Props) {
   const send = (message: {text: string}) => {
     const text = message.text.trim();
     if(text) {
-      prepend({id: `${uid2++}`, user: {name: me.name, image: me.imageUrl}, text, date: new Date()});
+      prepend({id: uuid(), user: {name: me.name, image: me.imageUrl}, text, date: new Date()});
       emit({
         type: 'chat',
         payload: {
           message: text,
           needsConfirmation: false,
-          recipient: user || 'all',
+          recipient: user || 'all',
         }
       });
       setValue('text', '');
     }
   };
-
-  const uuid = `${uid1++}_chat`;
 
   const players = Object.entries(connectedUsers)
     .filter(([name]) => name !== me.name)
@@ -154,7 +154,26 @@ export function ChatBox ({me, user, image, as: As = 'div'}: Props) {
             control={control}
             defaultValue=""
             rules={{ required: true }}
-            render={(props) => <input id={uuid} className="flex-grow flex-shrink w-full px-2 py-1" type="text" {...props} />}
+            render={(props) => (
+              <>
+                <input id={id} list={`${id}_datalist`} className="flex-grow flex-shrink w-full px-2 py-1" type="text" {...props} />
+                {
+                  <RemoteDataFold
+                    data={isMJ}
+                    onSuccess={d => d
+                      ? (
+                        <datalist id={`${id}_datalist`}>
+                          {
+                            Object.values(COMMAND_MESSAGE).map(m => <option value={m} key={m} />)
+                          }
+                        </datalist>
+                        )
+                      : <></>
+                    }
+                  />
+                }
+              </>
+            )}
           />
           <button  type="submit" className="flex-grow-0 px-2 py-1 border-l-2 w-fit border-gray">
             <Icon name="PAPER_PLANE" />

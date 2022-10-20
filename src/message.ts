@@ -53,6 +53,10 @@ const chatDecoder = IO.type({
 export type ChatMessage = IO.TypeOf<typeof chatDecoder>;
 export const isChatMessage = chatDecoder.is;
 
+export const COMMAND_MESSAGE = {
+  GIVE_BENNY: '[giveBenny]',
+} as const;
+
 const alertDecoder = IO.type({
   type: IO.literal('alert'),
   payload: IO.type({

@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { useNotification } from './components/Notification';
-import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage, PlayMusicMessage, SetBattleMapTokensPosition } from './message';
+import { AlertMessage, fold, HasAlreadyJoinedMessage, ChatMessage, JoinMessage, Message, QuitMessage, RollMessage, PlayMusicMessage, SetBattleMapTokensPosition, COMMAND_MESSAGE } from './message';
 import { useRole } from './hooks/useRole';
 import { ChatBoxes } from './pages/home/ChatBoxes';
 import { fromRemoteData, onSuccess } from './helpers/remoteData';
@@ -65,10 +65,10 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
 
   const chat =  useCallback(({message, recipient}: ChatMessage['payload'], author: Message['author']) => {
     if(currentUserName === recipient){
-      if(message === '[giveBenny]'){
+      if (message === COMMAND_MESSAGE.GIVE_BENNY) {
         add({id: `chat_${recipient}${message}`, type: 'message', message: `Tu as gagné un nouveau Joker`, author: {name: author.name, avatar: author.avatar ?? ''}});
         addBenny();
-      }else{
+      } else {
         add({id: `chat_${recipient}${message}`, type: 'message', message: `“${message}”`, author: {name: author.name, avatar: author.avatar ?? ''}});
         play('bip');
       }
