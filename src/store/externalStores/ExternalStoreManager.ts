@@ -1,12 +1,10 @@
 import { FirebaseStore } from './providers/firebase';
-import { PantryStore } from './providers/pantry';
 import { State } from '../State';
 import { constVoid } from 'fp-ts/function';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import { CryptedExternalStore } from './ExternalStore';
 
 const stores: NonEmptyArray<CryptedExternalStore> = [
-  PantryStore,
   FirebaseStore,
 ];
 
