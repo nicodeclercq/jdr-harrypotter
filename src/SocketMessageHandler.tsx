@@ -13,7 +13,10 @@ import { useUser } from './pages/home/useUser';
 import { useSound } from './hooks/useSound';
 import { useBenny as useBennyHook } from './hooks/useBenny';
 import { useConnectedUsers } from './hooks/useConnectedUsers';
+import { useLockKey } from './hooks/useLockKey';
 import { useTokens } from './hooks/useTokens';
+import { values } from './helpers/object';
+import { ROUTES, RouteDefinition } from './Router';
 
 type Props = {
   currentUserName: string;
@@ -24,6 +27,7 @@ type Props = {
 let runNb = 20;
 
 export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
+  const { unlock, lock } = useLockKey();
   const { setTokens } = useTokens();
   const { connectedUsers, add: connectUser, remove: disconnectUser } = useConnectedUsers();
   const { add } = useNotification();
@@ -68,12 +72,35 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       if (message === COMMAND_MESSAGE.GIVE_BENNY) {
         add({id: `chat_${recipient}${message}`, type: 'message', message: `Tu as gagné un nouveau Joker`, author: {name: author.name, avatar: author.avatar ?? ''}});
         addBenny();
+      } else if (COMMAND_MESSAGE.UNLOCK.test(message)) {
+        const lockKeys = values(ROUTES)
+          .filter(({lockKey}: RouteDefinition) => typeof lockKey !== 'function')
+          .map(({lockKey}: RouteDefinition) => lockKey);
+        const result = COMMAND_MESSAGE.UNLOCK.exec(message);
+        console.log('[YOUPI]', result, lockKeys);
+        if(result){
+          if (result?.length >= 2 && (lockKeys as string[]).includes(result[1])) {
+            add({id: `chat_${recipient}${message}`, type: 'success', message: `Nouvelle capacité débloquée`});
+            unlock(result[1]);
+          }
+        }
+      } else if (COMMAND_MESSAGE.LOCK.test(message)) {
+        const lockKeys = values(ROUTES)
+          .filter(({lockKey}: RouteDefinition) => typeof lockKey !== 'function')
+          .map(({lockKey}: RouteDefinition) => lockKey);
+        const result = COMMAND_MESSAGE.LOCK.exec(message);
+        if(result){
+          if (result?.length >= 2 && (lockKeys as string[]).includes(result[1])) {
+            add({id: `chat_${recipient}${message}`, type: 'failure', message: `Vous venez de perdre une capacité`});
+            lock(result[1]);
+          }
+        }
       } else {
         add({id: `chat_${recipient}${message}`, type: 'message', message: `“${message}”`, author: {name: author.name, avatar: author.avatar ?? ''}});
         play('bip');
       }
     }
-  }, [add, addBenny, currentUserName, play]);
+  }, [add, addBenny, currentUserName, lock, play, unlock]);
 
   const roll = useCallback(({title, value, type}: RollMessage['payload'], author: Message['author']) => {
     const types = {

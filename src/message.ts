@@ -55,6 +55,8 @@ export const isChatMessage = chatDecoder.is;
 
 export const COMMAND_MESSAGE = {
   GIVE_BENNY: '[giveBenny]',
+  UNLOCK: /^\[unlock\]:(.+)$/,
+  LOCK: /^\[lock\]:(.+)$/,
 } as const;
 
 const alertDecoder = IO.type({

@@ -18,7 +18,7 @@ export function WindowShortcuts() {
   const { name } = useUser();
   const { setRole } = useRole();
   const { setKnownRunes, learnAllRunes, setAllRunesDefinition } = useRune();
-  const { setLockKeys: setKeys, unlock } = useLockKey();
+  const { setLockKeys: setKeys, unlock, lock } = useLockKey();
   const { setNumber: setArithmancyNumber } = useArithmancy();
   const { emit } = useSocket();
   const { add: addSkill, remove: removeSkill} = useSkill();
@@ -67,6 +67,7 @@ export function WindowShortcuts() {
       learnAllRunes,
       setAllRunesDefinition,
       unlock,
+      lock,
       getUserList: ExternalStoreManager.getEntries,
       deleteUser: ExternalStoreManager.delete,
       clear: () => {
@@ -87,8 +88,7 @@ export function WindowShortcuts() {
       setVisibleCards,
       shuffleDeck,
     }
-  }, [learnAllRunes, setRole, setAllRunesDefinition, setKeys, setKnownRunes, unlock, setVisibleCards,
-    shuffleDeck, setArithmancyNumber, distributeRandomNumber, emit, addSkill, removeSkill]);
+  }, [learnAllRunes, setRole, setAllRunesDefinition, setKeys, setKnownRunes, unlock, setVisibleCards, shuffleDeck, setArithmancyNumber, distributeRandomNumber, emit, addSkill, removeSkill, lock]);
 
   return (
     <></>

@@ -33,7 +33,7 @@ import { CombatPage } from './pages/combat/CombatPage';
 import { PnjsPage } from './pages/pnjs/PnjsPage';
 import { BattleMapPage } from './pages/battleMap/battleMapPage';
 
-type RouteDefinition = {
+export type RouteDefinition = {
   label: ((state: State) => string) | string;
   icon: IconName | ((state: State) => React.ReactElement);
   Component: () => React.ReactElement;

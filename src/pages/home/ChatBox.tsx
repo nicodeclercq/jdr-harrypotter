@@ -164,7 +164,8 @@ export function ChatBox ({me, user, image, as: As = 'div'}: Props) {
                       ? (
                         <datalist id={`${id}_datalist`}>
                           {
-                            Object.values(COMMAND_MESSAGE).map(m => <option value={m} key={m} />)
+                            Object.values(COMMAND_MESSAGE)
+                              .map(m => <option value={m.toString()} key={m.toString()} />)
                           }
                         </datalist>
                         )

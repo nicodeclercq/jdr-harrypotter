@@ -19,6 +19,14 @@ export const useLockKey = () => {
     ))
   );
 
+  const lock = (lockKey: string) => pipe(
+    lockKeys,
+    onSuccess(currentKeys => setLockKeys(
+      currentKeys.filter(key => key !== lockKey)
+    ))
+  );
+
+
   const isUnlocked = (lockKey: string) => {
     return pipe(
       lockKeys,
@@ -30,6 +38,7 @@ export const useLockKey = () => {
     lockKeys,
     setLockKeys,
     unlock,
+    lock,
     isUnlocked,
   }
 }
