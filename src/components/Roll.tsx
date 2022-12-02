@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useInterval } from '../hooks/useInteval';
 import { D10 } from './dice/D10';
 import { D100 } from './dice/D100';
@@ -6,6 +6,7 @@ import { D4 } from './dice/D4';
 import { D6 } from './dice/D6';
 import { D20 } from './dice/D20';
 import * as Dice from './dice/dice';
+import { useSound } from '../hooks/useSound';
 
 type Props<T extends Dice.Dice[]> = {
   dices: T;
@@ -30,6 +31,12 @@ const DoRoll = ({dices}: {dices: {type: Dice.Dice, value: number}[]}) => {
 }
 
 export function Roll<T extends Dice.Dice[]>({dices, concat, onRollEnd}: Props<T>) {
+  const { play } = useSound();
+
+  useEffect(() => {
+    play('dice');
+  }, [play]);
+
   const { current: values } = useRef(dices
     .map((type) => ({
       type,

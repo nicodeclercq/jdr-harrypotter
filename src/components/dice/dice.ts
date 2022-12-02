@@ -18,7 +18,7 @@ export const getRollValues = (type: Dice) => {
     d20: 1,
     d100: 10,
   }
-  return new Array(50)
+  return new Array(55)
     .fill(0)
     .map(() => random(range[type].min, range[type].max) * modifiers[type])
 };

@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 const sounds = [
   'bip',
+  'dice',
   'sleep',
   'error',
   'success',
