@@ -110,18 +110,22 @@ export function SocketMessageHandler({currentUserName, stream, emit}: Props) {
       'critical-failure': 'Échec critique',
       'free-throw': 'Lancer libre',
     } as const;
-    
-    add({
-      id: `roll_${author}_${title}_${value}`,
-      type: 'message',
-      message: `"${title}": ${author.name} vient de faire ${value} (${types[type]})`,
-      author: {name: author.name, avatar: author.avatar ?? ''}
-    });
-    if(type === 'critical-success'){
-      play('success');
-    }else if(type === 'critical-failure'){
-      play('failure');
-    }
+    play('dice-short');
+
+    const timeout = setTimeout(() => {
+      add({
+        id: `roll_${author}_${title}_${value}`,
+        type: 'message',
+        message: `"${title}": ${author.name} vient de faire ${value} (${types[type]})`,
+        author: {name: author.name, avatar: author.avatar ?? ''}
+      });
+      if(type === 'critical-success'){
+        play('success');
+      }else if(type === 'critical-failure'){
+        play('failure');
+      }
+    }, 1000);
+    return () => clearTimeout(timeout);
   }, [add, play]);
 
   const alert = useCallback(({type}: AlertMessage['payload'], author: Message['author']) => {
