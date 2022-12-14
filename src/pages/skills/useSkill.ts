@@ -29,6 +29,22 @@ export const useSkill = () => {
     onSuccess(setSkills),
   );
 
+  const edit = (name: string, currentLevel: number) => pipe(
+    skills,
+    RemoteData.chain(skills => name in skills
+      ? RemoteData.success(skills)
+      : RemoteData.failure(new Error(`The skill '${name}' is not defined`))
+    ),
+    RemoteData.map(skills => ({
+      ...skills,
+      [name.trim()]: {
+        currentLevel,
+        uses: skills[name].uses,
+      }
+    })),
+    onSuccess(setSkills),
+  );
+
   const remove = (name: string) => pipe(
     skills,
     RemoteData.map(skills => 
@@ -92,5 +108,6 @@ export const useSkill = () => {
     upgrade,
     add,
     remove,
+    edit,
   }
 }
