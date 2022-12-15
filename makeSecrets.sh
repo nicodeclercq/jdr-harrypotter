@@ -13,5 +13,6 @@ export const secrets = {
   firebaseMessagingSenderId: '$FIREBASE_MESSAGING_SENDER_ID',
   firebaseAppId: '$FIREBASE_APP_ID',
   firebaseCollectionId: '$FIREBASE_COLLECTION_ID',
+  databaseUrl: '$DATABASE_URL',
 };
 EOF

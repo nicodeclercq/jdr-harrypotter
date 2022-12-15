@@ -1,18 +1,18 @@
 import { useEffect, useMemo } from 'react';
 import { pipe } from 'fp-ts/function';
 import { BehaviorSubject } from 'rxjs';
-import { io } from 'socket.io-client';
+import { io } from '../store/externalStores/providers/firebase';
 
 import { useUser } from '../pages/home/useUser';
 import { isJoinMessage, Message } from '../message';
 import { onSuccess, sequence } from '../helpers/remoteData';
 
 const DEFAULT_AUTHOR = 'Unknown';
-const DOMAIN = 'https://jdr-harrypotter-back.herokuapp.com/';
-const socket = io(DOMAIN);
-socket.on('message', function(data) {
+const socket = io();
+socket.on('message', (data: string) => {
   stream.next(JSON.parse(data));
 });
+
 const stream = new BehaviorSubject<Message | undefined>(undefined);
 let author: string = DEFAULT_AUTHOR;
 let avatar: string = '';

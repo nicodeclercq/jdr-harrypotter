@@ -1,23 +1,45 @@
+import * as IO from 'io-ts';
 import { constVoid, constant } from 'fp-ts/function';
 import * as Option from 'fp-ts/Option';
 import { initializeApp } from "firebase/app";
+import { set, ref, getDatabase, onValue } from 'firebase/database';
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, setDoc } from 'firebase/firestore/lite';
+
 
 import { secrets } from "../../../secrets";
 import { encryptStore } from "../encryptStore";
 import { CryptedExternalStore } from "../ExternalStore";
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: secrets.firebaseApiKey,
   authDomain: secrets.firebaseAuthDomain,
   projectId: secrets.firebaseProjectId,
   storageBucket: secrets.firebaseStorageBucket,
   messagingSenderId: secrets.firebaseMessagingSenderId,
   appId: secrets.firebaseAppId,
-};
-
-const app = initializeApp(firebaseConfig);
+  databaseURL: secrets.databaseUrl,
+});
 const db = getFirestore(app);
+
+export const io = () => {
+  const db = getDatabase();
+  const messagesRef = ref(db, 'messages');
+
+  const emit = (type: string, message: string)  => {
+    set(messagesRef, {type, payload: message});
+  }
+
+  const on = (type: string, callback: (data: string) => void) => {
+    onValue(messagesRef, (snapshot) => {
+      const data = snapshot.val();
+      if(IO.type({type: IO.literal(type), payload: IO.string}).is(data)) {
+        callback(data.payload);
+      }
+    });
+  }
+
+  return {emit, on};
+}
 
 const getCollection = () => Promise.resolve(collection(db, secrets.firebaseCollectionId));
 const getDoc = (name: string) => getCollection()
