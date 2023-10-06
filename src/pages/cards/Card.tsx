@@ -3,7 +3,7 @@ import { pipe, constant } from "fp-ts/function";
 import * as Either from "fp-ts/Either";
 import * as ArrayFP from "fp-ts/Array";
 import * as IOT from "io-ts-types";
-import { types, numbers, elements, means } from "./deck";
+import { types, numbers, elements, means } from "../../store/v12/deck";
 import { createArray } from "../../helpers/array";
 import { Icon } from "../../components/icons/Icon";
 
