@@ -25,13 +25,7 @@ const CardValueRenderer = {
   J: { value: "J", fontSize: "5rem", template: "'a'" },
   Q: { value: "Q", fontSize: "5rem", template: "'a'" },
   K: { value: "K", fontSize: "5rem", template: "'a'" },
-} as const satisfies {
-  [key in CardValue]: {
-    template: string;
-    fontSize?: string;
-    value?: ReactNode;
-  };
-};
+} as const;
 
 type Element = (typeof elements)[number];
 type Type = (typeof types)[number];
@@ -42,30 +36,22 @@ const elementsRenderer = {
   Eau: <Icon name="EAU" />,
   Feu: <Icon name="FEU" />,
   Terre: <Icon name="TERRE" />,
-} as const satisfies {
-  [key in Element]: ReactNode;
-};
+} as const;
 
 const typesRenderer = {
   Attaque: <Icon name="SWORD" />,
   Défense: <Icon name="SHIELD" />,
-} as const satisfies {
-  [key in Type]: ReactNode;
-};
+} as const;
 
 const colorByType = {
   Attaque: "red",
   Défense: "black",
-} satisfies {
-  [key in Type]: string;
-};
+} as const;
 
 const meansRenderer = {
   "Objet personnel": <Icon name="LIGHT_BACKPACK" />,
   Environnement: <Icon name="BOX_TRAP" />,
-} as const satisfies {
-  [key in Mean]: ReactNode;
-};
+} as const;
 
 type Props = {
   symbol: ReactNode;
