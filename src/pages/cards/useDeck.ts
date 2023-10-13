@@ -26,7 +26,7 @@ const deal = (deck: Card[], cardsNb: number) => {
     (d) =>
       d.reduce(
         (
-          { newDeck: { deck, hand, drop }, remainingCards }: Tmp,
+          { newDeck: { deck, hand, drop }, remainingCards },
           card: Card,
           index: number
         ) =>
@@ -49,9 +49,9 @@ const deal = (deck: Card[], cardsNb: number) => {
               },
         {
           newDeck: {
-            deck: createEmptyArray<Deck["deck"]>(),
-            drop: createEmptyArray<Deck["drop"]>(),
-            hand: createEmptyArray<Deck["hand"]>(),
+            deck: [] as Deck["deck"],
+            drop: [] as Deck["drop"],
+            hand: [] as Deck["hand"],
           },
           remainingCards: cardsNb,
         } as Tmp

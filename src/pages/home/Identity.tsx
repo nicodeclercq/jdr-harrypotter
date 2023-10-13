@@ -47,7 +47,7 @@ function LifeForm({
         name="current"
         control={control}
         rules={{ required: true, min: 1, max: 30 }}
-        render={({ field: { value, onChange } }) => (
+        render={({ value, onChange }) => (
           <Input
             id="input-life_current"
             errors={errors["current"]}
@@ -67,7 +67,7 @@ function LifeForm({
         name="max"
         control={control}
         rules={{ required: true, min: 1, max: 30 }}
-        render={({ field: { value, onChange } }) => (
+        render={({ value, onChange }) => (
           <Input
             id="input-life_max"
             errors={errors["max"]}
@@ -94,7 +94,7 @@ function LifeForm({
         name="luck"
         control={control}
         rules={{ required: true, min: 0, max: 500 }}
-        render={({ field: { value, onChange } }) => (
+        render={({ value, onChange }) => (
           <Input
             id="input-luck_current"
             errors={errors["luck"]}
@@ -136,7 +136,7 @@ function ImageUrlForm({
       <Controller
         name="imageUrl"
         control={control}
-        render={({ field: { value, onChange } }) => (
+        render={({ value, onChange }) => (
           <Input
             id="input-image_url"
             errors={errors["imageUrl"]}
