@@ -1,22 +1,17 @@
 {
-  "name": "my-app",
-  "version": "0.1.0",
+  "name": "react-ts",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite dev",
+    "build": "bash makeSecrets.sh && tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
   "dependencies": {
-    "@craco/craco": "^6.1.1",
     "@devexperts/remote-data-ts": "^2.0.5",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/crypto-js": "^3.1.47",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "craco-sass-resources-loader": "^1.1.0",
     "crypto-js": "3.3.0",
-    "dice-roller-3d": "^1.0.4",
-    "eslint": "^7.26.0",
     "firebase": "^9.9.4",
     "fp-ts": "^2.9.5",
     "io-ts": "^2.2.16",
@@ -24,48 +19,29 @@
     "io-ts-types": "^0.5.16",
     "monocle-ts": "^2.3.10",
     "newtype-ts": "^0.3.4",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-hook-form": "^6.15.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.47.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
     "react-use": "^17.2.1",
     "rxjs": "^6.6.6",
     "socket.io-client": "^4.1.2",
-    "typescript": "^4.1.2",
-    "uuid": "^8.3.2",
-    "web-vitals": "^1.0.1"
-  },
-  "scripts": {
-    "start": "craco start",
-    "build": "bash makeSecrets.sh && craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject",
-    "lint": "eslint \"src/**\""
-  },
-  "eslintIgnore": [
-    "App.css",
-    "src/index.css"
-  ],
-  "browserslist": {
-    "production": [
-      ">5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version"
-    ]
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
-    "@testing-library/dom": "^7.31.0",
-    "@types/react-router-dom": "^5.1.7",
-    "@types/uuid": "^8.3.0",
-    "autoprefixer": "^9",
-    "eslint-plugin-tailwind": "^0.2.1",
-    "postcss": "^7",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "@types/crypto-js": "^3.1.47",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
   }
 }
