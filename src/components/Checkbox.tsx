@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes } from "react";
 import { FieldError } from "react-hook-form";
 import { getColor } from "../theme";
 import { ErrorMessage } from "./ErrorMessage";

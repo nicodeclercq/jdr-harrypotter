@@ -1,4 +1,3 @@
-import React from "react";
 import { pipe } from "fp-ts/function";
 import * as RemoteData from "@devexperts/remote-data-ts";
 
@@ -43,9 +42,9 @@ export function CartomancyPage() {
         card != null
           ? { isVisible: true, index: card }
           : {
-            isVisible: false,
-            index: randomValues[i],
-          }
+              isVisible: false,
+              index: randomValues[i],
+            }
       );
     }),
     fromRemoteData((cards) => (

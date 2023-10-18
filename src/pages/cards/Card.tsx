@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { pipe, constant } from "fp-ts/function";
 import * as Either from "fp-ts/Either";
 import * as ArrayFP from "fp-ts/Array";

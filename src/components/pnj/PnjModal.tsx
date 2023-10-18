@@ -1,4 +1,3 @@
-import React from "react";
 import { random } from "../../helpers/number";
 import { Form, ValueFromList, NumberValue, StringValue } from "../Form";
 import { Modal } from "../Modal";
@@ -20,8 +19,8 @@ type Fields = {
   magics: StringValue;
 };
 
-export function PnjModal({ pnj, onSubmit, onCancel}: Props){
-  const fields:Fields = {
+export function PnjModal({ pnj, onSubmit, onCancel }: Props) {
+  const fields: Fields = {
     name: {
       label: "Nom",
       defaultValue: pnj?.name ?? "",
@@ -48,23 +47,22 @@ export function PnjModal({ pnj, onSubmit, onCancel}: Props){
     magics: {
       label: "Type de magie",
       defaultValue: pnj?.magics ?? "",
-    }
+    },
   };
 
-  const handleSubmit = (
-    record: {
-      name: string;
-      description: string;
-      character: string;
-      age: number;
-      gender: string;
-      magics: string;
+  const handleSubmit = (record: {
+    name: string;
+    description: string;
+    character: string;
+    age: number;
+    gender: string;
+    magics: string;
   }) => {
     const result: PNJ = {
       name: record.name,
       age: record.age,
       character: record.character.split("|").map((v) => v.trim()),
-      color: pnj?.color ?? colors[random(0, colors.length -1)],
+      color: pnj?.color ?? colors[random(0, colors.length - 1)],
       gender: record.gender as "Homme" | "Femme",
       magics: record.magics,
       description: record.description,
@@ -80,7 +78,7 @@ export function PnjModal({ pnj, onSubmit, onCancel}: Props){
           "description",
           ["gender", "age"],
           "character",
-          "magics"
+          "magics",
         ]}
         onCancel={onCancel}
         onSubmit={handleSubmit}

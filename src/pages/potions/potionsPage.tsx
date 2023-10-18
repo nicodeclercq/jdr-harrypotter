@@ -1,4 +1,3 @@
-import React from "react";
 import { pipe } from "fp-ts/function";
 
 import { Layout } from "../../components/Layout";

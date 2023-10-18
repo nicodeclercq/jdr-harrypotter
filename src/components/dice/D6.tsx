@@ -1,9 +1,7 @@
-import * as React from "react";
-
-export function D6({value, size = 5}: {value: number, size?: number}) {
+export function D6({ value, size = 5 }: { value: number; size?: number }) {
   return (
     <svg
-      style={{width: `${size}rem`, height: `${size}rem`}}
+      style={{ width: `${size}rem`, height: `${size}rem` }}
       viewBox="0 0 26 27"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +20,9 @@ export function D6({value, size = 5}: {value: number, size?: number}) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <text  x="7.5" y="19" fontSize="7" fill="black">{value}</text>
+      <text x="7.5" y="19" fontSize="7" fill="black">
+        {value}
+      </text>
     </svg>
   );
 }

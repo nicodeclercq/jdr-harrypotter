@@ -1,4 +1,3 @@
-import React from "react";
 import { Router } from "./Router";
 import { NotificationStack } from "./components/Notification";
 import { WindowShortcuts } from "./WindowShortcuts";

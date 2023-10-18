@@ -1,4 +1,3 @@
-import React from "react";
 import { pipe } from "fp-ts/function";
 import { State } from "../../store/State";
 import { Icon } from "../../components/icons/Icon";

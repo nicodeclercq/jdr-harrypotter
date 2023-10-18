@@ -1,5 +1,3 @@
-import React from "react";
-
 export const CardRandom = () => (
   <svg
     style={{ height: "1em", width: "1em" }}

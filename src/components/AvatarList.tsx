@@ -1,4 +1,3 @@
-import React from "react";
 import { constVoid } from "fp-ts/function";
 import { Avatar } from "./Avatar";
 import { Icon, IconName } from "./icons/Icon";

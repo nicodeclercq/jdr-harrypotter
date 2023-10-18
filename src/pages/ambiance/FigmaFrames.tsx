@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { Icon } from "../../components/icons/Icon";
 import { getFrames } from "../../helpers/figma";

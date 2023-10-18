@@ -1,4 +1,3 @@
-import React from "react";
 import { useSocket } from "../hooks/useSocket";
 import { Draggable, Position } from "./Draggable";
 import { Icon } from "./icons/Icon";

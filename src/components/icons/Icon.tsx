@@ -1,4 +1,3 @@
-import React from "react";
 import { Animal } from "./components/animal";
 import { Body } from "./components/body";
 import { Book } from "./components/book";

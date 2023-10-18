@@ -1,7 +1,6 @@
 import { RemoteData } from "@devexperts/remote-data-ts";
 import { BehaviorSubject } from "rxjs";
 import { State } from "./store/State";
-import { EmptyObject } from "./helpers/object";
 
 export const notificationTypes = {
   success: "success",
@@ -20,9 +19,7 @@ type Notification<T extends Type> = {
     label: string;
   };
   showUntil?: (state: RemoteData<Error, State>) => boolean;
-} & (T extends "message"
-  ? { author: { name: string; avatar: string } }
-  : EmptyObject);
+} & (T extends "message" ? { author: { name: string; avatar: string } } : {});
 export type NotificationType = Notification<Type>;
 
 export const isMessageType = (
@@ -47,14 +44,14 @@ const add = <T extends Type>({ id, action, ...rest }: Notification<T>) => {
     ...rest,
     ...(action
       ? {
-        action: {
-          ...action,
-          run: () => {
-            remove(id);
-            action?.run();
+          action: {
+            ...action,
+            run: () => {
+              remove(id);
+              action?.run();
+            },
           },
-        },
-      }
+        }
       : {}),
   };
 

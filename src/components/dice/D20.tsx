@@ -1,9 +1,7 @@
-import React from "react";
-
-export function D20({value, size = 6}: {value: number, size?: number}) {
+export function D20({ value, size = 6 }: { value: number; size?: number }) {
   return (
     <svg
-      style={{width: `${size}rem`, height: `${size}rem`}}
+      style={{ width: `${size}rem`, height: `${size}rem` }}
       viewBox="0 0 512 512"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +25,9 @@ export function D20({value, size = 6}: {value: number, size?: number}) {
         fill="#2C6875"
       />
       <path d="M460 186l-61.9 167.5 61.9 5.7V186z" fill="#469FB5" />
-      <text  x="205" y="320" fontSize="90" fill="black">{value}</text>
+      <text x="205" y="320" fontSize="90" fill="black">
+        {value}
+      </text>
     </svg>
   );
 }

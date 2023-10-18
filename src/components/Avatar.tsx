@@ -1,7 +1,5 @@
-import React from "react";
 import { constVoid } from "fp-ts/lib/function";
 import { Icon, IconName } from "./icons/Icon";
-import { EmptyObject } from "react-hook-form";
 
 const size = {
   small: "w-6 h-6",
@@ -18,7 +16,7 @@ type BaseProps = {
   size?: keyof typeof size;
 };
 
-type Props = BaseProps & (EmptyObject | Clickable);
+type Props = BaseProps & ({} | Clickable);
 
 const randomColor = (str: string) => {
   const value = str

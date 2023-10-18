@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { Title } from "../../components/font/Title";
@@ -10,12 +10,12 @@ import { spells } from "../spells/spells";
 import * as SpellType from "../spells/domain/Spell";
 import { RollModal } from "../../components/RollModal";
 
-const levelNoneSpells = spells.filter(({level}) => level == undefined);
-const level0Spells = spells.filter(({level}) => level === 0);
-const level1Spells = spells.filter(({level}) => level === 1);
-const level2Spells = spells.filter(({level}) => level === 2);
-const level3Spells = spells.filter(({level}) => level === 3);
-const level4Spells = spells.filter(({level}) => level === 4);
+const levelNoneSpells = spells.filter(({ level }) => level == undefined);
+const level0Spells = spells.filter(({ level }) => level === 0);
+const level1Spells = spells.filter(({ level }) => level === 1);
+const level2Spells = spells.filter(({ level }) => level === 2);
+const level3Spells = spells.filter(({ level }) => level === 3);
+const level4Spells = spells.filter(({ level }) => level === 4);
 
 const getRandomSpells = () => ({
   null: getNRandomFromArray(2, levelNoneSpells),
@@ -26,37 +26,56 @@ const getRandomSpells = () => ({
   4: getNRandomFromArray(2, level4Spells),
 });
 
-export function RandomSpells(){
-  const [rollModalSpell, setRollModalSpell] = useState<SpellType.Spell | undefined>(undefined);
-  const [selectedSpells, setSelectedSpells] = usePersistantState("RANDOM_SPELLS", getRandomSpells());
-  
-  return (<>
-    <Card title={
-      <div className="flex justify-between">
-        <Title>Sorts Aléatoires</Title>
-        <Button type="secondary" onClick={() => setSelectedSpells(getRandomSpells())} title="reset">
-          <Icon name="DICE" />
-        </Button>
-      </div>
-    } useDividers>
-      {
-        Object.entries(selectedSpells)
-          .map(([level, list]) => (
-            <div key={level}>
-              {
-                list.map((spell) => <Spell key={spell.name} spell={spell} isOwned roll={() => {setRollModalSpell(spell);}} />)
-              }
-            </div>
-          ))
-      }
-    </Card>
-    {
-      rollModalSpell != null && <RollModal
-        successPercentage={50}
-        title={`${rollModalSpell.incantation} ${rollModalSpell.name}`}
-        onRollEnd={() => {setRollModalSpell(undefined);}}
-      />
-    }
-  </>);
+export function RandomSpells() {
+  const [rollModalSpell, setRollModalSpell] = useState<
+    SpellType.Spell | undefined
+  >(undefined);
+  const [selectedSpells, setSelectedSpells] = usePersistantState(
+    "RANDOM_SPELLS",
+    getRandomSpells()
+  );
 
+  return (
+    <>
+      <Card
+        title={
+          <div className="flex justify-between">
+            <Title>Sorts Aléatoires</Title>
+            <Button
+              type="secondary"
+              onClick={() => setSelectedSpells(getRandomSpells())}
+              title="reset"
+            >
+              <Icon name="DICE" />
+            </Button>
+          </div>
+        }
+        useDividers
+      >
+        {Object.entries(selectedSpells).map(([level, list]) => (
+          <div key={level}>
+            {list.map((spell) => (
+              <Spell
+                key={spell.name}
+                spell={spell}
+                isOwned
+                roll={() => {
+                  setRollModalSpell(spell);
+                }}
+              />
+            ))}
+          </div>
+        ))}
+      </Card>
+      {rollModalSpell != null && (
+        <RollModal
+          successPercentage={50}
+          title={`${rollModalSpell.incantation} ${rollModalSpell.name}`}
+          onRollEnd={() => {
+            setRollModalSpell(undefined);
+          }}
+        />
+      )}
+    </>
+  );
 }

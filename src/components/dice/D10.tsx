@@ -1,9 +1,7 @@
-import React from "react";
-
-export function D10({value, size = 6}: {value: number, size?: number}) {
+export function D10({ value, size = 6 }: { value: number; size?: number }) {
   return (
     <svg
-      style={{width: `${size}rem`, height: `${size}rem`}}
+      style={{ width: `${size}rem`, height: `${size}rem` }}
       viewBox="0 0 33 31"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +47,9 @@ export function D10({value, size = 6}: {value: number, size?: number}) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <text  x="14.5" y="15" fontSize="7" fill="black">{value}</text>
+      <text x="14.5" y="15" fontSize="7" fill="black">
+        {value}
+      </text>
       <defs>
         <linearGradient
           id="prefix__paint0_linear"

@@ -1,4 +1,3 @@
-import React from "react";
 import { BehaviorSubject } from "rxjs";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import * as RX from "rxjs/operators";

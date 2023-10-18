@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { pipe } from "fp-ts/function";
 import { Card } from "../../components/Card";
 import { Layout } from "../../components/Layout";
@@ -22,28 +22,31 @@ export function SkillsPage() {
         <div className="w-full h-full m-3 space-y-2">
           <Identity />
           <MyTraits />
-          <Card title={(
-            <div className="flex items-center space-x-2">
-              <span className="flex-grow">Compétences</span>
-              <Button type='secondary' onClick={() => setShowAddSkillModal(true)}>
-                <Icon name="INCREASE" />
-              </Button>
-            </div>)}
+          <Card
+            title={
+              <div className="flex items-center space-x-2">
+                <span className="flex-grow">Compétences</span>
+                <Button
+                  type="secondary"
+                  onClick={() => setShowAddSkillModal(true)}
+                >
+                  <Icon name="INCREASE" />
+                </Button>
+              </div>
+            }
           >
             <MySkills showInColumns skills={skills} />
           </Card>
         </div>
-        {
-          showAddSkillModal && (
-            <AddSkillModal
-              onCancel={() => setShowAddSkillModal(false)}
-              onSubmit={({name, currentLevel}) => {
-                add(name, currentLevel);
-                setShowAddSkillModal(false);
-              }}
-            />
-          )
-        }
+        {showAddSkillModal && (
+          <AddSkillModal
+            onCancel={() => setShowAddSkillModal(false)}
+            onSubmit={({ name, currentLevel }) => {
+              add(name, currentLevel);
+              setShowAddSkillModal(false);
+            }}
+          />
+        )}
       </Layout>
     ))
   );

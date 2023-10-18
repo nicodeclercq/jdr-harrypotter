@@ -1,20 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { identity } from "fp-ts/function";
-import { isMessageType, NotificationService, NotificationType } from "../NotificationService";
+import {
+  isMessageType,
+  NotificationService,
+  NotificationType,
+} from "../NotificationService";
 import { useStore } from "../hooks/useStore";
 import { Button } from "./Button";
 import { State } from "../store/State";
 import { Avatar } from "./Avatar";
 import { RichText } from "./font/RichText";
 
-function Notification({notification}: {notification: NotificationType}) {
+function Notification({ notification }: { notification: NotificationType }) {
   const renderIcon = (notification: NotificationType) => {
     const icons = {
-      success: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-green-500 rounded-full shadow-inner">🎉</div>,
-      failure: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-red-500 rounded-full shadow-inner">😈</div>,
-      warning: () => <div className="flex items-center justify-center w-10 h-10 p-2 bg-yellow-500 rounded-full shadow-inner">⚠️</div>,
-      message: ({avatar, name}: {name: string, avatar: string}) => <Avatar text={name} url={avatar} />
-      
+      success: () => (
+        <div className="flex items-center justify-center w-10 h-10 p-2 bg-green-500 rounded-full shadow-inner">
+          🎉
+        </div>
+      ),
+      failure: () => (
+        <div className="flex items-center justify-center w-10 h-10 p-2 bg-red-500 rounded-full shadow-inner">
+          😈
+        </div>
+      ),
+      warning: () => (
+        <div className="flex items-center justify-center w-10 h-10 p-2 bg-yellow-500 rounded-full shadow-inner">
+          ⚠️
+        </div>
+      ),
+      message: ({ avatar, name }: { name: string; avatar: string }) => (
+        <Avatar text={name} url={avatar} />
+      ),
     } as const;
 
     return isMessageType(notification)
@@ -28,9 +45,11 @@ function Notification({notification}: {notification: NotificationType}) {
       <span className="flex-grow text-left">
         <RichText>{notification.message}</RichText>
       </span>
-      {
-        notification.action && <Button type="primary" onClick={notification.action.run}>{notification.action.label}</Button>
-      }
+      {notification.action && (
+        <Button type="primary" onClick={notification.action.run}>
+          {notification.action.label}
+        </Button>
+      )}
     </div>
   );
 }
@@ -39,12 +58,12 @@ export const useNotification = () => {
   return NotificationService;
 };
 
-export function NotificationStack(){
+export function NotificationStack() {
   const { remove, subject } = NotificationService;
   const [stack, setStack] = useState(subject.value);
   const [state] = useStore([
     identity,
-    (state: State, newState: State) => newState,
+    (_state: State, newState: State) => newState,
   ]);
 
   useEffect(() => {
@@ -52,23 +71,24 @@ export function NotificationStack(){
       setStack(value);
     });
     return () => subscription.unsubscribe();
-  },[subject]);
+  }, [subject]);
 
   useEffect(() => {
     stack.forEach((notification) => {
-      if(notification.showUntil && !notification.showUntil(state)) {
+      if (notification.showUntil && !notification.showUntil(state)) {
         remove(notification.id);
       }
     });
   }, [remove, stack, state]);
 
   return (
-    <div className="fixed bottom-0 right-0 w-1/3 m-2 space-y-2" style={{zIndex: 2}}>
-      {
-        stack.map((notification) => (
-          <Notification key={notification.id} notification={notification} />)
-        )
-      }
+    <div
+      className="fixed bottom-0 right-0 w-1/3 m-2 space-y-2"
+      style={{ zIndex: 2 }}
+    >
+      {stack.map((notification) => (
+        <Notification key={notification.id} notification={notification} />
+      ))}
     </div>
   );
 }

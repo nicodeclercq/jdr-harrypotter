@@ -1,4 +1,3 @@
-import React from "react";
 import { pipe } from "fp-ts/lib/function";
 import * as IO from "io-ts";
 

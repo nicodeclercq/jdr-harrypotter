@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm, Controller } from "react-hook-form";
 
 import { Button } from "../../components/Button";
@@ -7,23 +6,28 @@ import { Input } from "../../components/Input";
 import { Modal } from "../../components/Modal";
 
 type Props = {
-  onSubmit: (newSkill: { name: string, currentLevel: number}) => void;
-  onCancel: () => void; 
+  onSubmit: (newSkill: { name: string; currentLevel: number }) => void;
+  onCancel: () => void;
 };
 
-export function AddSkillModal({ onCancel, onSubmit}: Props) {
-  const { handleSubmit, control, errors } = useForm<{name: string; currentLevel: number}>({
+export function AddSkillModal({ onCancel, onSubmit }: Props) {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<{
+    name: string;
+    currentLevel: number;
+  }>({
     defaultValues: {
       name: "",
       currentLevel: 10,
-    }
+    },
   });
 
   return (
-    <Modal
-      header="Nouvelle compétence"
-    >
-      <form  onSubmit={handleSubmit(onSubmit)}>
+    <Modal header="Nouvelle compétence">
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col space-y-3">
           <div className="flex flex-col space-y-1">
             <Label htmlFor="input-name">Nom de la compétence</Label>
@@ -31,7 +35,7 @@ export function AddSkillModal({ onCancel, onSubmit}: Props) {
               name="name"
               control={control}
               rules={{ required: true }}
-              render={({value, onChange}) => (
+              render={({ field: { value, onChange } }) => (
                 <Input
                   id="input-name"
                   errors={errors.name}
@@ -50,7 +54,7 @@ export function AddSkillModal({ onCancel, onSubmit}: Props) {
               name="currentLevel"
               control={control}
               rules={{ required: true, min: 1, max: 100 }}
-              render={({value, onChange}) => (
+              render={({ field: { value, onChange } }) => (
                 <Input
                   id="input-currentLevel"
                   errors={errors.currentLevel}
@@ -65,16 +69,10 @@ export function AddSkillModal({ onCancel, onSubmit}: Props) {
           </div>
         </div>
         <div className="flex justify-end pt-8 space-x-4">
-          <Button
-            type="secondary"
-            onClick={onCancel}
-          >
-              Annuler
+          <Button type="secondary" onClick={onCancel}>
+            Annuler
           </Button>
-          <Button
-            type="primary"
-            onClick="submit"
-          >
+          <Button type="primary" onClick="submit">
             Ajouter
           </Button>
         </div>

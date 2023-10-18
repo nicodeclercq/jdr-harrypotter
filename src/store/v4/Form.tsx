@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 import { Button } from "../../components/Button";
@@ -53,12 +53,12 @@ export function Form({
 
   const onSkillChange =
     (skill: string, callback: (value: number | undefined) => void) =>
-      (value: number | undefined) => {
-        const currentValue = getValues()[skill];
+    (value: number | undefined) => {
+      const currentValue = getValues()[skill];
 
-        setRemainingPoints(remainingPoints - (value ?? 0) + currentValue);
-        callback(value);
-      };
+      setRemainingPoints(remainingPoints - (value ?? 0) + currentValue);
+      callback(value);
+    };
   const setSkillValue = (skill: string, value: number) => {
     onSkillChange(skill, (v) => setValue(skill, v ?? 0))(value);
   };
@@ -142,10 +142,10 @@ export function Form({
             {remainingPoints === 0
               ? ""
               : remainingPoints > 0
-                ? `Il reste ${remainingPoints} point${
+              ? `Il reste ${remainingPoints} point${
                   remainingPoints === 1 ? "" : "s"
                 } à répartir`
-                : `Tu as utilisé ${remainingPoints * -1} point${
+              : `Tu as utilisé ${remainingPoints * -1} point${
                   remainingPoints === -1 ? "" : "s"
                 } de trop`}
           </span>

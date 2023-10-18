@@ -1,4 +1,3 @@
-import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "../../components/Button";
 import { Label } from "../../components/font/Label";
@@ -45,7 +44,7 @@ export function NameForm({ defaultValue, names = [], callback }: Props) {
             name="name"
             control={control}
             rules={{ required: true, min: 1, max: 20 }}
-            render={({ value, onChange }) => (
+            render={({ field: { value, onChange } }) => (
               <div className="flex flex-row items-center flex-grow p-2 border-gray-100 space-x-3 border-b-1">
                 <Icon name="CHARACTER" />
                 <Label htmlFor="input-name">Choisit ton personnage</Label>
@@ -66,7 +65,7 @@ export function NameForm({ defaultValue, names = [], callback }: Props) {
             name="name"
             control={control}
             rules={{ required: true, min: 1, max: 20 }}
-            render={({ value, onChange }) => (
+            render={({ field: { value, onChange } }) => (
               <div className="flex flex-row items-center flex-grow p-2 border-gray-100 space-x-3 border-b-1">
                 <Icon name="JIGSAW_BOX" />
                 <Label htmlFor="input-name">Ou crée en un nouveau</Label>

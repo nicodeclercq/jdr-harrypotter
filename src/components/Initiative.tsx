@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ConnectedUsers, useConnectedUsers } from "../hooks/useConnectedUsers";
 import { usePersistantState } from "../hooks/usePersistantState";
 import { Avatar } from "./Avatar";
@@ -43,13 +43,13 @@ export function Initiative() {
     (index: number) => {
       activeIndex === index
         ? setInitiative({
-          activeIndex: undefined,
-          list,
-        })
+            activeIndex: undefined,
+            list,
+          })
         : setInitiative({
-          activeIndex: index,
-          list,
-        });
+            activeIndex: index,
+            list,
+          });
     },
     [activeIndex, list, setInitiative]
   );

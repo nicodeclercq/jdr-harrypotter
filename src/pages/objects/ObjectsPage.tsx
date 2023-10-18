@@ -1,4 +1,3 @@
-import React from "react";
 import { pipe } from "fp-ts/function";
 
 import { Layout } from "../../components/Layout";
@@ -9,7 +8,7 @@ import { useMoney } from "./useMoney";
 import { useObjects } from "./useObjects";
 import { MoneyConverter } from "../../components/MoneyConverter";
 
-export function ObjectsPage(){
+export function ObjectsPage() {
   const { objects } = useObjects();
   const { money } = useMoney();
 
@@ -18,8 +17,8 @@ export function ObjectsPage(){
       objects,
       money,
     }),
-    fromRemoteData(
-      ({objects, money}) => (<Layout>
+    fromRemoteData(({ objects, money }) => (
+      <Layout>
         <div className="w-full h-full m-3 space-y-2">
           <div className="items-end grid grid-flow-col grid-cols-2 gap-4">
             <MoneyForm money={money} />
@@ -27,7 +26,7 @@ export function ObjectsPage(){
           </div>
           <ObjectsForm objects={objects} columns={2} />
         </div>
-      </Layout>)
-    )
+      </Layout>
+    ))
   );
 }

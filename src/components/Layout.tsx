@@ -105,7 +105,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { role } = useRole();
   const [state] = useStore([
     identity,
-    (state: State, newState: State) => newState,
+    (_state: State, newState: State) => newState,
   ]);
 
   const [rollModal, setRollModal] = useState<Dice[] | undefined>(undefined);

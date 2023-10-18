@@ -1,4 +1,3 @@
-import React from "react";
 import { getColor } from "../theme";
 import { Button } from "./Button";
 import { Comment } from "./font/Comment";

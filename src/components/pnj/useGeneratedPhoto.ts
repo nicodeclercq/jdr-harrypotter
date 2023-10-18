@@ -37,6 +37,7 @@ export const useGeneratedPhoto = ({ age, genre }: Props) => {
         )}&order_by=random`
       )
         .then((response) => response.json())
+        // @ts-ignore
         .then((response: unknown) => response.faces[0].urls[2]["128"])
         .catch((e) => {
           console.error(e);

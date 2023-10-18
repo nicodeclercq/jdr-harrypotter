@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as RX from "rxjs/operators";
-import {v4 as uuid} from "uuid";
+import { v4 as uuid } from "uuid";
 import { Avatar } from "../../components/Avatar";
 import { AvatarList } from "../../components/AvatarList";
 import { BodyText } from "../../components/font/BodyText";
@@ -25,37 +25,42 @@ type Message = {
   };
   text: string;
   date: Date;
-}
+};
 
 type Props = {
-  as?: keyof JSX.IntrinsicElements,
-  me: State["user"],
-  user?: string,
-  image: string | null | undefined
+  as?: keyof JSX.IntrinsicElements;
+  me: State["user"];
+  user?: string;
+  image: string | null | undefined;
 };
-export function ChatBox ({me, user, image, as: As = "div"}: Props) {
-  const {list: messages, prepend} = useList<Message>();
+export function ChatBox({ me, user, image, as: As = "div" }: Props) {
+  const { list: messages, prepend } = useList<Message>();
   const [isVisible, setIsVisible] = useState(false);
   const { stream, emit } = useSocket();
   const { connectedUsers } = useConnectedUsers();
   const { isMJ } = useRole();
   const id = useMemo(() => `${uuid()}_chat`, []);
 
-  const { handleSubmit, setValue, control } = useForm<{text: string}>({
-    defaultValues: {text: ""},
+  const { handleSubmit, setValue, control } = useForm<{ text: string }>({
+    defaultValues: { text: "" },
   });
 
-  const send = (message: {text: string}) => {
+  const send = (message: { text: string }) => {
     const text = message.text.trim();
-    if(text) {
-      prepend({id: uuid(), user: {name: me.name, image: me.imageUrl}, text, date: new Date()});
+    if (text) {
+      prepend({
+        id: uuid(),
+        user: { name: me.name, image: me.imageUrl },
+        text,
+        date: new Date(),
+      });
       emit({
         type: "chat",
         payload: {
           message: text,
           needsConfirmation: false,
           recipient: user || "all",
-        }
+        },
       });
       setValue("text", "");
     }
@@ -63,7 +68,7 @@ export function ChatBox ({me, user, image, as: As = "div"}: Props) {
 
   const players = Object.entries(connectedUsers)
     .filter(([name]) => name !== me.name)
-    .map(([text, url]) => ({text, url}));
+    .map(([text, url]) => ({ text, url }));
 
   useEffect(() => {
     const subscription = stream
@@ -71,20 +76,41 @@ export function ChatBox ({me, user, image, as: As = "div"}: Props) {
       .pipe(
         RX.skip(1), // removes the automatic subscribe event
         RX.filter(isDefined),
-        RX.filter(({author}) => author.name === user || user === "all"),
-        RX.filter(({message}) => isChatMessage(message)),
-        RX.map(({author, message}) => ({
+        RX.filter(({ author }) => author.name === user || user === "all"),
+        RX.filter(({ message }) => isChatMessage(message)),
+        RX.map(({ author, message }) => ({
           author,
           message: message as ChatMessage,
         })),
-        RX.filter(({message}) => !/\[.*\]/g.test(message.payload.message)),
-        RX.filter(({message: {payload: { recipient }}}) => recipient === me.name || (recipient === "all" && user === "all")),
+        RX.filter(({ message }) => !/\[.*\]/g.test(message.payload.message)),
+        RX.filter(
+          ({
+            message: {
+              payload: { recipient },
+            },
+          }) => recipient === me.name || (recipient === "all" && user === "all")
+        ),
         RX.distinctUntilChanged(),
         RX.timestamp()
       )
-      .subscribe({next: ({timestamp, value: {author, message:{payload:{ message: text}}}}) => {
-        prepend({id: `${timestamp}`, user: {name: author.name, image: author.avatar}, text, date: new Date()});
-      }});
+      .subscribe({
+        next: ({
+          timestamp,
+          value: {
+            author,
+            message: {
+              payload: { message: text },
+            },
+          },
+        }) => {
+          prepend({
+            id: `${timestamp}`,
+            user: { name: author.name, image: author.avatar },
+            text,
+            date: new Date(),
+          });
+        },
+      });
     return () => subscription.unsubscribe();
   }, [prepend, stream, user, me]);
 
@@ -92,11 +118,13 @@ export function ChatBox ({me, user, image, as: As = "div"}: Props) {
     <As
       style={{
         position: "relative",
-        display:"flex",
+        display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        filter:"drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))",
-        transform: isVisible ? "translateY(0)" : "translateY(calc(-100% + 4.75rem))",
+        filter: "drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))",
+        transform: isVisible
+          ? "translateY(0)"
+          : "translateY(calc(-100% + 4.75rem))",
         transition: "transform ease-in-out 0.2s",
         minWidth: "5rem",
         maxWidth: "15rem",
@@ -121,34 +149,41 @@ export function ChatBox ({me, user, image, as: As = "div"}: Props) {
             wordBreak: "break-word",
           }}
         >
-          {
-            messages
-              .sort((a, b) => {
-                if(a.date > b.date) {
-                  return -1;
-                }
-                if(b.date > a.date) {
-                  return 1;
-                }
-                return 0;
-              })
-              .map(({id, user, text, date}) => (
-                <div key={id}>
-                  <Comment>
-                    <div className="flex items-center space-x-1">
-                      <Avatar size="small" url={user.image} text={user.name || ""} />
-                      <span className="flex-grow">{user.name}</span>
-                      <span style={{fontSize: "0.66rem"}}>à {date.getHours()}:{date.getMinutes()}</span>
-                    </div>
-                  </Comment>
-                  <BodyText>
-                    <RichText>{text}</RichText>
-                  </BodyText>
-                </div>
-              ))
-          }
+          {messages
+            .sort((a, b) => {
+              if (a.date > b.date) {
+                return -1;
+              }
+              if (b.date > a.date) {
+                return 1;
+              }
+              return 0;
+            })
+            .map(({ id, user, text, date }) => (
+              <div key={id}>
+                <Comment>
+                  <div className="flex items-center space-x-1">
+                    <Avatar
+                      size="small"
+                      url={user.image}
+                      text={user.name || ""}
+                    />
+                    <span className="flex-grow">{user.name}</span>
+                    <span style={{ fontSize: "0.66rem" }}>
+                      à {date.getHours()}:{date.getMinutes()}
+                    </span>
+                  </div>
+                </Comment>
+                <BodyText>
+                  <RichText>{text}</RichText>
+                </BodyText>
+              </div>
+            ))}
         </div>
-        <form className="flex flex-row w-full border-2 rounded border-gray" onSubmit={handleSubmit(send)}>
+        <form
+          className="flex flex-row w-full border-2 rounded border-gray"
+          onSubmit={handleSubmit(send)}
+        >
           <Controller
             name="text"
             control={control}
@@ -156,27 +191,36 @@ export function ChatBox ({me, user, image, as: As = "div"}: Props) {
             rules={{ required: true }}
             render={(props) => (
               <>
-                <input id={id} list={`${id}_datalist`} className="flex-grow flex-shrink w-full px-2 py-1" type="text" {...props} />
+                <input
+                  id={id}
+                  list={`${id}_datalist`}
+                  className="flex-grow flex-shrink w-full px-2 py-1"
+                  type="text"
+                  {...props}
+                />
                 {
                   <RemoteDataFold
                     data={isMJ}
-                    onSuccess={d => d
-                      ? (
+                    onSuccess={(d) =>
+                      d ? (
                         <datalist id={`${id}_datalist`}>
-                          {
-                            Object.values(COMMAND_MESSAGE)
-                              .map(m => <option value={m.toString()} key={m.toString()} />)
-                          }
+                          {Object.values(COMMAND_MESSAGE).map((m) => (
+                            <option value={m.toString()} key={m.toString()} />
+                          ))}
                         </datalist>
+                      ) : (
+                        <></>
                       )
-                      : <></>
                     }
                   />
                 }
               </>
             )}
           />
-          <button  type="submit" className="flex-grow-0 px-2 py-1 border-l-2 w-fit border-gray">
+          <button
+            type="submit"
+            className="flex-grow-0 px-2 py-1 border-l-2 w-fit border-gray"
+          >
             <Icon name="PAPER_PLANE" />
           </button>
         </form>
@@ -184,29 +228,55 @@ export function ChatBox ({me, user, image, as: As = "div"}: Props) {
           <BodyText>{user === "all" ? "Tout le monde" : user}</BodyText>
         </div>
       </div>
-      {
-        user !== "all"
-          ? <svg
-            width={92}
-            height={28}
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M0 0c9.941 0 17.622 8.833 23.587 16.786C28.695 23.595 36.833 28 46 28s17.305-4.405 22.413-11.214C74.378 8.833 82.059 0 92 0H0z"
-              fill="#FFFFFF"
-            />
-          </svg>
-          : <div style={{background: "#FFF", height: "28px", borderBottomLeftRadius: "100%", borderBottomRightRadius: "100%"}}></div>
-      }
-      <div style={{position: "absolute", bottom: "0.25rem", left: "50%", cursor: "pointer", transform: "translateX(-50%)", pointerEvents: "auto"}}>
-        {
-          user === "all"
-            ? <AvatarList avatars={players} onClick={() => setIsVisible(!isVisible)} icon={isVisible ? "UP" : "DOWN"} />
-            : <Avatar size="small" url={image} text={user || ""} onClick={() => setIsVisible(!isVisible)} icon={isVisible ? "UP" : "DOWN"} />
-        }
+      {user !== "all" ? (
+        <svg
+          width={92}
+          height={28}
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M0 0c9.941 0 17.622 8.833 23.587 16.786C28.695 23.595 36.833 28 46 28s17.305-4.405 22.413-11.214C74.378 8.833 82.059 0 92 0H0z"
+            fill="#FFFFFF"
+          />
+        </svg>
+      ) : (
+        <div
+          style={{
+            background: "#FFF",
+            height: "28px",
+            borderBottomLeftRadius: "100%",
+            borderBottomRightRadius: "100%",
+          }}
+        ></div>
+      )}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "0.25rem",
+          left: "50%",
+          cursor: "pointer",
+          transform: "translateX(-50%)",
+          pointerEvents: "auto",
+        }}
+      >
+        {user === "all" ? (
+          <AvatarList
+            avatars={players}
+            onClick={() => setIsVisible(!isVisible)}
+            icon={isVisible ? "UP" : "DOWN"}
+          />
+        ) : (
+          <Avatar
+            size="small"
+            url={image}
+            text={user || ""}
+            onClick={() => setIsVisible(!isVisible)}
+            icon={isVisible ? "UP" : "DOWN"}
+          />
+        )}
       </div>
     </As>
   );

@@ -74,7 +74,7 @@ export const getNRandomFromArray = <T>(number: number, arr: T[]): Array<T> => {
 };
 
 export const createArrayOfIndex = (size: number) =>
-  new Array(size).fill(0).map((v, index) => index);
+  new Array(size).fill(0).map((_v, index) => index);
 
 export const createArray = <T>(size: number, defaultValue: T) =>
   new Array(size).fill(defaultValue);

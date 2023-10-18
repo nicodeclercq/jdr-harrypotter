@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { AvatarToken } from "../../components/AvatarToken";
 import { Button } from "../../components/Button";
 import { Layout } from "../../components/Layout";
@@ -13,48 +13,53 @@ export function BattleMapPage() {
   const { connectedUsers } = useConnectedUsers();
 
   useEffect(() => {
-    if(connectedUsers) {
-      entries(connectedUsers)
-        .forEach(([name, image]) => {
-          if(!(name in tokens)){
-            updateToken(name, {
-              x: 50,
-              y: 50,
-              name,
-              image: image ?? undefined,
-            });
-          }
-        });
+    if (connectedUsers) {
+      entries(connectedUsers).forEach(([name, image]) => {
+        if (!(name in tokens)) {
+          updateToken(name, {
+            x: 50,
+            y: 50,
+            name,
+            image: image ?? undefined,
+          });
+        }
+      });
     }
   }, [tokens, connectedUsers, updateToken]);
 
   const [show, setShow] = usePersistantState("BATTLEMAP_SHOW", false);
   const { emit } = useSocket();
 
-  const onDragStop = (name: string) => (newPosition: {x: number, y: number}) => {
-    if(show){
-      emit({
-        type: "setBattleMapTokensPosition",
-        payload: tokens
-      });
-      console.log("[YOUPI] update", {...tokens[name], ...newPosition });
-      updateToken(name, {...tokens[name], ...newPosition });
-    }
-  };
+  const onDragStop =
+    (name: string) => (newPosition: { x: number; y: number }) => {
+      if (show) {
+        emit({
+          type: "setBattleMapTokensPosition",
+          payload: tokens,
+        });
+        console.log("[YOUPI] update", { ...tokens[name], ...newPosition });
+        updateToken(name, { ...tokens[name], ...newPosition });
+      }
+    };
 
   const addToken = () => console.log("add token");
 
   return (
     <Layout>
-      <div className='w-full h-full' onDoubleClick={addToken}>
-        <Button type='primary' onClick={() => setShow(!show)}>
+      <div className="w-full h-full" onDoubleClick={addToken}>
+        <Button type="primary" onClick={() => setShow(!show)}>
           {show ? "Cacher" : "Montrer"}
         </Button>
-        {
-          entries(tokens).map(([name, {x, y, image}]) => (
-            <AvatarToken key={name} name={name}  x={x} y={y} image={image} onDragStop={onDragStop(name)} />
-          ))
-        }
+        {entries(tokens).map(([name, { x, y, image }]) => (
+          <AvatarToken
+            key={name}
+            name={name}
+            x={x}
+            y={y}
+            image={image}
+            onDragStop={onDragStop(name)}
+          />
+        ))}
       </div>
     </Layout>
   );

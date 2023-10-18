@@ -1,4 +1,3 @@
-import React from "react";
 import * as IO from "io-ts";
 import { pipe } from "fp-ts/function";
 
@@ -84,14 +83,14 @@ function update(
       name
         ? name
         : prompt<string>(
-          (callback: (result: string) => void) => (
-            <NameForm
-              defaultValue={defaultState.user.name}
-              callback={callback}
-            />
-          ),
-          <>Qui est ton personnage ?</>
-        )
+            (callback: (result: string) => void) => (
+              <NameForm
+                defaultValue={defaultState.user.name}
+                callback={callback}
+              />
+            ),
+            <>Qui est ton personnage ?</>
+          )
     )
     .then(
       (name) =>

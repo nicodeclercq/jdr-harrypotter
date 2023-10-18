@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "../../components/Button";
 import { State } from "../../store/State";
 import { Tag } from "../../components/Tag";
@@ -26,12 +26,12 @@ export function Calculator({
     return number == null
       ? "⍰"
       : number.type === "name"
-        ? number.value
-        : number.type === "verb"
-          ? isInverse
-            ? number.invert
-            : number.value
-          : "";
+      ? number.value
+      : number.type === "verb"
+      ? isInverse
+        ? number.invert
+        : number.value
+      : "";
   };
 
   const isDefined = (number: number) => numbers[number - 1] != null;

@@ -1,4 +1,3 @@
-import React from "react";
 import { pipe } from "fp-ts/function";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
@@ -27,7 +26,11 @@ export function ObjectsForm({
 }) {
   const { setObjects } = useObjects();
   const { goTo } = useRouter();
-  const { handleSubmit, control, errors } = useForm<{
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<{
     objects: { name: string; number: number }[];
   }>({
     defaultValues: {
@@ -138,7 +141,7 @@ export function ObjectsForm({
                         theme="neutral"
                         type="text"
                         disabled={maxDisplayed != null}
-                        // @ts-expects-error
+                        // @ts-ignore
                         errors={errors[name]}
                         messages={{
                           dupplicate: `"${value}" existe déjà`,

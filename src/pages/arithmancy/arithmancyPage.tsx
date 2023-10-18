@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { pipe } from "fp-ts/function";
 import { Layout } from "../../components/Layout";
 import { RollModal, Interpretation } from "../../components/RollModal";

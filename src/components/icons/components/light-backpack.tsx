@@ -1,5 +1,3 @@
-import React from "react";
-
 export const LightBackpack = () => (
   <svg
     style={{ height: "1em", width: "1em" }}

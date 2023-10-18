@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { pipe } from "fp-ts/function";
 import { Controller, useForm } from "react-hook-form";
 import { Input } from "../../components/Input";

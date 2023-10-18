@@ -1,4 +1,3 @@
-import React from "react";
 import { FieldError } from "react-hook-form";
 import { entries } from "../helpers/object";
 
@@ -13,20 +12,16 @@ const defaultMessages = {
   max: "La valeur est trop haute",
 };
 
-export function ErrorMessage({
-  errors,
-  messages = {},
-}: Props){
-  const displayesMessages = entries({...defaultMessages, ...messages})
-    .map(([key, value]) => errors.type === key
-      ? <span key={`error_${key}`} className="text-sm text-red-800">⚠️ {value}</span>
-      : undefined
+export function ErrorMessage({ errors, messages = {} }: Props) {
+  const displayesMessages = entries({ ...defaultMessages, ...messages })
+    .map(([key, value]) =>
+      errors.type === key ? (
+        <span key={`error_${key}`} className="text-sm text-red-800">
+          ⚠️ {value}
+        </span>
+      ) : undefined
     )
-    .filter(value => value != null);
+    .filter((value) => value != null);
 
-  return (
-    <>
-      {displayesMessages}
-    </>
-  );
+  return <>{displayesMessages}</>;
 }

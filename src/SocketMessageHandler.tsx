@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { constVoid, pipe } from "fp-ts/function";
 import { BehaviorSubject } from "rxjs";
 import { distinctUntilChanged, filter } from "rxjs/operators";

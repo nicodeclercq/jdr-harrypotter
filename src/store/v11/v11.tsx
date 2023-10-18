@@ -1,4 +1,3 @@
-import React from "react";
 import { pipe } from "fp-ts/lib/function";
 import * as IO from "io-ts";
 import { prompt } from "../../helpers/io";
@@ -17,14 +16,14 @@ function update(promise: Promise<LastState.State>): Promise<State> {
   return promise.then((state) =>
     state.lockKeys == null || state.lockKeys.length === 0
       ? prompt<State>(
-        (callback) => (
-          <Form
-            state={state}
-            callback={({ lockKeys }) => callback({ ...state, lockKeys })}
-          />
-        ),
-        <>Magie</>
-      )
+          (callback) => (
+            <Form
+              state={state}
+              callback={({ lockKeys }) => callback({ ...state, lockKeys })}
+            />
+          ),
+          <>Magie</>
+        )
       : Promise.resolve(state)
   );
 }

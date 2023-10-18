@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import * as RX from "rxjs/operators";
 import { isDefined } from "../helpers/nullable";
 import { usePersistantState } from "../hooks/usePersistantState";

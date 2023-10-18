@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDelay } from "../hooks/useDelay";
 import { useInterval } from "../hooks/useInteval";
 
@@ -13,7 +13,7 @@ const LoaderContent = () => {
   ];
 
   useInterval(() => {
-    if(index < renderers.length - 1){
+    if (index < renderers.length - 1) {
       setIndex(index + 1);
     } else {
       setIndex(0);
@@ -34,7 +34,5 @@ export function Loader() {
     setShow(true);
   });
 
-  return show
-    ? (<LoaderContent />)
-    : (<></>);
+  return show ? <LoaderContent /> : <></>;
 }

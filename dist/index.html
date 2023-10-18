@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="apple-touch-icon" href="/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="/manifest.json" />
+    <title>JDR</title>
+    <style>
+      html,
+      body,
+      #root {
+        width: 100vw;
+        height: 100vh;
+        padding: 0;
+        margin: 0;
+      }
+      iframe {
+        display: none !important;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-76dc31a0.js"></script>
+    <link rel="stylesheet" href="/assets/index-9473c0d7.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="portal"></div>
+    
+    <audio id="sound-bip" src="/perc-bip.wav" preload="auto"></audio>
+    <audio id="sound-sleep" src="/sleep.wav" preload="auto"></audio>
+    <audio id="sound-error" src="/error.wav" preload="auto"></audio>
+    <audio id="sound-success" src="/success.wav" preload="auto"></audio>
+    <audio id="sound-failure" src="/failure.wav" preload="auto"></audio>
+    <audio id="sound-time" src="/time.wav" preload="auto"></audio>
+    <audio id="sound-dice" src="/dice.mp3" preload="auto"></audio>
+    <audio id="sound-dice-short" src="/dice-short.mp3" preload="auto"></audio>
+  </body>
+</html>

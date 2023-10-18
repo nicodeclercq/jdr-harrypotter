@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getDivisions, CurrencyDivisions } from "../helpers/moneyHelper";
 import { withNDecimals } from "../helpers/number";
 import { Card } from "./Card";

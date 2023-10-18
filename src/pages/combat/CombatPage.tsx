@@ -1,4 +1,3 @@
-import React from "react";
 import { Layout } from "../../components/Layout";
 import { Initiative } from "../../components/Initiative";
 import { FumblesList } from "./FumblesList";

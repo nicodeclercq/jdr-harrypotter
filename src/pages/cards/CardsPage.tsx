@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Layout } from "../../components/Layout";
 import { Card } from "./Card";
 import { useDeck } from "./useDeck";

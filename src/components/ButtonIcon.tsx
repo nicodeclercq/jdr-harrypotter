@@ -1,4 +1,3 @@
-import React from "react";
 import { Icon, IconName } from "./icons/Icon";
 
 type Props = {

@@ -29,7 +29,7 @@ const emit = (message: Message["message"]) => {
   stream.next({ author: { name: author, avatar }, message });
 };
 
-//@ts-expects-error
+//@ts-ignore
 window.emit = emit;
 window.addEventListener("beforeunload", () => {
   emit({

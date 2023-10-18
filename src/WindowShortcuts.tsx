@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { pipe, constVoid } from "fp-ts/function";
 import { useArithmancy } from "./pages/arithmancy/useArithmancy";
@@ -50,7 +50,7 @@ export function WindowShortcuts() {
   }, [emit, name]);
 
   useEffect(() => {
-    // @ts-expects-error
+    // @ts-ignore
     window.app = {
       iAmMJ: () => {
         Object.values(ROUTES)
