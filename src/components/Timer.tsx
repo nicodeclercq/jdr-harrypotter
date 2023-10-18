@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { pipe } from 'fp-ts/function';
-import { Card } from './Card';
-import { Title } from './font/Title';
-import { Button } from './Button';
-import { Icon } from './icons/Icon';
-import { Caption } from './font/Caption';
-import { BodyText } from './font/BodyText';
-import { usePersistantState } from '../hooks/usePersistantState';
+import React, { useEffect, useState } from "react";
+import { pipe } from "fp-ts/function";
+import { Card } from "./Card";
+import { Title } from "./font/Title";
+import { Button } from "./Button";
+import { Icon } from "./icons/Icon";
+import { Caption } from "./font/Caption";
+import { BodyText } from "./font/BodyText";
+import { usePersistantState } from "../hooks/usePersistantState";
 
 type Time = {
   hours: number;
@@ -22,16 +22,16 @@ const getTimeValue = (time: number) => {
     minutes: date.getMinutes(),
     seconds: date.getSeconds(),
   };
-}
+};
 
 const DEFAULT_TIME = {hours: 0, minutes: 0, seconds: 0};
 
 export function Timer() {
   const [time, setTime] = useState<Time>(DEFAULT_TIME);
-  const [startDate, setStartDate] = usePersistantState<Date | undefined>('TIMER_START_DATE', undefined);
-  const [totalTime, setTotalTime] = usePersistantState<Time>('TIMER_TOTAL_TIME', DEFAULT_TIME);
-  const [pauseDate, setPauseDate] = usePersistantState<Date | undefined>('TIMER_PAUSE_TIME', new Date());
-  const [date, setDate] = usePersistantState('TIMER_TIME', new Date());
+  const [startDate, setStartDate] = usePersistantState<Date | undefined>("TIMER_START_DATE", undefined);
+  const [totalTime, setTotalTime] = usePersistantState<Time>("TIMER_TOTAL_TIME", DEFAULT_TIME);
+  const [pauseDate, setPauseDate] = usePersistantState<Date | undefined>("TIMER_PAUSE_TIME", new Date());
+  const [date, setDate] = usePersistantState("TIMER_TIME", new Date());
 
   useEffect(() => {
     const interval = setInterval(() => pipe(
@@ -52,7 +52,7 @@ export function Timer() {
         new Date().getTime() - startDate.getTime(),
         getTimeValue,
         (time) => {
-          setTotalTime(time)
+          setTotalTime(time);
         },
       ), 500);
       return () => clearInterval(interval);
@@ -67,7 +67,7 @@ export function Timer() {
     } else {
       setPauseDate(new Date());
     }
-  }
+  };
 
   return (
     <Card title={
@@ -75,10 +75,10 @@ export function Timer() {
         <Title>Temps de jeu</Title>
         <div className="flex space-x-2">
           <Button type="secondary" title="pause" onClick={togglePause}>
-            <Icon name={pauseDate ? 'TIME' : 'HALT'} />
+            <Icon name={pauseDate ? "TIME" : "HALT"} />
           </Button>
           <Button type="secondary" title="reset" onClick={() => setDate(new Date())}>
-            <span className="flex items-center" style={{lineHeight: 1, fontSize: '0.5rem'}}>00:00</span>
+            <span className="flex items-center" style={{lineHeight: 1, fontSize: "0.5rem"}}>00:00</span>
           </Button>
         </div>
       </div>
@@ -86,11 +86,11 @@ export function Timer() {
       <div className="flex justify-between px-2 py-1">
         {
           startDate
-            ? <Caption>{`${totalTime.hours}`.padStart(2, '0')}:{`${totalTime.minutes}`.padStart(2, '0')}:{`${totalTime.seconds}`.padStart(2, '0')}</Caption>
-            : <Button type="primary" onClick={() => {setStartDate(new Date())}}>Start</Button>
+            ? <Caption>{`${totalTime.hours}`.padStart(2, "0")}:{`${totalTime.minutes}`.padStart(2, "0")}:{`${totalTime.seconds}`.padStart(2, "0")}</Caption>
+            : <Button type="primary" onClick={() => {setStartDate(new Date());}}>Start</Button>
         }
-        <BodyText>{`${time.minutes}`.padStart(2, '0')}:{`${time.seconds}`.padStart(2, '0')}</BodyText>
+        <BodyText>{`${time.minutes}`.padStart(2, "0")}:{`${time.seconds}`.padStart(2, "0")}</BodyText>
       </div>
     </Card>
-  )
+  );
 }

@@ -1,31 +1,31 @@
-import * as IO from 'io-ts';
-import * as Either from 'fp-ts/Either';
-import { identity } from 'fp-ts/function';
+import * as IO from "io-ts";
+import * as Either from "fp-ts/Either";
+import { identity } from "fp-ts/function";
 
-import { secrets } from '../secrets';
+import { secrets } from "../secrets";
 
 const componentDecoder = IO.type({
-  type: IO.literal('COMPONENT'),
+  type: IO.literal("COMPONENT"),
 });
 
 const frameDecoder = IO.type({
   id: IO.string,
   name: IO.string,
-  type: IO.literal('FRAME'),
+  type: IO.literal("FRAME"),
 });
 type Frame = IO.TypeOf<typeof frameDecoder>;
 
 const canvasDecoder = IO.type({
   id: IO.string,
   name: IO.string,
-  type: IO.literal('CANVAS'),
+  type: IO.literal("CANVAS"),
   children: IO.array(IO.union([frameDecoder, componentDecoder])),
 });
 
 const documentDecoder = IO.type({
   id: IO.string,
-  name: IO.literal('Document'),
-  type: IO.literal('DOCUMENT'),
+  name: IO.literal("Document"),
+  type: IO.literal("DOCUMENT"),
   children: IO.array(canvasDecoder),
 });
 
@@ -51,19 +51,19 @@ const findAllFrames = (file: File) =>
 
 const getFigmaNode = (fileKey: string, nodeIds: string[]) => {
   return fetch(
-    `https://api.figma.com/v1/images/${fileKey}?ids=${nodeIds.join(',')}&format=png`,
-    { headers: { 'X-Figma-Token': secrets.figmaApiKey } }
+    `https://api.figma.com/v1/images/${fileKey}?ids=${nodeIds.join(",")}&format=png`,
+    { headers: { "X-Figma-Token": secrets.figmaApiKey } }
   )
-  .then(response => response.json());
-}
+    .then(response => response.json());
+};
 
 const getFigmaFile = (fileKey: string) => {
   return fetch(
     `https://api.figma.com/v1/files/${fileKey}`,
-    { headers: { 'X-Figma-Token': secrets.figmaApiKey } }
+    { headers: { "X-Figma-Token": secrets.figmaApiKey } }
   )
-  .then(response => response.json());
-}
+    .then(response => response.json());
+};
 
 export const getFrames = (fileKey: string) => getFigmaFile(fileKey)
   .then(fileDecoder.decode)
@@ -86,6 +86,6 @@ export const getFrames = (fileKey: string) => getFigmaFile(fileKey)
       ))
       .then(result => Object.values(result.images))
       .then(images => images.map((image, index) => ({image, name: frames[index].name})));
-  })
+  });
   
   

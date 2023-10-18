@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import * as RX from 'rxjs/operators';
+import * as RX from "rxjs/operators";
 import { constant, FunctionN, pipe, flow } from "fp-ts/function";
-import * as RemoteData from '@devexperts/remote-data-ts';
+import * as RemoteData from "@devexperts/remote-data-ts";
 
 import { State } from "../store/State";
 import { subject, retrieveState } from "../store/store";
@@ -23,17 +23,17 @@ export const useStore = <T>([getter, setter]: Props<T>) => {
 
   useEffect(() => {
     const subscription = subject
-    .asObservable()
-    .pipe(
-      RX.distinctUntilChanged(equals),
-      RX.map(RemoteData.map(getter)),
-      RX.distinctUntilChanged(equals),
-    )
-    .subscribe({
-      next: (value) => {
-        setState(value);
-      }
-    });
+      .asObservable()
+      .pipe(
+        RX.distinctUntilChanged(equals),
+        RX.map(RemoteData.map(getter)),
+        RX.distinctUntilChanged(equals),
+      )
+      .subscribe({
+        next: (value) => {
+          setState(value);
+        }
+      });
 
     return () => subscription.unsubscribe();
   },[getter]);
@@ -55,9 +55,9 @@ export const useStore = <T>([getter, setter]: Props<T>) => {
   const resultSetter = (newValue: T) => pipe(
     subject.value,
     RemoteData.map(flow(
-        (currentState) => setter(currentState, newValue),
-        lastUpdateLens.set(new Date()),
-      )
+      (currentState) => setter(currentState, newValue),
+      lastUpdateLens.set(new Date()),
+    )
     ),
     newState => subject.next(newState),
   );
@@ -68,12 +68,12 @@ export const useStore = <T>([getter, setter]: Props<T>) => {
   ] as const;
 };
 
-type LoadState = 'initial' | 'pending' | 'failure' | 'success';
+type LoadState = "initial" | "pending" | "failure" | "success";
 const foldLoadState: (r: RemoteData.RemoteData<unknown, unknown>) => LoadState = RemoteData.fold(
-  constant('initial'),
-  constant('pending'),
-  constant('failure'),
-  constant('success'),
+  constant("initial"),
+  constant("pending"),
+  constant("failure"),
+  constant("success"),
 );
 
 export const useStoreLoadState = () => {
@@ -84,20 +84,20 @@ export const useStoreLoadState = () => {
 
   useEffect(() => {
     const subscription = subject
-    .asObservable()
-    .pipe(
-      RX.distinctUntilChanged(),
-    )
-    .subscribe({
-      next: (value) => {
-        setState(foldLoadState(value));
-      }
-    });
+      .asObservable()
+      .pipe(
+        RX.distinctUntilChanged(),
+      )
+      .subscribe({
+        next: (value) => {
+          setState(foldLoadState(value));
+        }
+      });
 
     return () => subscription.unsubscribe();
   },[]);
 
   return {
     loadState,
-   } as const;
+  } as const;
 };

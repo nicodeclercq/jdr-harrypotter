@@ -1,18 +1,18 @@
-import { constVoid } from 'fp-ts/lib/function';
-import { encryptStore } from '../encryptStore';
-import { CryptedExternalStore } from '../ExternalStore';
-import { secrets } from '../../../secrets';
+import { constVoid } from "fp-ts/lib/function";
+import { encryptStore } from "../encryptStore";
+import { CryptedExternalStore } from "../ExternalStore";
+import { secrets } from "../../../secrets";
 
 const ROOT = `https://getpantry.cloud/apiv1/pantry/${secrets.apiKey}`;
 
 const headers = new Headers();
-headers.append('Content-Type', 'application/json');
-headers.append('Access-Control-Allow-Origin', '*');
+headers.append("Content-Type", "application/json");
+headers.append("Access-Control-Allow-Origin", "*");
 
 export const PantryStore: CryptedExternalStore = encryptStore({
   getEntries: () => {
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers,
     };
 
@@ -22,9 +22,9 @@ export const PantryStore: CryptedExternalStore = encryptStore({
   },
   create: (name: string) => {
     const requestOptions = {
-      method: 'POST',
+      method: "POST",
       headers,
-      body: '{}',
+      body: "{}",
     };
 
     return fetch(`${ROOT}/basket/${name}`, requestOptions)
@@ -32,7 +32,7 @@ export const PantryStore: CryptedExternalStore = encryptStore({
   },
   read: (name: string) => {
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers,
     };
 
@@ -42,7 +42,7 @@ export const PantryStore: CryptedExternalStore = encryptStore({
   },
   update: (name: string, state: string) => {
     const requestOptions = {
-      method: 'PUT',
+      method: "PUT",
       headers,
       body: JSON.stringify({ value: state }),
     };
@@ -53,7 +53,7 @@ export const PantryStore: CryptedExternalStore = encryptStore({
   },
   delete: (name: string) => {
     const requestOptions = {
-      method: 'DELETE',
+      method: "DELETE",
       headers,
     };
 

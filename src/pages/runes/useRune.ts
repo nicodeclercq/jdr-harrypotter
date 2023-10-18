@@ -1,15 +1,15 @@
-import * as RemoteData from '@devexperts/remote-data-ts';
-import { pipe } from 'fp-ts/function';
+import * as RemoteData from "@devexperts/remote-data-ts";
+import { pipe } from "fp-ts/function";
 
-import { RUNES } from './../../components/Runes';
-import { useStore } from '../../hooks/useStore';
-import { RuneName } from '../../components/Runes';
-import { State } from '../../store/State';
-import { onSuccess } from '../../helpers/remoteData';
-import { keys, lens } from '../../helpers/object';
+import { RUNES } from "./../../components/Runes";
+import { useStore } from "../../hooks/useStore";
+import { RuneName } from "../../components/Runes";
+import { State } from "../../store/State";
+import { onSuccess } from "../../helpers/remoteData";
+import { keys, lens } from "../../helpers/object";
 
-const runesDefinitionLens = lens<State, 'runesDefinition'>('runesDefinition');
-const knownRunesLens = lens<State, 'knownRunes'>('knownRunes');
+const runesDefinitionLens = lens<State, "runesDefinition">("runesDefinition");
+const knownRunesLens = lens<State, "knownRunes">("knownRunes");
 
 export const useRune = () => {
   const [runesDefinition, setRunesDefinition] = useStore(runesDefinitionLens);
@@ -30,10 +30,10 @@ export const useRune = () => {
 
   const learnAllRunes = () => {
     setKnownRunes(keys(RUNES));
-  }
+  };
   const setAllRunesDefinition = () => {
     setRunesDefinition(RUNES);
-  }
+  };
 
   return {
     runesDefinition,
@@ -42,5 +42,5 @@ export const useRune = () => {
     setKnownRunes,
     learnAllRunes,
     setAllRunesDefinition
-  }
-}
+  };
+};

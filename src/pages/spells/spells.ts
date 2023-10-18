@@ -1,4 +1,4 @@
-import { Spell } from './domain/Spell';
+import { Spell } from "./domain/Spell";
 
 export const spells: Spell[] = [
   {name: "jet d'eau", category: "eau", incantation: "Aquamenti", description: "Crée un jet d'eau comparable à celui d'un tuyau d'arrosage", level: 0},

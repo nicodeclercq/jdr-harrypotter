@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { random } from '../../helpers/number';
-import { usePersistantState } from '../../hooks/usePersistantState';
-import { usePNJ } from '../../hooks/usePNJ';
+import React, { useState } from "react";
+import { random } from "../../helpers/number";
+import { usePersistantState } from "../../hooks/usePersistantState";
+import { usePNJ } from "../../hooks/usePNJ";
 // import { Avatar } from '../Avatar';
-import { Button } from '../Button';
-import { Card } from '../Card';
-import { BodyText } from '../font/BodyText';
-import { Title } from '../font/Title';
-import { Icon } from '../icons/Icon';
-import { speechSpecificity, psychologic, getRandomAge, genders, colors, firstnames, lastnames, magics } from './character';
-import { PnjModal } from './PnjModal';
+import { Button } from "../Button";
+import { Card } from "../Card";
+import { BodyText } from "../font/BodyText";
+import { Title } from "../font/Title";
+import { Icon } from "../icons/Icon";
+import { speechSpecificity, psychologic, getRandomAge, genders, colors, firstnames, lastnames, magics } from "./character";
+import { PnjModal } from "./PnjModal";
 // import { useGeneratedPhoto } from './useGeneratedPhoto';
-import { PNJ as PNJType } from './pnj.entity';
+import { PNJ as PNJType } from "./pnj.entity";
 
 const makeCharacter = () => {
   const gender = genders[random(0, genders.length -1)];
@@ -26,8 +26,8 @@ const makeCharacter = () => {
     color: colors[random(0, colors.length -1)],
     name: `${firstnames[gender][random(0, firstnames[gender].length)]} ${lastnames[random(0, lastnames.length)]}`,
     magics: magics[random(0, magics.length - 1)],
-  }
-}
+  };
+};
 
 type Props = {
   pnj?: PNJType;
@@ -36,7 +36,7 @@ type Props = {
 export function PNJ({pnj}: Props){
   const [showEditModal, setShowEditModal] = useState(false);
   const { add, remove, update } = usePNJ();
-  const [current, setCurrent] = usePersistantState<PNJType>('RANDOM_PNJ', makeCharacter());
+  const [current, setCurrent] = usePersistantState<PNJType>("RANDOM_PNJ", makeCharacter());
 
   return (<>
     <Card title={
@@ -46,7 +46,7 @@ export function PNJ({pnj}: Props){
             {/*<Avatar url={avatar} text={current.name} />*/}
             <span>{pnj ? pnj.name : current.name}</span>
             &nbsp;
-            {(pnj ? pnj.gender : current.gender) === 'Homme' ? '♂︎' : '♀︎'}
+            {(pnj ? pnj.gender : current.gender) === "Homme" ? "♂︎" : "♀︎"}
           </div>
         </Title>
         { pnj == null && (
@@ -73,16 +73,16 @@ export function PNJ({pnj}: Props){
                 <Icon name="CHARACTER" />
               </Button>
               <Button type="secondary" onClick={() => {
-                  remove(pnj.name);
-                }} title="reset">
+                remove(pnj.name);
+              }} title="reset">
                 <Icon name="CROSS" />
               </Button>
             </div>
-        )}
+          )}
       </div>
     } useDividers>
       {pnj?.description && <div className="px-2 py-1"><BodyText><Icon name="NOTEBOOK" />&nbsp;{pnj.description}</BodyText></div>}
-      <div className="px-2 py-1"><BodyText>{(pnj ? pnj.character : current.character).join(' | ')}</BodyText></div>
+      <div className="px-2 py-1"><BodyText>{(pnj ? pnj.character : current.character).join(" | ")}</BodyText></div>
       <div className="flex items-center px-2 py-1 flex-rows space-x-2"><BodyText>{pnj ? pnj.age : current.age} ans</BodyText></div>
       <div className="px-2 py-1"><BodyText>{pnj ? pnj.magics : current.magics}</BodyText></div>
       <div className="flex items-center px-2 py-1 flex-rows space-x-2">
@@ -102,10 +102,10 @@ export function PNJ({pnj}: Props){
             }else {
               update(newPnj.name, newPnj);
             }
-            setShowEditModal(false)
+            setShowEditModal(false);
           }}
         />
       )
     }
-  </>)
+  </>);
 }

@@ -1,8 +1,8 @@
-import { spells } from './../spells';
-import { entries } from '../../../helpers/object';
-import { State } from '../../../store/State';
+import { spells } from "./../spells";
+import { entries } from "../../../helpers/object";
+import { State } from "../../../store/State";
 
-export type UserSpells = State['userSpells'];
+export type UserSpells = State["userSpells"];
 
 export const getNextLevelSpells = (userSpells: UserSpells) => {
   return entries(userSpells.knownSpells)
@@ -12,4 +12,4 @@ export const getNextLevelSpells = (userSpells: UserSpells) => {
       spell: spells.find((spell) => spell.name === name)
     }));
 
-}
+};

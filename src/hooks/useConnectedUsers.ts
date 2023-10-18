@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
-import { usePersistantRecordState } from './usePersistantRecordState';
+import { useCallback } from "react";
+import { usePersistantRecordState } from "./usePersistantRecordState";
 
 export type ConnectedUsers = Record<string,string | null | undefined>;
 
 export function useConnectedUsers(){
-  const {record: connectedUsers, remove: removeConnectedUser, add: addConnectedUser} = usePersistantRecordState<string | null | undefined>('CONNECTED_USERS');
+  const {record: connectedUsers, remove: removeConnectedUser, add: addConnectedUser} = usePersistantRecordState<string | null | undefined>("CONNECTED_USERS");
 
   const add = useCallback(
     (name: string, imageUrl: string | null | undefined) => {

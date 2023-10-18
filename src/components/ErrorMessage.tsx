@@ -1,6 +1,6 @@
-import React from 'react';
-import { FieldError } from 'react-hook-form';
-import { entries } from '../helpers/object';
+import React from "react";
+import { FieldError } from "react-hook-form";
+import { entries } from "../helpers/object";
 
 type Props = {
   errors: FieldError;
@@ -8,9 +8,9 @@ type Props = {
 };
 
 const defaultMessages = {
-  required: 'Ce champs est obligatoire',
-  min: 'La valeur est trop basse',
-  max: 'La valeur est trop haute',
+  required: "Ce champs est obligatoire",
+  min: "La valeur est trop basse",
+  max: "La valeur est trop haute",
 };
 
 export function ErrorMessage({
@@ -28,5 +28,5 @@ export function ErrorMessage({
     <>
       {displayesMessages}
     </>
-  )
+  );
 }

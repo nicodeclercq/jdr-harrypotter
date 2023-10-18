@@ -1,15 +1,15 @@
-import React from 'react';
-import { pipe, flow } from 'fp-ts/function';
-import * as Record from 'fp-ts/Record';
+import React from "react";
+import { pipe, flow } from "fp-ts/function";
+import * as Record from "fp-ts/Record";
 
-import { Avatar } from '../../components/Avatar';
-import { Card } from '../../components/Card';
-import { Title } from '../../components/font/Title';
-import { useConnectedUsers } from '../../hooks/useConnectedUsers';
-import { State } from '../../store/State';
-import { fromRemoteData } from '../../helpers/remoteData';
-import { MySkills } from '../skills/MySkills';
-import { useUserSkills } from './useUserSkills';
+import { Avatar } from "../../components/Avatar";
+import { Card } from "../../components/Card";
+import { Title } from "../../components/font/Title";
+import { useConnectedUsers } from "../../hooks/useConnectedUsers";
+import { State } from "../../store/State";
+import { fromRemoteData } from "../../helpers/remoteData";
+import { MySkills } from "../skills/MySkills";
+import { useUserSkills } from "./useUserSkills";
 
 function UserBestSkills({name}: {name: string}) {
   const [state] = useUserSkills(name);
@@ -17,24 +17,24 @@ function UserBestSkills({name}: {name: string}) {
   return pipe(
     state,
     fromRemoteData(flow(
-        ({skills}: State) => skills,
-        Record.toArray,
-        (skills) => skills.sort(([,a], [,b]) => a.currentLevel < b.currentLevel ? 1 : -1),
-        (skills) => skills.filter((a, index) => index < 6),
-        (skills) => skills.reduce(
-          (acc, [name, value]) => ({
-            ...acc,
-            [name]: value
-          }),
-          {} as State['skills']
-        ),
+      ({skills}: State) => skills,
+      Record.toArray,
+      (skills) => skills.sort(([,a], [,b]) => a.currentLevel < b.currentLevel ? 1 : -1),
+      (skills) => skills.filter((a, index) => index < 6),
+      (skills) => skills.reduce(
+        (acc, [name, value]) => ({
+          ...acc,
+          [name]: value
+        }),
+          {} as State["skills"]
+      ),
       (skills) => (
         <div className="mb-2 space-y-2">
           <MySkills showInColumns={true} skills={skills} />
         </div>
       )
     ))
-  )
+  );
 }
 
 export function UsersBestSkills() {
@@ -56,5 +56,5 @@ export function UsersBestSkills() {
           </Card>
         )
     }</>
-  )
+  );
 }

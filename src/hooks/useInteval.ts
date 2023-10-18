@@ -1,6 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
-export function useInterval(callback: (clear: () => void) => void, delay: number) {
+export function useInterval(
+  callback: (clear: () => void) => void,
+  delay: number
+) {
   const savedCallback = useRef(callback);
 
   useEffect(() => {
@@ -10,9 +13,7 @@ export function useInterval(callback: (clear: () => void) => void, delay: number
   useEffect(() => {
     const clear = () => clearInterval(interval);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const interval = setInterval(() => savedCallback.current(clear), delay);
     return clear;
   }, [delay]);
 }
-

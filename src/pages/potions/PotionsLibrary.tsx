@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card } from '../../components/Card';
-import { potions } from './potions';
-import { Potion } from './Potion';
+import React from "react";
+import { Card } from "../../components/Card";
+import { potions } from "./potions";
+import { Potion } from "./Potion";
 
 type Props = {
   emptyBottles: number;

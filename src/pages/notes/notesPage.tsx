@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { pipe } from 'fp-ts/function';
-import { Button } from '../../components/Button';
-import { Input } from '../../components/Input';
-import { Layout } from '../../components/Layout';
-import { fromRemoteData } from '../../helpers/remoteData';
-import { State } from '../../store/State';
-import { Note } from './Note';
-import { useNote } from './useNote';
+import React, { useState, useEffect } from "react";
+import { pipe } from "fp-ts/function";
+import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
+import { Layout } from "../../components/Layout";
+import { fromRemoteData } from "../../helpers/remoteData";
+import { State } from "../../store/State";
+import { Note } from "./Note";
+import { useNote } from "./useNote";
 
-function Notes({notes}: { notes: State['notes']}) {
+function Notes({notes}: { notes: State["notes"]}) {
   const { addNote } = useNote();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [displayedNotes, setDisplayedNotes] = useState(notes);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function Notes({notes}: { notes: State['notes']}) {
 
   const search = (query: string) => {
     setSearchQuery(query);
-  }
+  };
 
   return (<div className="space-y-4">
     <div className="flex items-center justify-center w-full">
@@ -37,7 +37,7 @@ function Notes({notes}: { notes: State['notes']}) {
         <Button type="primary" onClick={addNote}>Ajouter une note</Button>
       </div>
     </div>
-  </div>)
+  </div>);
 }
 
 export function NotesPage() {
@@ -52,5 +52,5 @@ export function NotesPage() {
         </div>
       </Layout>
     ))
-  )
+  );
 }

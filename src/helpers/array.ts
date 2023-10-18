@@ -4,7 +4,7 @@ export type TypeofItems<U extends unknown[]> = U extends (infer R)[]
   ? R
   : never;
 
-// @ts-ignore
+// @ts-expects-error
 export const removeDupplicates = <T>(arr: T[]): T[] => [...new Set(arr)];
 
 export const getDupplicates = <T>(arr: T[]): T[] => {

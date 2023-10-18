@@ -1,12 +1,12 @@
-import React from 'react';
-import { pipe } from 'fp-ts/function';
+import React from "react";
+import { pipe } from "fp-ts/function";
 
-import { Button } from '../../components/Button';
-import { Card } from '../../components/Card';
-import { Spell } from './Spell';
-import { spells } from './spells';
-import { useSpell } from './useSpell';
-import { fromRemoteData } from '../../helpers/remoteData';
+import { Button } from "../../components/Button";
+import { Card } from "../../components/Card";
+import { Spell } from "./Spell";
+import { spells } from "./spells";
+import { useSpell } from "./useSpell";
+import { fromRemoteData } from "../../helpers/remoteData";
 
 export function SpellsLibrary() {
   const { add, userSpells, canBeAdded } = useSpell();

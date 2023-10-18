@@ -12,7 +12,7 @@ type Token = {
 const subject = new BehaviorSubject<Record<string, Token>>({});
 
 export const useTokens = () => {
-  const {record: tokens, set: setTokens} =  usePersistantRecordState<Token>('BATTLEMAP_TOKENS');
+  const {record: tokens, set: setTokens} =  usePersistantRecordState<Token>("BATTLEMAP_TOKENS");
   
   useEffect(() => {
     const subscription = subject.asObservable()
@@ -22,12 +22,12 @@ export const useTokens = () => {
   },[setTokens]);
 
   const updateToken = useCallback((name: string, newToken: Token) => {
-      subject.next({...subject.value, [name]: newToken});
+    subject.next({...subject.value, [name]: newToken});
   }, []);
 
   return {
     tokens,
     setTokens,
     updateToken,
-  }
-}
+  };
+};

@@ -1,10 +1,11 @@
-import { constVoid } from 'fp-ts/lib/function';
-import React from 'react';
-import { Icon, IconName } from './icons/Icon';
+import React from "react";
+import { constVoid } from "fp-ts/lib/function";
+import { Icon, IconName } from "./icons/Icon";
+import { EmptyObject } from "react-hook-form";
 
 const size = {
-  'small': 'w-6 h-6',
-  'medium': 'w-12 h-12',
+  small: "w-6 h-6",
+  medium: "w-12 h-12",
 } as const;
 
 type Clickable = {
@@ -13,36 +14,49 @@ type Clickable = {
 };
 type BaseProps = {
   text: string;
-  url: string | undefined | null;
+  url: string | undefined | null;
   size?: keyof typeof size;
 };
 
-type Props = BaseProps & ({} | Clickable);
+type Props = BaseProps & (EmptyObject | Clickable);
 
 const randomColor = (str: string) => {
   const value = str
-    .split('')
-    .map(char => char.charCodeAt(0))
+    .split("")
+    .map((char) => char.charCodeAt(0))
     .reduce((acc, cur) => acc + cur, 0);
   const hue = value % 360;
   return `hsl(${hue}, 33%, 40%)`;
-}
+};
 
-const isClickable = (props: Props): props is BaseProps & Clickable => 'onClick' in props;
+const isClickable = (props: Props): props is BaseProps & Clickable =>
+  "onClick" in props;
 
 export function Avatar(props: Props) {
   return (
     <div
       title={props.text}
       onClick={isClickable(props) ? props.onClick : constVoid}
-      className={`relative flex items-center text-white justify-center flex-none ${size[!isClickable(props) ? (props.size ?? 'medium') : 'medium']} border-2 border-white rounded-full shadow`}
-      style={{ flex: 'none', backgroundColor: randomColor(props.text), backgroundImage: `url("${props.url}")`, backgroundPosition: 'center', backgroundSize: 'cover'}}>
-      {props.url ? '' : <Icon name="SORCERER" />}
-      {
-        isClickable(props) && (<button className="absolute flex items-center justify-center w-6 h-6 p-0 text-gray-700 bg-white border border-gray-500 rounded-full shadow" style={{bottom: '-0.5rem', right: '-0.5rem', fontSize: '1rem'}}>
+      className={`relative flex items-center text-white justify-center flex-none ${
+        size[!isClickable(props) ? props.size ?? "medium" : "medium"]
+      } border-2 border-white rounded-full shadow`}
+      style={{
+        flex: "none",
+        backgroundColor: randomColor(props.text),
+        backgroundImage: `url("${props.url}")`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+      }}
+    >
+      {props.url ? "" : <Icon name="SORCERER" />}
+      {isClickable(props) && (
+        <button
+          className="absolute flex items-center justify-center w-6 h-6 p-0 text-gray-700 bg-white border border-gray-500 rounded-full shadow"
+          style={{ bottom: "-0.5rem", right: "-0.5rem", fontSize: "1rem" }}
+        >
           <Icon name={props.icon} />
-        </button>)
-      }
+        </button>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useDelay } from '../hooks/useDelay';
-import { useInterval } from '../hooks/useInteval';
+import React, { useState } from "react";
+import { useDelay } from "../hooks/useDelay";
+import { useInterval } from "../hooks/useInteval";
 
 const LoaderContent = () => {
   const [index, setIndex] = useState(0);
@@ -25,7 +25,7 @@ const LoaderContent = () => {
       Loading{renderers[index]()}
     </div>
   );
-}
+};
 
 export function Loader() {
   const [show, setShow] = useState(false);

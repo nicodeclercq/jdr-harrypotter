@@ -1,12 +1,12 @@
-import * as RemoteData from '@devexperts/remote-data-ts';
-import { pipe } from 'fp-ts/lib/function';
+import * as RemoteData from "@devexperts/remote-data-ts";
+import { pipe } from "fp-ts/lib/function";
 
-import { useStore } from '../../hooks/useStore';
-import { State } from '../../store/State';
-import { lens } from '../../helpers/object';
-import { onSuccess } from '../../helpers/remoteData';
+import { useStore } from "../../hooks/useStore";
+import { State } from "../../store/State";
+import { lens } from "../../helpers/object";
+import { onSuccess } from "../../helpers/remoteData";
 
-const userLens = lens<State, 'user'>('user');
+const userLens = lens<State, "user">("user");
 
 export const useUser = () => {
   const [user, setUser] = useStore(userLens);
@@ -31,5 +31,5 @@ export const useUser = () => {
     name,
     imageUrl,
     setImageUrl
-  }
-}
+  };
+};

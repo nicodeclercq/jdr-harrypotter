@@ -1,10 +1,10 @@
-import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
 
-import { Button } from '../../components/Button';
-import { Label } from '../../components/font/Label';
-import { Input } from '../../components/Input';
-import { Modal } from '../../components/Modal';
+import { Button } from "../../components/Button";
+import { Label } from "../../components/font/Label";
+import { Input } from "../../components/Input";
+import { Modal } from "../../components/Modal";
 
 type Props = {
   onSubmit: (newSkill: { name: string, currentLevel: number}) => void;
@@ -14,10 +14,10 @@ type Props = {
 export function AddSkillModal({ onCancel, onSubmit}: Props) {
   const { handleSubmit, control, errors } = useForm<{name: string; currentLevel: number}>({
     defaultValues: {
-      name: '',
+      name: "",
       currentLevel: 10,
     }
-  })
+  });
 
   return (
     <Modal
@@ -66,11 +66,11 @@ export function AddSkillModal({ onCancel, onSubmit}: Props) {
         </div>
         <div className="flex justify-end pt-8 space-x-4">
           <Button
-              type="secondary"
-              onClick={onCancel}
-            >
+            type="secondary"
+            onClick={onCancel}
+          >
               Annuler
-            </Button>
+          </Button>
           <Button
             type="primary"
             onClick="submit"

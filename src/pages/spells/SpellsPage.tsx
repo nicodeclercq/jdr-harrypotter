@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { Layout } from '../../components/Layout';
-import { MySpells } from './MySpells';
-import { SpellsLibrary } from './SpellsLibrary';
+import { Layout } from "../../components/Layout";
+import { MySpells } from "./MySpells";
+import { SpellsLibrary } from "./SpellsLibrary";
 
 export function SpellsPage() {
   return (

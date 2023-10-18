@@ -1,7 +1,7 @@
-import React from 'react';
-import { createPortal } from 'react-dom';
-import { Card } from './Card';
-import { Header } from './Header';
+import React from "react";
+import { createPortal } from "react-dom";
+import { Card } from "./Card";
+import { Header } from "./Header";
 
 
 type Props = {
@@ -13,7 +13,7 @@ export function Modal({ header, children }: Props){
   return createPortal(
     (
       <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full p-4 bg-gray-500 bg-opacity-80" style={{zIndex: 2}}>
-        <div className="max-w-full" style={{minWidth: '50%'}}>
+        <div className="max-w-full" style={{minWidth: "50%"}}>
           <Card>
             {
               header &&

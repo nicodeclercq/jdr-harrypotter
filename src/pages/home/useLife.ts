@@ -1,8 +1,8 @@
-import { lens } from '../../helpers/object';
-import { useStore } from '../../hooks/useStore';
-import { State } from '../../store/State';
+import { lens } from "../../helpers/object";
+import { useStore } from "../../hooks/useStore";
+import { State } from "../../store/State";
 
-const lifeLens = lens<State, 'life'>('life');
+const lifeLens = lens<State, "life">("life");
 
 export const useLife = () => {
   const [life, setLife] = useStore(lifeLens);
@@ -10,5 +10,5 @@ export const useLife = () => {
   return {
     life,
     setLife,
-  }
-}
+  };
+};

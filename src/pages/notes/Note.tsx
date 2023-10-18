@@ -1,12 +1,12 @@
-import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { debounce } from '../../helpers/function';
-import { Accordion } from '../../components/Accordion';
-import { Button } from '../../components/Button';
-import { Label } from '../../components/font/Label';
-import { Input } from '../../components/Input';
-import { Textarea } from '../../components/Textarea';
-import { useNote } from './useNote';
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { debounce } from "../../helpers/function";
+import { Accordion } from "../../components/Accordion";
+import { Button } from "../../components/Button";
+import { Label } from "../../components/font/Label";
+import { Input } from "../../components/Input";
+import { Textarea } from "../../components/Textarea";
+import { useNote } from "./useNote";
 
 type Props = {
   id: string;
@@ -25,7 +25,7 @@ export function Note({id, title, description}: Props) {
 
   const onSubmit = ({title, description}: {title: string, description: string}) => {
     setNote({id, title, description});
-  }
+  };
 
   return (
     <form className="border border-gray-200 rounded" onSubmit={handleSubmit(onSubmit)}>
@@ -70,9 +70,9 @@ export function Note({id, title, description}: Props) {
             <div className="justify-self-end">
               <Button type="secondary" onClick={() => removeNote(id)}>Supprimer la note</Button>
             </div>
-        </div>),
-      }}
+          </div>),
+        }}
       </Accordion>
     </form>
-  )
+  );
 }

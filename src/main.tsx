@@ -1,12 +1,9 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { ReactAppRoot } from "./root";
 import App from "./App";
 import "./index.css";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
+ReactAppRoot.render(
   <React.StrictMode>
     <App />
     <div id="portal"></div>

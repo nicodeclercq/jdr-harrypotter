@@ -1,11 +1,11 @@
-import { pipe } from 'fp-ts/function';
+import { pipe } from "fp-ts/function";
 
-import { useStore } from '../../hooks/useStore';
-import { onSuccess } from '../../helpers/remoteData';
-import { State } from '../../store/State';
-import { lens } from '../../helpers/object';
+import { useStore } from "../../hooks/useStore";
+import { onSuccess } from "../../helpers/remoteData";
+import { State } from "../../store/State";
+import { lens } from "../../helpers/object";
 
-const moneyLens = lens<State, 'money'>('money');
+const moneyLens = lens<State, "money">("money");
 
 export const useMoney = () => {
   const [money, setMoney] = useStore(moneyLens);
@@ -15,11 +15,11 @@ export const useMoney = () => {
       money,
       onSuccess((money) => setMoney(money + newMoney)),
     );
-  }
+  };
 
   return {
     money,
     setMoney,
     addMoney,
-  }
-}
+  };
+};

@@ -1,10 +1,10 @@
-import * as IO from 'io-ts';
-import { formatValidationErrors } from 'io-ts-reporters';
-import { pipe, constVoid } from 'fp-ts/function';
-import * as Either from 'fp-ts/Either';
+import * as IO from "io-ts";
+import { formatValidationErrors } from "io-ts-reporters";
+import { pipe, constVoid } from "fp-ts/function";
+import * as Either from "fp-ts/Either";
 
 const hasAlreadyJoinMessageDecoder = IO.type({
-  type: IO.literal('hasAlreadyJoined'),
+  type: IO.literal("hasAlreadyJoined"),
   payload: IO.type({
     recipient: IO.string,
   }),
@@ -12,14 +12,14 @@ const hasAlreadyJoinMessageDecoder = IO.type({
 export type HasAlreadyJoinedMessage = IO.TypeOf<typeof hasAlreadyJoinMessageDecoder>;
 
 const joinMessageDecoder = IO.type({
-  type: IO.literal('join'),
+  type: IO.literal("join"),
   payload: IO.undefined,
 });
 export type JoinMessage = IO.TypeOf<typeof joinMessageDecoder>;
 export const isJoinMessage = joinMessageDecoder.is;
 
 const quitMessageDecoder = IO.type({
-  type: IO.literal('quit'),
+  type: IO.literal("quit"),
   payload: IO.type({
     name: IO.string,
   }),
@@ -27,23 +27,23 @@ const quitMessageDecoder = IO.type({
 export type QuitMessage = IO.TypeOf<typeof quitMessageDecoder>;
 
 const rollMessageDecoder = IO.type({
-  type: IO.literal('roll'),
+  type: IO.literal("roll"),
   payload: IO.type({
     title: IO.string,
     value: IO.number,
     type: IO.union([
-      IO.literal('critical-success'),
-      IO.literal('success'),
-      IO.literal('failure'),
-      IO.literal('critical-failure'),
-      IO.literal('free-throw'),
+      IO.literal("critical-success"),
+      IO.literal("success"),
+      IO.literal("failure"),
+      IO.literal("critical-failure"),
+      IO.literal("free-throw"),
     ]),
   }),
 });
 export type RollMessage = IO.TypeOf<typeof rollMessageDecoder>;
 
 const chatDecoder = IO.type({
-  type: IO.literal('chat'),
+  type: IO.literal("chat"),
   payload: IO.type({
     recipient: IO.string,
     message: IO.string,
@@ -54,24 +54,24 @@ export type ChatMessage = IO.TypeOf<typeof chatDecoder>;
 export const isChatMessage = chatDecoder.is;
 
 export const COMMAND_MESSAGE = {
-  GIVE_BENNY: '[giveBenny]',
+  GIVE_BENNY: "[giveBenny]",
   UNLOCK: /^\[unlock\]:(.+)$/,
   LOCK: /^\[lock\]:(.+)$/,
 } as const;
 
 const alertDecoder = IO.type({
-  type: IO.literal('alert'),
+  type: IO.literal("alert"),
   payload: IO.type({
     type: IO.union([
-      IO.literal('playerIsAsleep'),
-      IO.literal('playerNeedsPause'),
+      IO.literal("playerIsAsleep"),
+      IO.literal("playerNeedsPause"),
     ])
   })
 });
 export type AlertMessage = IO.TypeOf<typeof alertDecoder>;
 
 const timeMessageDecoder = IO.type({
-  type: IO.literal('time'),
+  type: IO.literal("time"),
   payload: IO.number,
 });
 export type TimeMessage = IO.TypeOf<typeof timeMessageDecoder>;
@@ -79,20 +79,20 @@ export const isTimeMessage = timeMessageDecoder.is;
 
 
 const imageDecoder = IO.type({
-  type: IO.literal('image'),
+  type: IO.literal("image"),
   payload: IO.union([IO.string, IO.undefined]),
 });
 export type ImageMessage = IO.TypeOf<typeof imageDecoder>;
 export const isImageMessage = imageDecoder.is;
 
 const useBennyDecoder = IO.type({
-  type: IO.literal('useBenny'),
+  type: IO.literal("useBenny"),
 });
 export type UseBennyMessage = IO.TypeOf<typeof useBennyDecoder>;
 export const isUseBennyMessage = useBennyDecoder.is;
 
 const playMusicDecoder = IO.type({
-  type: IO.literal('playMusic'),
+  type: IO.literal("playMusic"),
   payload: IO.type({
     name: IO.string,
     url: IO.string
@@ -101,12 +101,12 @@ const playMusicDecoder = IO.type({
 export type PlayMusicMessage = IO.TypeOf<typeof playMusicDecoder>;
 
 const stopMusicDecoder = IO.type({
-  type: IO.literal('stopMusic'),
+  type: IO.literal("stopMusic"),
 });
 export type StopMusicMessage = IO.TypeOf<typeof playMusicDecoder>;
 
 const setBattleMapTokensPositionDecoder = IO.type({
-  type: IO.literal('setBattleMapTokensPosition'),
+  type: IO.literal("setBattleMapTokensPosition"),
   payload: IO.record(IO.string, IO.type({
     x: IO.number,
     y: IO.number,
@@ -150,35 +150,35 @@ const shouldFilterSelfMessage = (currentUserName: string) => (message: Message) 
   return message.author.name === currentUserName
     ? messagesAvailableForSelf.reduce((acc, filterMessage) => acc || filterMessage(message.message), false)
     : true;
-}
+};
 
 export const fold = (currentUserName: string, fns: {
-  hasAlreadyJoined: (payload: HasAlreadyJoinedMessage['payload'], author: Message['author']) => void, 
-  join: (payload: JoinMessage['payload'], author: Message['author']) => void,
-  quit: (payload: QuitMessage['payload'], author: Message['author']) => void,
-  roll: (payload: RollMessage['payload'], author: Message['author']) => void,
-  chat: (payload: ChatMessage['payload'], author: Message['author']) => void,
-  alert: (payload: AlertMessage['payload'], author: Message['author']) => void,
-  time: (payload: TimeMessage['payload'], author: Message['author']) => void,
-  image: (payload: ImageMessage['payload'], author: Message['author']) => void,
-  useBenny: (payload: undefined, author: Message['author']) => void,
-  playMusic: (payload: PlayMusicMessage['payload'], author: Message['author']) => void,
-  stopMusic: (payload: undefined, author: Message['author']) => void,
-  setBattleMapTokensPosition: (payload: SetBattleMapTokensPosition['payload'], author: Message['author']) => void,
+  hasAlreadyJoined: (payload: HasAlreadyJoinedMessage["payload"], author: Message["author"]) => void, 
+  join: (payload: JoinMessage["payload"], author: Message["author"]) => void,
+  quit: (payload: QuitMessage["payload"], author: Message["author"]) => void,
+  roll: (payload: RollMessage["payload"], author: Message["author"]) => void,
+  chat: (payload: ChatMessage["payload"], author: Message["author"]) => void,
+  alert: (payload: AlertMessage["payload"], author: Message["author"]) => void,
+  time: (payload: TimeMessage["payload"], author: Message["author"]) => void,
+  image: (payload: ImageMessage["payload"], author: Message["author"]) => void,
+  useBenny: (payload: undefined, author: Message["author"]) => void,
+  playMusic: (payload: PlayMusicMessage["payload"], author: Message["author"]) => void,
+  stopMusic: (payload: undefined, author: Message["author"]) => void,
+  setBattleMapTokensPosition: (payload: SetBattleMapTokensPosition["payload"], author: Message["author"]) => void,
 }) => (message: unknown) => pipe(
   message,
   (m) => {
-    console.log('received', m)
+    console.log("received", m);
     return m;
   },
   messageDecoder.decode,
   Either.mapLeft((e) => {
-    console.log('error', message, formatValidationErrors(e));
-    return Either.left('Wrong encoding');
+    console.log("error", message, formatValidationErrors(e));
+    return Either.left("Wrong encoding");
   }),
   Either.filterOrElse(
     shouldFilterSelfMessage(currentUserName),
-    () => Either.left('Same user'),
+    () => Either.left("Same user"),
   ),
   Either.fold(
     constVoid,

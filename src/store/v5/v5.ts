@@ -1,16 +1,16 @@
-import { pipe } from 'fp-ts/lib/function';
-import * as IO from 'io-ts';
-import { map } from '../../helpers/object';
+import { pipe } from "fp-ts/lib/function";
+import * as IO from "io-ts";
+import { map } from "../../helpers/object";
 
-import { retrieveFromVersion } from '../helper';
-import * as V4 from '../v4/v4';
-import * as V3 from '../v3/v3';
+import { retrieveFromVersion } from "../helper";
+import * as V4 from "../v4/v4";
+import * as V3 from "../v3/v3";
 
 export type Trait = V4.Trait;
 export type UserSpell = V4.UserSpell;
 export type Skills = V4.Skills;
 
-const version = 'V5';
+const version = "V5";
 
 const lockKeysDecoder = IO.array(IO.string);
 const runesDefinitionDecoder = IO.record(IO.string, IO.string);

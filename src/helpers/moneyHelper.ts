@@ -15,4 +15,4 @@ export const getDivisions = (money: number) => {
     mornille,
     noise,
   };
-}
+};

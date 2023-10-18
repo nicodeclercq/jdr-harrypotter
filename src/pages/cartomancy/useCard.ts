@@ -1,13 +1,13 @@
-import * as RemoteData from '@devexperts/remote-data-ts';
-import { pipe } from 'fp-ts/lib/function';
+import * as RemoteData from "@devexperts/remote-data-ts";
+import { pipe } from "fp-ts/lib/function";
 
-import { useStore } from '../../hooks/useStore';
-import { createArray } from '../../helpers/array';
-import { State } from '../../store/State';
-import { onSuccess } from '../../helpers/remoteData';
-import { lens } from '../../helpers/object';
+import { useStore } from "../../hooks/useStore";
+import { createArray } from "../../helpers/array";
+import { State } from "../../store/State";
+import { onSuccess } from "../../helpers/remoteData";
+import { lens } from "../../helpers/object";
 
-const carthomancyLens = lens<State, 'carthomancy'>('carthomancy');
+const carthomancyLens = lens<State, "carthomancy">("carthomancy");
 
 export const useCard = () => {
   const [carthomancy, setCarthomancy ] = useStore(carthomancyLens);
@@ -15,7 +15,7 @@ export const useCard = () => {
   const getCardsNumber = () => pipe(
     carthomancy,
     RemoteData.map(({cardsNumber}) => cardsNumber),
-  )
+  );
 
   const getVisibleCards = () => {
     return pipe(
@@ -50,33 +50,33 @@ export const useCard = () => {
             : v
         ),
       })),
-    )
+    );
   };
 
   const playCard = (selected: number, index: number) => {
     return pipe(
       carthomancy,
       onSuccess(carthomancy => setCarthomancy({
-          ...carthomancy,
-          visible: carthomancy.visible.map((v, i) =>
-            i === selected
-              ? undefined
-              : v
-          ),
-          used: [...carthomancy.used, index],
+        ...carthomancy,
+        visible: carthomancy.visible.map((v, i) =>
+          i === selected
+            ? undefined
+            : v
+        ),
+        used: [...carthomancy.used, index],
       })),
-    )
+    );
   };
 
   const shuffleDeck = () => {
     return pipe(
       carthomancy,
       onSuccess((carthomancy => setCarthomancy({
-          ...carthomancy,
-          used: [],
-          visible: createArray(carthomancy.cardsNumber, 0).map(() => undefined)
+        ...carthomancy,
+        used: [],
+        visible: createArray(carthomancy.cardsNumber, 0).map(() => undefined)
       }))),
-    )
+    );
   };
 
   return {
@@ -88,4 +88,4 @@ export const useCard = () => {
     playCard,
     shuffleDeck,
   };
-}
+};

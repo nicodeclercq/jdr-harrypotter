@@ -1,9 +1,9 @@
-import * as IO from 'io-ts';
-import { constVoid, constant } from 'fp-ts/function';
-import * as Option from 'fp-ts/Option';
+import * as IO from "io-ts";
+import { constVoid, constant } from "fp-ts/function";
+import * as Option from "fp-ts/Option";
 import { initializeApp } from "firebase/app";
-import { set, ref, getDatabase, onValue } from 'firebase/database';
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, setDoc } from 'firebase/firestore/lite';
+import { set, ref, getDatabase, onValue } from "firebase/database";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, setDoc } from "firebase/firestore/lite";
 
 
 import { secrets } from "../../../secrets";
@@ -23,11 +23,11 @@ const db = getFirestore(app);
 
 export const io = () => {
   const db = getDatabase();
-  const messagesRef = ref(db, 'messages');
+  const messagesRef = ref(db, "messages");
 
   const emit = (type: string, message: string)  => {
     set(messagesRef, {type, payload: message});
-  }
+  };
 
   const on = (type: string, callback: (data: string) => void) => {
     onValue(messagesRef, (snapshot) => {
@@ -36,10 +36,10 @@ export const io = () => {
         callback(data.payload);
       }
     });
-  }
+  };
 
   return {emit, on};
-}
+};
 
 const getCollection = () => Promise.resolve(collection(db, secrets.firebaseCollectionId));
 const getDoc = (name: string) => getCollection()
@@ -55,10 +55,10 @@ export const FirebaseStore: CryptedExternalStore = encryptStore({
   getEntries: () => getCollection()
     .then(getDocs)
     .then(({docs}) => docs)
-    .then(docs => docs.map(d => d.get('name'))),
+    .then(docs => docs.map(d => d.get("name"))),
 
   create: (name) => getCollection()
-    .then(collection => addDoc(collection, { name, value: ''}))
+    .then(collection => addDoc(collection, { name, value: ""}))
     .then(constVoid),
 
   delete: (name) => getDoc(name)
@@ -68,8 +68,8 @@ export const FirebaseStore: CryptedExternalStore = encryptStore({
     )),
 
   read: (name) => getDoc(name)
-    .then(Option.map(doc => doc.get('value')))
-    .then(Option.getOrElse(constant(''))),
+    .then(Option.map(doc => doc.get("value")))
+    .then(Option.getOrElse(constant(""))),
 
   update: (name, state: string) => getDoc(name)
     .then(Option.fold(

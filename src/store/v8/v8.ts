@@ -1,10 +1,10 @@
-import { pipe } from 'fp-ts/lib/function';
-import * as IO from 'io-ts';
+import { pipe } from "fp-ts/lib/function";
+import * as IO from "io-ts";
 
-import { retrieveFromVersion } from '../helper';
-import * as LastState from '../v7/v7';
+import { retrieveFromVersion } from "../helper";
+import * as LastState from "../v7/v7";
 
-const version = 'V8';
+const version = "V8";
 
 const itemDecoder = IO.type({
   name: IO.string,
@@ -18,8 +18,8 @@ const potionsDecoder = IO.type({
 });
 
 const roleDecoder = IO.union([
-  IO.literal('MJ'),
-  IO.literal('Player'),
+  IO.literal("MJ"),
+  IO.literal("Player"),
 ]);
 
 export const stateDecoder = IO.intersection([
@@ -41,7 +41,7 @@ function update(promise: Promise<LastState.State>): Promise<State> {
         emptyBottles: 0,
         ingredients: [],
       },
-      role: 'Player',
+      role: "Player",
     }));
 }
 

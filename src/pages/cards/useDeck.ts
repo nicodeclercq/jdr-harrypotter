@@ -1,7 +1,6 @@
 import { pipe } from "fp-ts/function";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { lens, getPropertyCurried } from "../../helpers/object";
-import { createEmptyArray } from "../../helpers/array";
 import { useStore } from "../../hooks/useStore";
 import { Card, State } from "../../store/State";
 import { deck } from "./deck";
@@ -25,28 +24,24 @@ const deal = (deck: Card[], cardsNb: number) => {
     shuffle(deck),
     (d) =>
       d.reduce(
-        (
-          { newDeck: { deck, hand, drop }, remainingCards },
-          card: Card,
-          index: number
-        ) =>
+        ({ newDeck: { deck, hand, drop }, remainingCards }, card: Card) =>
           remainingCards === 0
             ? {
-                newDeck: {
-                  deck: [...deck, card],
-                  drop,
-                  hand,
-                },
-                remainingCards,
-              }
-            : {
-                newDeck: {
-                  deck,
-                  drop,
-                  hand: [...hand, card],
-                },
-                remainingCards: remainingCards - 1,
+              newDeck: {
+                deck: [...deck, card],
+                drop,
+                hand,
               },
+              remainingCards,
+            }
+            : {
+              newDeck: {
+                deck,
+                drop,
+                hand: [...hand, card],
+              },
+              remainingCards: remainingCards - 1,
+            },
         {
           newDeck: {
             deck: [] as Deck["deck"],

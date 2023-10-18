@@ -1,10 +1,10 @@
-import { pipe } from 'fp-ts/lib/function';
-import * as IO from 'io-ts';
+import { pipe } from "fp-ts/lib/function";
+import * as IO from "io-ts";
 
-import { retrieveFromVersion } from '../helper';
-import * as LastState from '../v8/v8';
+import { retrieveFromVersion } from "../helper";
+import * as LastState from "../v8/v8";
 
-const version = 'V9';
+const version = "V9";
 
 
 

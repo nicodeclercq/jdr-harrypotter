@@ -1,24 +1,24 @@
-import React, { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { constant, pipe } from 'fp-ts/function';
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { constant, pipe } from "fp-ts/function";
 
-import { usePotions } from './usePotions';
-import { Card } from '../../components/Card';
-import { Accordion } from '../../components/Accordion';
-import { Label } from '../../components/font/Label';
-import { Input } from '../../components/Input';
-import { Tag } from '../../components/Tag';
-import { ingredients } from './potions';
-import { Icon } from '../../components/icons/Icon';
-import { Title } from '../../components/font/Title';
-import { getOrElse } from '../../helpers/number';
+import { usePotions } from "./usePotions";
+import { Card } from "../../components/Card";
+import { Accordion } from "../../components/Accordion";
+import { Label } from "../../components/font/Label";
+import { Input } from "../../components/Input";
+import { Tag } from "../../components/Tag";
+import { ingredients } from "./potions";
+import { Icon } from "../../components/icons/Icon";
+import { Title } from "../../components/font/Title";
+import { getOrElse } from "../../helpers/number";
 
 const scarcity = {
-  "Très rare": 'purple',
-  "Insolite": 'red',
-  "Usuel": 'yellow',
-  "Commun": 'green',
-  undefined: 'gray',
+  "Très rare": "purple",
+  "Insolite": "red",
+  "Usuel": "yellow",
+  "Commun": "green",
+  undefined: "gray",
 } as const;
 
 type Props = {
@@ -30,7 +30,7 @@ type Props = {
 }
 
 type Form = {
-    [name in typeof ingredients[number]['name']]: number;
+    [name in typeof ingredients[number]["name"]]: number;
   }
   & {
     emptyBottles: number,
@@ -56,7 +56,7 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
     const currentValues = getValues();
 
     if(ownedBottles !== currentValues.emptyBottles){
-      setValue('emptyBottles', ownedBottles);
+      setValue("emptyBottles", ownedBottles);
     }
   }, [getValues, ownedBottles, setValue]);
 
@@ -86,7 +86,7 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
     );
   };
 
-  const getScarcityColor = (ingredient: string) => scarcity[getScarcityValue(ingredient) ?? 'undefined'];
+  const getScarcityColor = (ingredient: string) => scarcity[getScarcityValue(ingredient) ?? "undefined"];
   const getScarcityValue = (ingredient: string) => ingredients.find(i => i.name === ingredient)?.scarcity;
 
   return (
@@ -101,7 +101,7 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
           </div>,
           toggle: <Icon name="DOWN" />,
           content: <form  onSubmit={handleSubmit(onSubmit)}>
-            <div className="overflow-y-auto grid gap-2 grid-cols-2" style={{maxHeight: '20rem'}}>
+            <div className="overflow-y-auto grid gap-2 grid-cols-2" style={{maxHeight: "20rem"}}>
               <div className="p-2 bg-gray-200 rounded">
                 <Controller
                   name="emptyBottles"
@@ -156,5 +156,5 @@ export function Ingredients ({ownedIngredients, ownedBottles}: Props) {
         }}
       </Accordion>
     </Card>
-  )
+  );
 }

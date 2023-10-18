@@ -1,13 +1,13 @@
-import React from 'react';
-import { pipe } from 'fp-ts/function';
+import React from "react";
+import { pipe } from "fp-ts/function";
 
-import { Layout } from '../../components/Layout';
-import { fromRemoteData, sequence } from '../../helpers/remoteData';
-import { MoneyForm } from './MoneyForm';
-import { ObjectsForm } from './ObjectsForm';
-import { useMoney } from './useMoney';
-import { useObjects } from './useObjects';
-import { MoneyConverter } from '../../components/MoneyConverter';
+import { Layout } from "../../components/Layout";
+import { fromRemoteData, sequence } from "../../helpers/remoteData";
+import { MoneyForm } from "./MoneyForm";
+import { ObjectsForm } from "./ObjectsForm";
+import { useMoney } from "./useMoney";
+import { useObjects } from "./useObjects";
+import { MoneyConverter } from "../../components/MoneyConverter";
 
 export function ObjectsPage(){
   const { objects } = useObjects();

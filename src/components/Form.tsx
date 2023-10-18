@@ -328,7 +328,7 @@ export function Form<T extends Fields<Key>, Key extends string>({
                   config={value}
                 />
               ) : (
-                /* default */ <></>
+              /* default */ <></>
               )}
             </div>
           </React.Fragment>

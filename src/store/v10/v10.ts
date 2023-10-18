@@ -1,10 +1,10 @@
-import { pipe } from 'fp-ts/lib/function';
-import * as IO from 'io-ts';
+import { pipe } from "fp-ts/lib/function";
+import * as IO from "io-ts";
 
-import { retrieveFromVersion } from '../helper';
-import * as LastState from '../v9/v9';
+import { retrieveFromVersion } from "../helper";
+import * as LastState from "../v9/v9";
 
-const version = 'V10';
+const version = "V10";
 
 export const stateDecoder = IO.intersection([
   LastState.stateDecoder,

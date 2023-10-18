@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export function D100({value, size = 6}: {value: number, size?: number}) {
   return (
@@ -49,7 +49,7 @@ export function D100({value, size = 6}: {value: number, size?: number}) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <text  x="12" y="15" fontSize="7" fill="black">{`${value}`.padEnd(2, '0')}</text>
+      <text  x="12" y="15" fontSize="7" fill="black">{`${value}`.padEnd(2, "0")}</text>
       <defs>
         <linearGradient
           id="prefix__paint0_linear"

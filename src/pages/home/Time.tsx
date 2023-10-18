@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { interval } from 'rxjs';
-import * as RX from 'rxjs/operators';
-import { isDefined } from '../../helpers/nullable';
+import React, { useEffect, useState } from "react";
+import { interval } from "rxjs";
+import * as RX from "rxjs/operators";
+import { isDefined } from "../../helpers/nullable";
 
-import { useSocket } from '../../hooks/useSocket';
-import { useSound } from '../../hooks/useSound';
-import { isTimeMessage } from '../../message';
+import { useSocket } from "../../hooks/useSocket";
+import { useSound } from "../../hooks/useSound";
+import { isTimeMessage } from "../../message";
 
 export function Time(){
   const [time, setTime] = useState<number | undefined>(undefined);
@@ -17,13 +17,13 @@ export function Time(){
       return;
     }
     if (time > 6) {
-      return 'yellow';
+      return "yellow";
     }
     if (time > 3) {
-      return 'orange';
+      return "orange";
     }
-    return 'red';
-  }
+    return "red";
+  };
 
   useEffect(() => {
     const subscription = stream
@@ -44,13 +44,13 @@ export function Time(){
       .subscribe({next: (time) => {
         setTime(time >= 0 ? time : undefined);
         if(time === 0){
-          play('time');
+          play("time");
         }
       }});
     return () => subscription.unsubscribe();
   }, [stream, play]);
 
-  return <div style={{position: 'fixed', fontSize: '20rem', color: getColor(time), textShadow: '1rem 1rem 1rem rgba(0,0,0,0.25)', pointerEvents: 'none', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 2}}>
-    {time != null ? time : ''}
+  return <div style={{position: "fixed", fontSize: "20rem", color: getColor(time), textShadow: "1rem 1rem 1rem rgba(0,0,0,0.25)", pointerEvents: "none", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 2}}>
+    {time != null ? time : ""}
   </div>;
 }

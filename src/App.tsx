@@ -1,7 +1,7 @@
-import React from 'react';
-import { Router } from './Router';
-import { NotificationStack } from './components/Notification';
-import { WindowShortcuts } from './WindowShortcuts';
+import React from "react";
+import { Router } from "./Router";
+import { NotificationStack } from "./components/Notification";
+import { WindowShortcuts } from "./WindowShortcuts";
 
 function App() {
   return (

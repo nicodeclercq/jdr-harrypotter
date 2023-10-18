@@ -1,15 +1,15 @@
-import { pipe } from 'fp-ts/lib/function';
-import * as IO from 'io-ts';
-import { emptyRecord } from '../../helpers/object';
+import { pipe } from "fp-ts/lib/function";
+import * as IO from "io-ts";
+import { emptyRecord } from "../../helpers/object";
 
-import { retrieveFromVersion } from '../helper';
-import * as V5 from '../v5/v5';
+import { retrieveFromVersion } from "../helper";
+import * as V5 from "../v5/v5";
 
 export type Trait = V5.Trait;
 export type UserSpell = V5.UserSpell;
 export type Skills = V5.Skills;
 
-const version = 'V6';
+const version = "V6";
 
 const notesDecoder = IO.array(IO.type({
   id: IO.string,

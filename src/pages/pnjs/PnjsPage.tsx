@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { pipe } from 'fp-ts/function';
-import { Layout } from '../../components/Layout';
-import { usePNJ } from '../../hooks/usePNJ';
-import { PNJ } from '../../components/pnj/pnj';
-import { Input } from '../../components/Input';
-import { fromReloadable } from '../../helpers/Reloadable';
-import { Loader } from '../../components/Loader';
+import React, { useState } from "react";
+import { pipe } from "fp-ts/function";
+import { Layout } from "../../components/Layout";
+import { usePNJ } from "../../hooks/usePNJ";
+import { PNJ } from "../../components/pnj/pnj";
+import { Input } from "../../components/Input";
+import { fromReloadable } from "../../helpers/Reloadable";
+import { Loader } from "../../components/Loader";
 
 export function PnjsPage(){
   const { data } = usePNJ();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <Layout>
@@ -22,12 +22,12 @@ export function PnjsPage(){
             data,
             fromReloadable(
               (pnjs, isReloading) => (<>
-                <div className="w-full" style={{visibility: isReloading ? 'visible' : 'hidden'}}>
+                <div className="w-full" style={{visibility: isReloading ? "visible" : "hidden"}}>
                   <Loader />
                 </div>
                 <div className="w-full grid grid-cols-3 grid-flow-row auto-rows-max gap-2">
                   {pnjs
-                    .filter(pnj => pnj.name.toLowerCase().includes(searchQuery) || (pnj.description ?? '').toLowerCase().includes(searchQuery))
+                    .filter(pnj => pnj.name.toLowerCase().includes(searchQuery) || (pnj.description ?? "").toLowerCase().includes(searchQuery))
                     .map(pnj => (
                       <PNJ key={pnj.name} pnj={pnj} />
                     ))
@@ -42,5 +42,5 @@ export function PnjsPage(){
         }
       </div>
     </Layout>
-  )
+  );
 }

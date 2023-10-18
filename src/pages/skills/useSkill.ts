@@ -1,16 +1,16 @@
-import * as RemoteData from '@devexperts/remote-data-ts';
-import { pipe } from 'fp-ts/function';
+import * as RemoteData from "@devexperts/remote-data-ts";
+import { pipe } from "fp-ts/function";
 
-import { useStore } from '../../hooks/useStore';
-import * as Objects from '../../helpers/object';
-import * as Interaction from '../../helpers/interaction';
-import { State } from '../../store/State';
-import { onSuccess } from '../../helpers/remoteData';
+import { useStore } from "../../hooks/useStore";
+import * as Objects from "../../helpers/object";
+import * as Interaction from "../../helpers/interaction";
+import { State } from "../../store/State";
+import { onSuccess } from "../../helpers/remoteData";
 
 export const MIN_USE_FOR_UPGRADE = 5;
 const MAX_SKILL_LEVEL = 95;
 
-const skillsLens = Objects.lens<State, 'skills'>('skills');
+const skillsLens = Objects.lens<State, "skills">("skills");
 
 export const useSkill = () => {
   const [skills, setSkills] = useStore(skillsLens);
@@ -57,22 +57,22 @@ export const useSkill = () => {
     pipe(
       skills,
       RemoteData.map(skills => Objects.map(
-            ({currentLevel, uses}, key) =>
-              key === skill && uses < MIN_USE_FOR_UPGRADE
-                ? {
-                  currentLevel,
-                  uses: uses + (isCritical ? 2 : 1)
-                }
-                : {
-                  currentLevel,
-                  uses
-                },
-            skills
-          ),
+        ({currentLevel, uses}, key) =>
+          key === skill && uses < MIN_USE_FOR_UPGRADE
+            ? {
+              currentLevel,
+              uses: uses + (isCritical ? 2 : 1)
+            }
+            : {
+              currentLevel,
+              uses
+            },
+        skills
+      ),
       ),
       onSuccess(setSkills),
     );
-  }
+  };
 
   const upgrade = (skill: string, result: Interaction.Interaction<never, number>) => {
     pipe(
@@ -100,7 +100,7 @@ export const useSkill = () => {
       }),
       onSuccess(setSkills),
     );
-  }
+  };
 
   return {
     getSkills,
@@ -109,5 +109,5 @@ export const useSkill = () => {
     add,
     remove,
     edit,
-  }
-}
+  };
+};

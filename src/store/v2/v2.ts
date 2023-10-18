@@ -1,11 +1,11 @@
-import { pipe } from 'fp-ts/lib/function';
-import * as IO from 'io-ts';
+import { pipe } from "fp-ts/lib/function";
+import * as IO from "io-ts";
 
-import { spells } from '../../pages/spells/spells';
-import { retrieveFromVersion } from '../helper';
-import * as V1 from '../v1/v1';
+import { spells } from "../../pages/spells/spells";
+import { retrieveFromVersion } from "../helper";
+import * as V1 from "../v1/v1";
 
-const version = 'V2';
+const version = "V2";
 
 export const elementDecoder = V1.elementDecoder;
 export const userDecoder = V1.userDecoder;
@@ -26,7 +26,7 @@ export const stateDecoder = IO.type({
 
 export type State = IO.TypeOf<typeof stateDecoder>;
 
-export const defaultUserSpells: State['userSpells'] = {
+export const defaultUserSpells: State["userSpells"] = {
   knownSpells: {},
   points:{},
 };
@@ -43,16 +43,16 @@ function update(promise: Promise<V1.State>): Promise<State> {
         });
       });
 
-      return knownSpells.reduce(
-        (acc, {id, usePoints}) => {
-          return {
-            ...acc,
-            [id]: {id, usePoints},
-          };
-        },
-        {...state, userSpells: defaultUserSpells}
-      );
-    });
+    return knownSpells.reduce(
+      (acc, {id, usePoints}) => {
+        return {
+          ...acc,
+          [id]: {id, usePoints},
+        };
+      },
+      {...state, userSpells: defaultUserSpells}
+    );
+  });
 }
 
 export function retrieve(currentState: unknown, name: string | undefined) {

@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
 export function D20({value, size = 6}: {value: number, size?: number}) {
   return (
     <svg
-    style={{width: `${size}rem`, height: `${size}rem`}}
+      style={{width: `${size}rem`, height: `${size}rem`}}
       viewBox="0 0 512 512"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

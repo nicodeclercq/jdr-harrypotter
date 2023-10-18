@@ -37,18 +37,18 @@ export const stream = new BehaviorSubject<Partial<Record<Key, unknown>>>({});
 
 const set =
   <T>(name: Key) =>
-  (newValue: T) => {
-    sessionStorage.setItem(
-      name,
-      JSON.stringify(
-        newValue instanceof Date ? { type: "DATE", value: newValue } : newValue
-      )
-    );
-    stream.next({
-      ...stream.value,
-      [name]: newValue,
-    });
-  };
+    (newValue: T) => {
+      sessionStorage.setItem(
+        name,
+        JSON.stringify(
+          newValue instanceof Date ? { type: "DATE", value: newValue } : newValue
+        )
+      );
+      stream.next({
+        ...stream.value,
+        [name]: newValue,
+      });
+    };
 
 export function usePersistantState<T>(
   name: Key

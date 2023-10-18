@@ -1,13 +1,13 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 const sounds = [
-  'bip',
-  'dice',
-  'dice-short',
-  'sleep',
-  'error',
-  'success',
-  'failure',
-  'time',
+  "bip",
+  "dice",
+  "dice-short",
+  "sleep",
+  "error",
+  "success",
+  "failure",
+  "time",
 ] as const;
 
 type Sound = (typeof sounds)[number];
@@ -20,5 +20,5 @@ export function useSound() {
 
   return {
     play,
-  }
+  };
 }

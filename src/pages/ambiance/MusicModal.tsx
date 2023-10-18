@@ -1,6 +1,6 @@
-import React from 'react';
-import { Form } from '../../components/Form';
-import { Modal } from '../../components/Modal';
+import React from "react";
+import { Form } from "../../components/Form";
+import { Modal } from "../../components/Modal";
 
 type Props = {
   value?: {name: string, url: string};
@@ -15,10 +15,10 @@ export function MusicModal({ onSubmit, onCancel, value }: Props){
         onSubmit={onSubmit}
         onCancel={onCancel}
         fields={{
-          name: {defaultValue: value?.name ?? '', label: 'Nom'},
-          url: {defaultValue: value?.url ?? '', label: 'Url'},
+          name: {defaultValue: value?.name ?? "", label: "Nom"},
+          url: {defaultValue: value?.url ?? "", label: "Url"},
         }}
       />
     </Modal>
-  )
+  );
 }

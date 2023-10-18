@@ -1,31 +1,32 @@
-import * as IO from 'io-ts';
-import { pipe } from 'fp-ts/function';
+import React from "react";
+import * as IO from "io-ts";
+import { pipe } from "fp-ts/function";
 
-import { prompt } from '../../helpers/io';
-import { retrieveFromVersion } from '../helper';
-import { Welcome } from './Welcome';
-import { NameForm } from './NameForm';
-import { ExternalStoreManager } from '../externalStores/ExternalStoreManager';
-import { NotificationService } from '../../NotificationService';
+import { prompt } from "../../helpers/io";
+import { retrieveFromVersion } from "../helper";
+import { Welcome } from "./Welcome";
+import { NameForm } from "./NameForm";
+import { ExternalStoreManager } from "../externalStores/ExternalStoreManager";
+import { NotificationService } from "../../NotificationService";
 
-const version = 'V1';
+const version = "V1";
 
 export const targetDecoder = IO.union([
-  IO.literal('Animal'),
-  IO.literal('Object'),
-  IO.literal('Person'),
-  IO.literal('Plant'),
+  IO.literal("Animal"),
+  IO.literal("Object"),
+  IO.literal("Person"),
+  IO.literal("Plant"),
 ]);
 
 export type Target = IO.TypeOf<typeof targetDecoder>;
 
 export const elementDecoder = IO.union([
-  IO.literal('Air'),
-  IO.literal('Eau'),
-  IO.literal('Terre'),
-  IO.literal('Feu'),
-  IO.literal('Âme'),
-  IO.literal('Corps'),
+  IO.literal("Air"),
+  IO.literal("Eau"),
+  IO.literal("Terre"),
+  IO.literal("Feu"),
+  IO.literal("Âme"),
+  IO.literal("Corps"),
 ]);
 
 export type Element = IO.TypeOf<typeof elementDecoder>;
@@ -36,7 +37,7 @@ export const spellDecoder = IO.strict({
   description: IO.string,
   targets: IO.strict({
     Animal: IO.boolean,
-    Object: IO.boolean, 
+    Object: IO.boolean,
     Person: IO.boolean,
     Plant: IO.boolean,
   }),
@@ -49,11 +50,7 @@ export type Spell = IO.TypeOf<typeof spellDecoder>;
 
 export const userDecoder = IO.type({
   name: IO.string,
-  imageUrl: IO.union([
-    IO.null,
-    IO.undefined,
-    IO.string,
-  ]),
+  imageUrl: IO.union([IO.null, IO.undefined, IO.string]),
 });
 
 export type User = IO.TypeOf<typeof userDecoder>;
@@ -67,59 +64,67 @@ export const stateDecoder = IO.type({
 export type State = IO.TypeOf<typeof stateDecoder>;
 
 export const defaultState: State = {
-  user: {name: '', imageUrl: undefined},
+  user: { name: "", imageUrl: undefined },
   userSpells: [],
   uses: {},
 };
 
-function update(_currentState: unknown, name: string | undefined): Promise<State> {
+function update(
+  _currentState: unknown,
+  name: string | undefined
+): Promise<State> {
   return Promise.resolve()
-    .then(
-      () => prompt<void>(
+    .then(() =>
+      prompt<void>(
         (callback: () => void) => <Welcome callback={callback} />,
         <>Bienvenue sur ta fiche de personnage</>
       )
     )
-    .then(() => 
+    .then(() =>
       name
         ? name
         : prompt<string>(
-          (callback: (result: string) => void) => <NameForm defaultValue={defaultState.user.name} callback={callback} />,
+          (callback: (result: string) => void) => (
+            <NameForm
+              defaultValue={defaultState.user.name}
+              callback={callback}
+            />
+          ),
           <>Qui est ton personnage ?</>
         )
     )
-    .then((name) => ({
-      ...defaultState,
-      user: {
-        name
-      }
-    }) as State);
+    .then(
+      (name) =>
+        ({
+          ...defaultState,
+          user: {
+            name,
+          },
+        } as State)
+    );
 }
 
-export function retrieve(currentState: unknown, name: string | undefined): Promise<State> {
-  return retrieveFromVersion(
-    version,
-    currentState,
-    stateDecoder,
-    () => pipe(
-      currentState,
-      s => update(s, name)
-        .then((s) => {
-          ExternalStoreManager.create(s.user.name)
-            .catch((error) => {
-              console.error('Unable to create user remotely', error);
-              NotificationService.add({
-                id: 'ExternalStore',
-                message: 'Sauvegarde externe impossible',
-                type: 'failure',
-                action: {
-                  label: 'Réessayer',
-                  run: () => ExternalStoreManager.create(s.user.name),
-                }
-              })
-            });
-          return s;
-        }),
+export function retrieve(
+  currentState: unknown,
+  name: string | undefined
+): Promise<State> {
+  return retrieveFromVersion(version, currentState, stateDecoder, () =>
+    pipe(currentState, (s) =>
+      update(s, name).then((s) => {
+        ExternalStoreManager.create(s.user.name).catch((error) => {
+          console.error("Unable to create user remotely", error);
+          NotificationService.add({
+            id: "ExternalStore",
+            message: "Sauvegarde externe impossible",
+            type: "failure",
+            action: {
+              label: "Réessayer",
+              run: () => ExternalStoreManager.create(s.user.name),
+            },
+          });
+        });
+        return s;
+      })
     )
   );
 }

@@ -1,44 +1,44 @@
-import React from 'react';
-import { BodyText } from '../../components/font/BodyText';
-import { Incantation } from '../../components/font/Incantation';
-import { Tag, Color } from '../../components/Tag';
-import { Accordion } from '../../components/Accordion';
-import * as SpellType from './domain/Spell';
-import { Button } from '../../components/Button';
-import { Icon, IconName } from '../../components/icons/Icon';
-import { Caption } from '../../components/font/Caption';
+import React from "react";
+import { BodyText } from "../../components/font/BodyText";
+import { Incantation } from "../../components/font/Incantation";
+import { Tag, Color } from "../../components/Tag";
+import { Accordion } from "../../components/Accordion";
+import * as SpellType from "./domain/Spell";
+import { Button } from "../../components/Button";
+import { Icon, IconName } from "../../components/icons/Icon";
+import { Caption } from "../../components/font/Caption";
 
 const baseElements: Record<string, string> = {
-  'feu': 'FEU',
-  'air': 'AIR',
-  'terre': 'PLANT',
-  'eau': 'EAU',
-}
+  "feu": "FEU",
+  "air": "AIR",
+  "terre": "PLANT",
+  "eau": "EAU",
+};
 
 const elements: Record<SpellType.Category, IconName> = {
-  'feu': 'FEU',
-  'air': 'AIR',
-  'terre': 'PLANT',
-  'eau': 'EAU',
-  'annulation': "CROSS",
-  'attaque simple': "SWORD",
-  'détection magique': "LAMP",
-  'lévitation': "CORPS",
-  'sort de base': "SORCERER",
-  'métamorphose': "ANIMAL"
+  "feu": "FEU",
+  "air": "AIR",
+  "terre": "PLANT",
+  "eau": "EAU",
+  "annulation": "CROSS",
+  "attaque simple": "SWORD",
+  "détection magique": "LAMP",
+  "lévitation": "CORPS",
+  "sort de base": "SORCERER",
+  "métamorphose": "ANIMAL"
 };
 
 const colors: Record<SpellType.Category, Color> = {
-  'feu': 'red',
-  'air': 'red',
-  'terre': 'red',
-  'eau': 'red',
-  'annulation': "indigo",
-  'attaque simple': "yellow",
-  'détection magique': "pink",
-  'lévitation': "green",
-  'sort de base': "blue",
-  'métamorphose': "purple"
+  "feu": "red",
+  "air": "red",
+  "terre": "red",
+  "eau": "red",
+  "annulation": "indigo",
+  "attaque simple": "yellow",
+  "détection magique": "pink",
+  "lévitation": "green",
+  "sort de base": "blue",
+  "métamorphose": "purple"
 };
 
 type Props = {
@@ -69,7 +69,7 @@ export function Spell({spell, roll, actions, isOwned = false, canBeAdded = false
               {canBeAdded && <span className="text-green-600"><Icon name="CHECK" /></span>}
               <Tag title={spell.category} color={colors[spell.category]}>
                 <Icon name={elements[spell.category]} />
-                {baseElements[spell.category] ? ` ${spell.category}` : ''}
+                {baseElements[spell.category] ? ` ${spell.category}` : ""}
               </Tag>
             </div>
           </div>
@@ -83,11 +83,11 @@ export function Spell({spell, roll, actions, isOwned = false, canBeAdded = false
         ),
         actions: isOwned && roll
             && (
-                <Button onClick={() => roll(spell.name)} type="secondary">
-                  <Icon name="DICE" />
-                </Button>
-              )
+              <Button onClick={() => roll(spell.name)} type="secondary">
+                <Icon name="DICE" />
+              </Button>
+            )
       }}
     </Accordion>
-  )
+  );
 }

@@ -1,3 +1,5 @@
+export type EmptyObject = Record<string, never>;
+
 export const hasKey = <T extends string | number | symbol, U>(
   name: string | number | symbol,
   object: Record<T, U>
@@ -20,14 +22,14 @@ export const remove = <
   V,
   T extends Record<U, V>
 >(
-  key: keyof T,
-  object: T
-): Omit<T, typeof key> =>
-  entries(object).reduce(
-    (acc, [k, v]) =>
-      k === key ? acc : ({ ...acc, [k]: v } as Omit<T, keyof T>),
+    key: keyof T,
+    object: T
+  ): Omit<T, typeof key> =>
+    entries(object).reduce(
+      (acc, [k, v]) =>
+        k === key ? acc : ({ ...acc, [k]: v } as Omit<T, keyof T>),
     {} as Omit<T, keyof T>
-  );
+    );
 
 export const merge = <T, U extends string | number | symbol>(
   obj1: Record<U, T>,
@@ -62,10 +64,10 @@ export const emptyRecord = <A extends string | number | symbol, B>() =>
 export const fromEntries = <A extends string | number | symbol, B>(
   entries: [A, B][]
 ) =>
-  entries.reduce(
-    (acc, [key, value]) => ({ ...acc, [key]: value }),
-    emptyRecord<A, B>()
-  );
+    entries.reduce(
+      (acc, [key, value]) => ({ ...acc, [key]: value }),
+      emptyRecord<A, B>()
+    );
 
 export type ValueOf<T extends Record<string | number | symbol, unknown>> =
   T extends Record<string | number | symbol, infer R> ? R : never;
@@ -76,14 +78,14 @@ export const getProperty = <T, K extends keyof T>(o: T, propertyName: K) =>
   o[propertyName];
 export const getPropertyCurried =
   <T, K extends keyof T>(propertyName: K) =>
-  (o: T) =>
-    getProperty(o, propertyName);
+    (o: T) =>
+      getProperty(o, propertyName);
 export const setProperty =
   <T, K extends keyof T>(o: T, propertyName: K) =>
-  (newValue: T[K]) => ({
-    ...o,
-    [propertyName]: newValue,
-  });
+    (newValue: T[K]) => ({
+      ...o,
+      [propertyName]: newValue,
+    });
 
 export const lens = <T, K extends keyof T>(propertyName: K) =>
   [

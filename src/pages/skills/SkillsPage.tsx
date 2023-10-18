@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { pipe } from 'fp-ts/function';
-import { Card } from '../../components/Card';
-import { Layout } from '../../components/Layout';
-import { fromRemoteData } from '../../helpers/remoteData';
-import { MySkills } from './MySkills';
-import { MyTraits } from './MyTraits';
-import { useSkill } from './useSkill';
-import { Identity } from '../home/Identity';
-import { Button } from '../../components/Button';
-import { Icon } from '../../components/icons/Icon';
-import { AddSkillModal } from './AddSkillModal';
+import React, { useState } from "react";
+import { pipe } from "fp-ts/function";
+import { Card } from "../../components/Card";
+import { Layout } from "../../components/Layout";
+import { fromRemoteData } from "../../helpers/remoteData";
+import { MySkills } from "./MySkills";
+import { MyTraits } from "./MyTraits";
+import { useSkill } from "./useSkill";
+import { Identity } from "../home/Identity";
+import { Button } from "../../components/Button";
+import { Icon } from "../../components/icons/Icon";
+import { AddSkillModal } from "./AddSkillModal";
 
 export function SkillsPage() {
   const { getSkills, add } = useSkill();

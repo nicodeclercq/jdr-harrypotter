@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export function D10({value, size = 6}: {value: number, size?: number}) {
   return (

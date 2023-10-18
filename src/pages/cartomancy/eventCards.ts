@@ -1,5 +1,5 @@
 
-export type CardType = 'combat' | 'knowledge' | 'social' | 'future';
+export type CardType = "combat" | "knowledge" | "social" | "future";
 
 export type EventCard = {
   title: string;

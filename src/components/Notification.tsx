@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { identity } from 'fp-ts/function';
-import { isMessageType, NotificationService, NotificationType } from '../NotificationService';
-import { useStore } from '../hooks/useStore';
-import { Button } from './Button';
-import { State } from '../store/State';
-import { Avatar } from './Avatar';
-import { RichText } from './font/RichText';
+import React, { useEffect, useState } from "react";
+import { identity } from "fp-ts/function";
+import { isMessageType, NotificationService, NotificationType } from "../NotificationService";
+import { useStore } from "../hooks/useStore";
+import { Button } from "./Button";
+import { State } from "../store/State";
+import { Avatar } from "./Avatar";
+import { RichText } from "./font/RichText";
 
 function Notification({notification}: {notification: NotificationType}) {
   const renderIcon = (notification: NotificationType) => {
@@ -19,8 +19,8 @@ function Notification({notification}: {notification: NotificationType}) {
 
     return isMessageType(notification)
       ? icons.message(notification.author)
-      : icons[notification.type as 'success' | 'failure' | 'warning']()
-  }
+      : icons[notification.type as "success" | "failure" | "warning"]();
+  };
 
   return (
     <div className="flex flex-row items-center p-4 bg-white rounded shadow-md space-x-2">
@@ -32,7 +32,7 @@ function Notification({notification}: {notification: NotificationType}) {
         notification.action && <Button type="primary" onClick={notification.action.run}>{notification.action.label}</Button>
       }
     </div>
-  )
+  );
 }
 
 export const useNotification = () => {
@@ -70,5 +70,5 @@ export function NotificationStack(){
         )
       }
     </div>
-  )
+  );
 }

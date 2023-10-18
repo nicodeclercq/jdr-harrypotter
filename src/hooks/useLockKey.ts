@@ -1,13 +1,13 @@
-import { pipe } from 'fp-ts/function';
-import * as RemoteData from '@devexperts/remote-data-ts';
+import { pipe } from "fp-ts/function";
+import * as RemoteData from "@devexperts/remote-data-ts";
 
-import { removeDupplicates } from '../helpers/array';
-import { useStore } from './useStore';
-import { State } from '../store/State';
-import { onSuccess } from '../helpers/remoteData';
-import { lens } from '../helpers/object';
+import { removeDupplicates } from "../helpers/array";
+import { useStore } from "./useStore";
+import { State } from "../store/State";
+import { onSuccess } from "../helpers/remoteData";
+import { lens } from "../helpers/object";
 
-const lockKeysLens = lens<State, 'lockKeys'>('lockKeys');
+const lockKeysLens = lens<State, "lockKeys">("lockKeys");
 
 export const useLockKey = () => {
   const [ lockKeys, setLockKeys ] = useStore(lockKeysLens);
@@ -32,7 +32,7 @@ export const useLockKey = () => {
       lockKeys,
       RemoteData.map(lockKeys => lockKeys.includes(lockKey)),
     );
-  }
+  };
 
   return {
     lockKeys,
@@ -40,5 +40,5 @@ export const useLockKey = () => {
     unlock,
     lock,
     isUnlocked,
-  }
-}
+  };
+};

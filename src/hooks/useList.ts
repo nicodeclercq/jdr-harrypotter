@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export function useList<T>(init?: T[]) {
   const [list, setList] = useState<T[]>(init ?? []);
@@ -14,5 +14,5 @@ export function useList<T>(init?: T[]) {
     prepend,
     remove,
     update,
-  }
+  };
 }

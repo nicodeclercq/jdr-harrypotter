@@ -1,32 +1,32 @@
-import { createArray } from './../../helpers/array';
-import { pipe } from 'fp-ts/lib/function';
-import * as IO from 'io-ts';
+import { createArray } from "./../../helpers/array";
+import { pipe } from "fp-ts/lib/function";
+import * as IO from "io-ts";
 
-import { retrieveFromVersion } from '../helper';
-import * as V6 from '../v6/v6';
+import { retrieveFromVersion } from "../helper";
+import * as V6 from "../v6/v6";
 
 export type Trait = V6.Trait;
 export type UserSpell = V6.UserSpell;
 export type Skills = V6.Skills;
 
-const version = 'V7';
+const version = "V7";
 
 const arithmancyNumberDecoder = IO.union([
   IO.type({
-    type: IO.literal('name'),
+    type: IO.literal("name"),
     value: IO.string,
   }),
   IO.type({
-    type: IO.literal('verb'),
+    type: IO.literal("verb"),
     value: IO.string,
     invert: IO.string,
   }),
   IO.type({
-    type: IO.literal('inverse'),
+    type: IO.literal("inverse"),
   }),
   IO.undefined,
   IO.null,
-])
+]);
 
 const arithmancyDecoder = IO.type({
   numbers: IO.array(arithmancyNumberDecoder),

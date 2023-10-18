@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { pipe } from 'fp-ts/function';
-import { Button } from '../../components/Button';
-import { Card } from '../../components/Card';
-import { Icon } from '../../components/icons/Icon';
-import { RollModal } from '../../components/RollModal';
-import { entries } from '../../helpers/object';
-import { fromRemoteData } from '../../helpers/remoteData';
-import { Trait } from '../../store/State';
-import { useTraits } from '../home/useTraits';
+import React, { useState } from "react";
+import { pipe } from "fp-ts/function";
+import { Button } from "../../components/Button";
+import { Card } from "../../components/Card";
+import { Icon } from "../../components/icons/Icon";
+import { RollModal } from "../../components/RollModal";
+import { entries } from "../../helpers/object";
+import { fromRemoteData } from "../../helpers/remoteData";
+import { Trait } from "../../store/State";
+import { useTraits } from "../home/useTraits";
 
 type Props = {
   userTraits: Record<Trait, number>;
 };
 
-type Caracteristics = 'Instinct' | 'Chance';
+type Caracteristics = "Instinct" | "Chance";
 function UserTraits({userTraits}: Props) {
   const [rollModalCaracteristic, setRollModalCaracteristic] = useState<Caracteristics | undefined>(undefined);
   const [rollModalTrait, setRollModalTrait] = useState<Trait | undefined>(undefined);
@@ -32,18 +32,18 @@ function UserTraits({userTraits}: Props) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 divide-y divide-solid">
           {
             entries(userTraits)
-            .map(([key, value]) => (
-              <div key={`traits_${key}`} className="flex items-center p-2 justify-evenly space-x-2">
-                <div className="flex items-center justify-evenly space-x-2">
-                  <Button onClick={() => setRollModalTrait(key)} type="secondary">
-                    <Icon name="DICE" />
-                  </Button>
+              .map(([key, value]) => (
+                <div key={`traits_${key}`} className="flex items-center p-2 justify-evenly space-x-2">
+                  <div className="flex items-center justify-evenly space-x-2">
+                    <Button onClick={() => setRollModalTrait(key)} type="secondary">
+                      <Icon name="DICE" />
+                    </Button>
+                  </div>
+                  <div className="flex-grow text-sm">
+                    {key} ({value * 5}%)
+                  </div>
                 </div>
-                <div className="flex-grow text-sm">
-                  {key} ({value * 5}%)
-                </div>
-              </div>
-            ))
+              ))
           }
           <div></div>
           {
@@ -67,7 +67,7 @@ function UserTraits({userTraits}: Props) {
           successPercentage={caracteristics[rollModalCaracteristic]}
           title={rollModalCaracteristic}
           isCancellable={false}
-          onRollEnd={() => { setRollModalCaracteristic(undefined)}}
+          onRollEnd={() => { setRollModalCaracteristic(undefined);}}
         />
       }
       {
@@ -75,7 +75,7 @@ function UserTraits({userTraits}: Props) {
           successPercentage={userTraits[rollModalTrait] * 5}
           title={rollModalTrait}
           isCancellable={false}
-          onRollEnd={() => { setRollModalTrait(undefined)}}
+          onRollEnd={() => { setRollModalTrait(undefined);}}
         />
       }
     </>

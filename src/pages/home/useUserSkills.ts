@@ -1,11 +1,11 @@
-import { useEffect, useCallback } from 'react';
-import * as RemoteData from '@devexperts/remote-data-ts';
-import { State } from '../../store/State';
-import { retrieveUserState } from '../../store/store';
-import { usePersistantRecordState } from '../../hooks/usePersistantRecordState';
+import { useEffect, useCallback } from "react";
+import * as RemoteData from "@devexperts/remote-data-ts";
+import { State } from "../../store/State";
+import { retrieveUserState } from "../../store/store";
+import { usePersistantRecordState } from "../../hooks/usePersistantRecordState";
 
 export const useUserSkills = (name: string) => {
-  const {record: usersSkills, add: addUserSkills} = usePersistantRecordState<RemoteData.RemoteData<Error, State>>('USERS_SKILLS');
+  const {record: usersSkills, add: addUserSkills} = usePersistantRecordState<RemoteData.RemoteData<Error, State>>("USERS_SKILLS");
 
   const set = useCallback(
     (newValue: RemoteData.RemoteData<Error, State>) => addUserSkills(name, newValue),
@@ -25,4 +25,4 @@ export const useUserSkills = (name: string) => {
     usersSkills[name] ?? RemoteData.initial,
     set,
   ] as [RemoteData.RemoteData<Error, State>, (newValue: RemoteData.RemoteData<Error, State>) => void];
-}
+};

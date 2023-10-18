@@ -1,10 +1,10 @@
-import { pipe } from 'fp-ts/lib/function';
-import React, { useCallback, useState } from 'react';
-import * as Interaction from '../helpers/interaction';
-import { add } from '../helpers/number';
-import { Button } from './Button';
-import { Modal } from './Modal';
-import { Roll } from './Roll';
+import { pipe } from "fp-ts/lib/function";
+import React, { useCallback, useState } from "react";
+import * as Interaction from "../helpers/interaction";
+import { add } from "../helpers/number";
+import { Button } from "./Button";
+import { Modal } from "./Modal";
+import { Roll } from "./Roll";
 
 type Props = {
   successPercentage: number,
@@ -15,7 +15,7 @@ type Props = {
 function FirstRoll({successPercentage, title, onRollEnd}: Props) {
   const [value, setValue] = useState(NaN);
 
-  const Dices = useCallback(() => <Roll dices={['d100', 'd10']} concat={([tens, units]: number[]) => tens + units || 100} onRollEnd={(val) => setValue(val)}/>, []);
+  const Dices = useCallback(() => <Roll dices={["d100", "d10"]} concat={([tens, units]: number[]) => tens + units || 100} onRollEnd={(val) => setValue(val)}/>, []);
 
   return (
     <Modal
@@ -28,7 +28,7 @@ function FirstRoll({successPercentage, title, onRollEnd}: Props) {
         <Dices />
       </div>
       <div className="flex flex-col items-center justify-center mb-2 space-y-4">
-      {
+        {
           !isNaN(value) && (
             <>
               <span className="text-4xl">
@@ -37,7 +37,7 @@ function FirstRoll({successPercentage, title, onRollEnd}: Props) {
               <div className="flex flex-col items-center justify-center space-y-1">
                 {
                   value >= successPercentage ? <><span className="text-m">😀</span><span>Succés</span></>
-                  :                           <><span className="text-m">🙁</span><span>Échec</span></>
+                    :                           <><span className="text-m">🙁</span><span>Échec</span></>
                 }
               </div>
             </>
@@ -51,7 +51,7 @@ function FirstRoll({successPercentage, title, onRollEnd}: Props) {
           onClick={() => {
             value > successPercentage
               ? onRollEnd(Interaction.success(value))
-              : onRollEnd(Interaction.emptyFailure())
+              : onRollEnd(Interaction.emptyFailure());
           }}
         >
           Valider ce jet
@@ -65,14 +65,14 @@ function FirstRoll({successPercentage, title, onRollEnd}: Props) {
 function SecondRoll({successPercentage, title, onRollEnd}: Props) {
   const [value, setValue] = useState(NaN);
 
-  const Dices = useCallback(() => <Roll dices={['d6', 'd6']} concat={(values: number[]) => values.reduce(add, 0)} onRollEnd={(val) => setValue(val)}/>, []);
+  const Dices = useCallback(() => <Roll dices={["d6", "d6"]} concat={(values: number[]) => values.reduce(add, 0)} onRollEnd={(val) => setValue(val)}/>, []);
 
   const getUpgradeValue = () => {
     const upgrade = successPercentage + value;
     return upgrade < 90
       ? upgrade
       : value;
-  }
+  };
 
   return (
     <Modal
@@ -82,7 +82,7 @@ function SecondRoll({successPercentage, title, onRollEnd}: Props) {
         <Dices />
       </div>
       <div className="flex flex-col items-center justify-center mb-2 space-y-4">
-      {
+        {
           !isNaN(value) && (
             <>
               <span className="text-4xl">
@@ -104,7 +104,7 @@ function SecondRoll({successPercentage, title, onRollEnd}: Props) {
           onClick={() => {
             value < successPercentage
               ? onRollEnd(Interaction.success(value))
-              : onRollEnd(Interaction.canceled())
+              : onRollEnd(Interaction.canceled());
           }}
         >
           Valider ce jet
@@ -126,7 +126,7 @@ export function UpgradeRollModal ({successPercentage, title, onRollEnd}: Props){
         failure: () => onRollEnd(result),
       })
     );
-  }
+  };
 
   return (
     rollIndex === 1

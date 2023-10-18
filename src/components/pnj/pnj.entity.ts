@@ -3,7 +3,7 @@ export type PNJ = {
   description?: string | undefined | null;
   character: string[];
   age: number;
-  gender: 'Homme' | 'Femme';
+  gender: "Homme" | "Femme";
   color: {name: string, color: string},
   magics: string;
 }

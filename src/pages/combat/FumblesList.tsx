@@ -1,11 +1,11 @@
-import React from 'react';
-import { Accordion } from '../../components/Accordion';
-import { Card } from '../../components/Card';
-import { D100 } from '../../components/dice/D100';
-import { D10 } from '../../components/dice/D10';
-import { BodyText } from '../../components/font/BodyText';
-import { Caption } from '../../components/font/Caption';
-import { fumbles } from './fumbles';
+import React from "react";
+import { Accordion } from "../../components/Accordion";
+import { Card } from "../../components/Card";
+import { D100 } from "../../components/dice/D100";
+import { D10 } from "../../components/dice/D10";
+import { BodyText } from "../../components/font/BodyText";
+import { Caption } from "../../components/font/Caption";
+import { fumbles } from "./fumbles";
 
 export function FumblesList(){
   return (
@@ -45,5 +45,5 @@ export function FumblesList(){
         ))
       }
     </Card>
-  )
+  );
 }

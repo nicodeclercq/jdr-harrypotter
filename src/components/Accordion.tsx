@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 type Props = {
   children: {
@@ -29,17 +29,17 @@ export function Accordion({children: {header, content, actions, toggle}}: Props)
           {
             toggle
               ? (<>
-                  <div className="flex-grow">{header}</div>
-                  <div className="toggle">{toggle}</div>
-                </>)
+                <div className="flex-grow">{header}</div>
+                <div className="toggle">{toggle}</div>
+              </>)
               : (<div className="flex-grow">{header}</div>)
           }
           {actions}
         </summary>
-        <div className={`py-2 px-6 text-left`}>
+        <div className={"py-2 px-6 text-left"}>
           {content}
         </div>
       </details>
     </>
-  )
+  );
 }

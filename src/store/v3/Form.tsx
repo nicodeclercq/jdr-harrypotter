@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 
 
-import { Button } from '../../components/Button';
-import { Input } from '../../components/Input';
-import { Trait } from './v3';
-import { roll, random } from '../../helpers/number';
-import { Label } from '../../components/font/Label';
-import { Icon } from '../../components/icons/Icon';
-import { keys, map } from '../../helpers/object';
-import { createArray } from '../../helpers/array';
+import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
+import { Trait } from "./v3";
+import { roll, random } from "../../helpers/number";
+import { Label } from "../../components/font/Label";
+import { Icon } from "../../components/icons/Icon";
+import { keys, map } from "../../helpers/object";
+import { createArray } from "../../helpers/array";
 
-const rollTrait = () => roll(2, 'd6') + 6;
+const rollTrait = () => roll(2, "d6") + 6;
 
 const defaultTraits: Record<Trait, number> = {
   Force: rollTrait(),
@@ -27,11 +27,11 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
   const [remainingPoints, setRemainingPoints] = useState(0);
   const { handleSubmit, setValue, getValues, control, errors } = useForm<Record<Trait, number>>({
     defaultValues: defaultTraits
-  })
+  });
 
   const onSubmit = (traits: Record<Trait, number>) => {
     callback({traits: map((trait) => trait * 1, traits)});
-  }
+  };
 
   const rollAll = () => {
     const MIDDLE = 12;
@@ -53,15 +53,15 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
         return {trait, value: MIDDLE};
       })
       .forEach(({trait, value}) => {
-        setValue(trait, value)
+        setValue(trait, value);
       });
-  }
+  };
 
   const onTraitChange = (trait: Trait, callback: (value: number | undefined) => void) => (value: number | undefined) => {
     const currentValue = getValues()[trait];
     setRemainingPoints(remainingPoints - (value ?? 0) + currentValue);
     callback(value);
-  }
+  };
 
   return (
     <form  onSubmit={handleSubmit(onSubmit)}>
@@ -97,15 +97,15 @@ export function Form({callback}: {callback: (result: {traits: Record<Trait, numb
           <div className="flex flex-row justify-between flex-grow p-2">
             <span className={
               remainingPoints < 0
-                ? 'text-red-500'
-                : ''
+                ? "text-red-500"
+                : ""
             }>{
-              remainingPoints === 0  
-                ? ''
-                : remainingPoints > 0
-                ? `Il reste ${remainingPoints} point${remainingPoints === 1 ? '' : 's'} à répartir`
-                : `Tu as utilisé ${remainingPoints * -1} point${remainingPoints === -1 ? '' : 's'} de trop`
-            }
+                remainingPoints === 0  
+                  ? ""
+                  : remainingPoints > 0
+                    ? `Il reste ${remainingPoints} point${remainingPoints === 1 ? "" : "s"} à répartir`
+                    : `Tu as utilisé ${remainingPoints * -1} point${remainingPoints === -1 ? "" : "s"} de trop`
+              }
             </span>
             <Button type="secondary" onClick={rollAll}>
               <Icon name="DICE" />

@@ -1,5 +1,5 @@
 import * as RemoteData from "@devexperts/remote-data-ts";
-import { sequenceS } from 'fp-ts/Apply';
+import { sequenceS } from "fp-ts/Apply";
 import { pipe, constVoid } from "fp-ts/function";
 import { Load } from "../components/Load";
 

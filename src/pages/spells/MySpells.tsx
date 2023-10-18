@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { pipe } from 'fp-ts/lib/function';
+import React, { useState } from "react";
+import { pipe } from "fp-ts/lib/function";
 
-import { Button } from '../../components/Button';
-import { Card } from '../../components/Card';
-import { EmptyContent } from '../../components/EmptyContent';
-import { useNotification } from '../../components/Notification';
-import { RollModal } from '../../components/RollModal';
-import { UpgradeRollModal } from '../../components/UpgradeRollModal';
-import { noop } from '../../helpers/function';
-import * as Interaction from '../../helpers/interaction';
-import { fromRemoteData } from '../../helpers/remoteData';
-import * as SpellType from './domain/Spell';
-import { getNextLevelSpells, UserSpells as UserSpellsType } from './domain/UserSpell';
-import { Spell } from './Spell';
-import { spells } from './spells';
-import { useSpell } from './useSpell';
-import { entries } from '../../helpers/object';
-import { isDefined } from '../../helpers/nullable';
+import { Button } from "../../components/Button";
+import { Card } from "../../components/Card";
+import { EmptyContent } from "../../components/EmptyContent";
+import { useNotification } from "../../components/Notification";
+import { RollModal } from "../../components/RollModal";
+import { UpgradeRollModal } from "../../components/UpgradeRollModal";
+import { noop } from "../../helpers/function";
+import * as Interaction from "../../helpers/interaction";
+import { fromRemoteData } from "../../helpers/remoteData";
+import * as SpellType from "./domain/Spell";
+import { getNextLevelSpells, UserSpells as UserSpellsType } from "./domain/UserSpell";
+import { Spell } from "./Spell";
+import { spells } from "./spells";
+import { useSpell } from "./useSpell";
+import { entries } from "../../helpers/object";
+import { isDefined } from "../../helpers/nullable";
 
 type Props = {
   goTo?: () => void;
@@ -50,25 +50,25 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
           nextLevelSpells.forEach(nextLevelSpell =>
             add({
               id: `spellUpdate_${nextLevelSpell.name}`,
-              type: 'success',
+              type: "success",
               message: `“${nextLevelSpell.spell?.incantation ?? nextLevelSpell.name}” peut être amélioré`,
               action:{
                 run: () => {
                   setNextLevelSpell(nextLevelSpell.spell);
                 },
-                label: 'Améliorer',
+                label: "Améliorer",
               },
             })
           );
         }
       }
     );
-  }
+  };
 
   const onUpgradeEnd = (spell: SpellType.Spell) => (result: Interaction.Interaction<never, number>) => {
     upgrade(spell, result);
     setNextLevelSpell(undefined);
-  }
+  };
 
   return (
     <>
@@ -79,24 +79,24 @@ function UserSpells({userSpells, goTo}: {userSpells: UserSpellsType} & Props){
         {
           knownSpells.length
             ? knownSpells.map(({spell}) => (
-                <Spell
-                  key={`${spell?.name}_${spell?.level}`}
-                  spell={spell as SpellType.Spell}
-                  actions={(
-                    <Button onClick={() => remove(spell as SpellType.Spell)} type="secondary">Supprimer -</Button>
-                  )}
-                  roll={() => setRollModalSpell(spell)}
-                  isOwned
-                  currentLevel={userSpells.knownSpells[spell?.name ?? '']?.currentLevel}
-                />
-              ))
+              <Spell
+                key={`${spell?.name}_${spell?.level}`}
+                spell={spell as SpellType.Spell}
+                actions={(
+                  <Button onClick={() => remove(spell as SpellType.Spell)} type="secondary">Supprimer -</Button>
+                )}
+                roll={() => setRollModalSpell(spell)}
+                isOwned
+                currentLevel={userSpells.knownSpells[spell?.name ?? ""]?.currentLevel}
+              />
+            ))
             : (<EmptyContent goTo={goTo}>
-                {{
-                  emoji: 'BOOK',
-                  title: 'Tu ne connais encore rien ?',
-                  description: 'Il va falloir te mettre au travail vite fait mon petit gars!'
-                }}
-              </EmptyContent>)
+              {{
+                emoji: "BOOK",
+                title: "Tu ne connais encore rien ?",
+                description: "Il va falloir te mettre au travail vite fait mon petit gars!"
+              }}
+            </EmptyContent>)
         }
       </Card>
       {

@@ -1,20 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
-import { BehaviorSubject } from 'rxjs';
-import * as RX from 'rxjs/operators';
-import * as IO from 'io-ts';
-import { pipe, flow, identity } from 'fp-ts/function';
-import * as Either from 'fp-ts/Either';
-import * as ArrayFP from 'fp-ts/Array';
-import { useNotification } from './../components/Notification';
-import { encrypt, decrypt, encode } from './../helpers/crypto';
-import * as Reloadable from './../helpers/Reloadable';
+import { useState, useEffect, useCallback } from "react";
+import { BehaviorSubject } from "rxjs";
+import * as RX from "rxjs/operators";
+import * as IO from "io-ts";
+import { pipe, flow, identity } from "fp-ts/function";
+import * as Either from "fp-ts/Either";
+import * as ArrayFP from "fp-ts/Array";
+import { useNotification } from "./../components/Notification";
+import { encrypt, decrypt, encode } from "./../helpers/crypto";
+import * as Reloadable from "./../helpers/Reloadable";
 
-const ROOT = 'https://jdr-harrypotter-back.herokuapp.com';
+const ROOT = "https://jdr-harrypotter-back.herokuapp.com";
 export const stream = new BehaviorSubject<Record<string, Reloadable.Reloadable<Error, unknown[]>>>({});
 
 const headers = new Headers();
-headers.append('Content-Type', 'application/json');
-headers.append('Access-Control-Allow-Origin', '*');
+headers.append("Content-Type", "application/json");
+headers.append("Access-Control-Allow-Origin", "*");
 
 const decodeData = <T extends IO.Mixed, U extends IO.TypeOf<T>>(routeName: string, decoder: T, data: unknown) => pipe(
   data,
@@ -30,19 +30,19 @@ const decodeData = <T extends IO.Mixed, U extends IO.TypeOf<T>>(routeName: strin
       )
     )
   ),
-)
+);
 
 const api = (routeName: string) => ({
   readAll: <T extends IO.Mixed, U extends IO.TypeOf<T>>(decoder: T): Promise<U[]> => {
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers,
     };
   
     return fetch(`${ROOT}/${routeName}`, requestOptions)
       .then(response => {
         if(!response.ok){
-          throw new Error('Unable to join server');
+          throw new Error("Unable to join server");
         }
         return response.json();
       })
@@ -56,7 +56,7 @@ const api = (routeName: string) => ({
   },
   read: (key: string, decoder: IO.Mixed) => {
     const requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers,
     };
   
@@ -64,10 +64,10 @@ const api = (routeName: string) => ({
       .then((response) => response.json())
       .then(data => decodeData(routeName, decoder, data))
       .then(
-          Either.filterOrElse(
-            result => result.length > 0,
-            () => 'Item does not exist'
-          )
+        Either.filterOrElse(
+          result => result.length > 0,
+          () => "Item does not exist"
+        )
       )
       .then(response => {
         if(Either.isLeft(response)){
@@ -78,7 +78,7 @@ const api = (routeName: string) => ({
   },
   create: (data: {key: string, code: string}) => {
     const requestOptions = {
-      method: 'POST',
+      method: "POST",
       headers,
       body: JSON.stringify(data),
     };
@@ -87,7 +87,7 @@ const api = (routeName: string) => ({
   },
   update: ({key, code}: {key: string, code: string}) => {
     const requestOptions = {
-      method: 'PUT',
+      method: "PUT",
       headers,
       body: JSON.stringify({ code }),
     };
@@ -96,7 +96,7 @@ const api = (routeName: string) => ({
   },
   delete: (key: string) => {
     const requestOptions = {
-      method: 'DELETE',
+      method: "DELETE",
       headers,
     };
   
@@ -111,7 +111,7 @@ const streamService = {
     [key]: value,
   }),
   has: <T extends string>(key: T) => key in stream.value,
-}
+};
 
 export type Props<T extends IO.Mixed> = {
   name: string;
@@ -125,11 +125,11 @@ export function useExternalStore<T, U extends IO.Mixed>({name, autoFetch = true,
 
   const fetchAll = useCallback(() => {
     const data = streamService.has(name)
-    ? pipe(
+      ? pipe(
         streamService.get(name),
         Reloadable.chain(Reloadable.reloading)
       )
-    : Reloadable.pending as  Reloadable.Reloadable<Error, T[]>;
+      : Reloadable.pending as  Reloadable.Reloadable<Error, T[]>;
 
     streamService.set(name, data);
 
@@ -142,11 +142,11 @@ export function useExternalStore<T, U extends IO.Mixed>({name, autoFetch = true,
       .catch((e) => {
         addNotification({
           id: `fetchService ${name}`,
-          type: 'failure',
+          type: "failure",
           message: `Error in fetching service ${name}`,
         });
-        console.error(e)
-      })
+        console.error(e);
+      });
   }, [name, decoder, addNotification]);
 
   useEffect(() => {
