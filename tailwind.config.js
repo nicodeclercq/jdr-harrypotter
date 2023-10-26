@@ -5,6 +5,12 @@ module.exports = {
   media: false, // or 'media' or 'class'
   theme: {
     colors: {
+      "gray-500": "#6b7280",
+      "red-400": "#f87171",
+      "red-900": "#7f1d1d",
+      "orange-900": "#7c2d12",
+      "orange-400": "#fb923c",
+      white: "#fff",
       blue: {
         50: "#E7FAFE",
         100: "#B6F7FF",
