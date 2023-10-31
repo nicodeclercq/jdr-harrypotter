@@ -15,4 +15,4 @@ export const numbers = [
   "Q",
   "K",
 ] as const;
-export const elements = ["Terre", "Eau", "Feu", "Air"] as const;
+export const elements = ["Pique", "Coeur", "Trefle", "Carreau"] as const;

@@ -1,5 +1,6 @@
 import { pipe } from "fp-ts/function";
 import * as RemoteData from "@devexperts/remote-data-ts";
+import { shuffle } from "../../helpers/array";
 import { lens, getPropertyCurried } from "../../helpers/object";
 import { useStore } from "../../hooks/useStore";
 import { Card, State } from "../../store/State";
@@ -10,9 +11,6 @@ const cardsLens = lens<State, "cards">("cards");
 const INITIAL_CARD_NB_PER_USER = 5;
 
 type Deck = State["cards"];
-
-const shuffle = (cards: Card[]) =>
-  [...cards].sort(() => (Math.random() < 0.5 ? -1 : 1));
 
 const deal = (deck: Card[], cardsNb: number) => {
   type Tmp = {
@@ -27,21 +25,21 @@ const deal = (deck: Card[], cardsNb: number) => {
         ({ newDeck: { deck, hand, drop }, remainingCards }, card: Card) =>
           remainingCards === 0
             ? {
-              newDeck: {
-                deck: [...deck, card],
-                drop,
-                hand,
-              },
-              remainingCards,
-            }
+                newDeck: {
+                  deck: [...deck, card],
+                  drop,
+                  hand,
+                },
+                remainingCards,
+              }
             : {
-              newDeck: {
-                deck,
-                drop,
-                hand: [...hand, card],
+                newDeck: {
+                  deck,
+                  drop,
+                  hand: [...hand, card],
+                },
+                remainingCards: remainingCards - 1,
               },
-              remainingCards: remainingCards - 1,
-            },
         {
           newDeck: {
             deck: [] as Deck["deck"],

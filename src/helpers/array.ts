@@ -82,3 +82,9 @@ export const createArray = <T>(size: number, defaultValue: T) =>
 export const createEmptyArray = <T>() => [] as T[];
 
 export const fromReadOnly = <A>(a: readonly A[]): A[] => a as unknown as A[];
+
+export const shuffle = <A>(array: A[]) =>
+  array
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);

@@ -1,11 +1,14 @@
-import { ReactNode, useMemo, useState } from "react";
-import { pipe, constant } from "fp-ts/function";
+import { ReactNode, useMemo } from "react";
+import { pipe, flow, constant, identity } from "fp-ts/function";
 import * as Either from "fp-ts/Either";
 import * as ArrayFP from "fp-ts/Array";
 import * as IOT from "io-ts-types";
 import { types, numbers, elements, means } from "../../store/v12/deck";
 import { createArray } from "../../helpers/array";
 import { Icon } from "../../components/icons/Icon";
+import { Queen } from "../../components/illustration/queen";
+import { Jack } from "../../components/illustration/jack";
+import { King } from "../../components/illustration/king";
 
 type CardValue = (typeof numbers)[number];
 
@@ -13,24 +16,42 @@ const areas = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 
 const CardValueRenderer = {
   A: { fontSize: "5rem", template: "'a'" },
-  2: { fontSize: "1rem", template: "'a' 'b'" },
-  3: { fontSize: "1rem", template: "'a' 'b' 'c'" },
-  4: { fontSize: "1rem", template: "'a b' 'c d'" },
-  5: { fontSize: "1rem", template: "'a . b' '. c .' 'd . e'" },
-  6: { fontSize: "1rem", template: "'a b' 'c d' 'e f'" },
-  7: { fontSize: "1rem", template: "'a . b' '. c .' 'd . e' '. . .' 'f . g'" },
-  8: { fontSize: "1rem", template: "'a b' 'c d' 'e f' 'g h'" },
+  2: { fontSize: "1.5rem", template: "'a' 'b'" },
+  3: { fontSize: "1.5rem", template: "'a' 'b' 'c'" },
+  4: { fontSize: "1.5rem", template: "'a b' 'c d'" },
+  5: { fontSize: "1.5rem", template: "'a . b' '. c .' 'd . e'" },
+  6: { fontSize: "1.5rem", template: "'a b' 'c d' 'e f'" },
+  7: {
+    fontSize: "1.5rem",
+    template: "'a . b' '. c .' 'd . e' '. . .' 'f . g'",
+  },
+  8: { fontSize: "1.5rem", template: "'a b' 'c d' 'e f' 'g h'" },
   9: {
-    fontSize: "1rem",
+    fontSize: "1.5rem",
     template: "'a . b' '. c .' 'd . e' 'f . g' '. . .' 'h . i'",
   },
   10: {
-    fontSize: "1rem",
+    fontSize: "1.5rem",
     template: "'a . b' '. c .' 'd . e' 'f . g' '. h .' 'i . j'",
   },
-  J: { value: "J", fontSize: "5rem", template: "'a'" },
-  Q: { value: "Q", fontSize: "5rem", template: "'a'" },
-  K: { value: "K", fontSize: "5rem", template: "'a'" },
+  J: {
+    value: "J",
+    fontSize: "9rem",
+    template: "'a'",
+    renderer: () => <Jack />,
+  },
+  Q: {
+    value: "Q",
+    fontSize: "9rem",
+    template: "'a'",
+    renderer: () => <Queen />,
+  },
+  K: {
+    value: "K",
+    fontSize: "9rem",
+    template: "'a'",
+    renderer: () => <King />,
+  },
 } as const;
 
 type Element = (typeof elements)[number];
@@ -38,10 +59,10 @@ type Type = (typeof types)[number];
 type Mean = (typeof means)[number];
 
 const elementsRenderer = {
-  Air: <Icon name="AIR" />,
-  Eau: <Icon name="EAU" />,
-  Feu: <Icon name="FEU" />,
-  Terre: <Icon name="TERRE" />,
+  Pique: "♠︎",
+  Trefle: "♣︎",
+  Coeur: "♥︎",
+  Carreau: "♦︎",
 } as const;
 
 const typesRenderer = {
@@ -49,9 +70,11 @@ const typesRenderer = {
   Défense: <Icon name="SHIELD" />,
 } as const;
 
-const colorByType = {
-  Attaque: "red",
-  Défense: "black",
+const colorByElement = {
+  Coeur: "red",
+  Carreau: "red",
+  Pique: "black",
+  Trefle: "black",
 } as const;
 
 const meansRenderer = {
@@ -60,11 +83,16 @@ const meansRenderer = {
 } as const;
 
 type Props = {
-  symbol: ReactNode;
   number: CardValue;
+  isVisible?: boolean;
+  onClick?: () => void;
 };
 
-function CardValue({ area, symbol, number }: Props & { area: string }) {
+function CardValue({
+  area,
+  number,
+  symbol,
+}: Props & { area: string; symbol: ReactNode }) {
   return (
     <div
       style={{
@@ -84,25 +112,41 @@ function CardValue({ area, symbol, number }: Props & { area: string }) {
 }
 
 export function Card({
-  symbol,
+  element,
   number,
   type,
   mean,
   zIndex,
-}: Props & { type: Type; mean: Mean; zIndex?: number }) {
-  const [isVisible, setIsVisible] = useState(false);
+  isVisible,
+  onClick,
+}: Props & { type: Type; mean: Mean; element: Element; zIndex?: number }) {
   const elements = useMemo(
     () =>
       pipe(
         number,
-        IOT.IntFromString.decode,
-        Either.getOrElse(constant(1)),
-        (n) => createArray(n, symbol),
-        ArrayFP.mapWithIndex((index, s: Element) => (
-          <span key={index} style={{ gridArea: areas[index] }}>
-            {elementsRenderer[s]}
-          </span>
-        ))
+        Either.fromPredicate(
+          (number) => "renderer" in CardValueRenderer[number],
+          identity
+        ),
+        Either.map((number) =>
+          (
+            CardValueRenderer[number] as { renderer: () => ReactNode }
+          ).renderer()
+        ),
+        Either.mapLeft(
+          flow(
+            IOT.IntFromString.decode,
+            Either.getOrElse(constant(1)),
+            (n) => createArray(n, element),
+            ArrayFP.mapWithIndex((index, s: Element) => (
+              <span key={index} style={{ gridArea: areas[index] }}>
+                {elementsRenderer[s]}
+              </span>
+            )),
+            (a) => (<>{a}</>) as ReactNode
+          )
+        ),
+        Either.fold(identity, identity)
       ),
     [number]
   );
@@ -123,7 +167,7 @@ export function Card({
           transform: isVisible ? "rotateY(0deg)" : "rotateY(180deg)",
           zIndex: zIndex ?? "0",
         }}
-        onClick={() => setIsVisible((a) => !a)}
+        onClick={onClick}
       >
         <div
           style={{
@@ -152,8 +196,6 @@ export function Card({
             alignItems: "center",
             justifyContent: "center",
             border: "0.5rem solid white",
-            /*boxShadow:
-              "1px 1px 2px rgba(0,0,0,0.2), 0 0 4px 2px rgba(0,0,0,0.2)",*/
           }}
         />
         <div
@@ -163,7 +205,7 @@ export function Card({
             height: "100%",
             transform: "rotateY(0deg)",
             backfaceVisibility: "hidden",
-            color: colorByType[type],
+            color: colorByElement[element],
             display: "inline-grid",
             gridTemplateAreas: "'a c b' '. c .' 'd c e'",
             alignItems: "stretch",
@@ -171,8 +213,6 @@ export function Card({
             padding: "0.25rem 0.5rem",
             background: "white",
             borderRadius: "0.5rem",
-            /*boxShadow:
-              "1px 1px 2px rgba(0,0,0,0.2), 0 0 4px 2px rgba(0,0,0,0.2)",*/
           }}
         >
           <CardValue area="a" number={number} symbol={typesRenderer[type]} />

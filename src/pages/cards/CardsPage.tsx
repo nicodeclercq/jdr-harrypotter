@@ -14,24 +14,18 @@ export function CardsPage() {
   return (
     <Layout>
       <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="w-full flex">
+        <div className="w-full flex gap-2">
           <RemoteDataFold
             data={hand}
             onSuccess={(hand) =>
-              hand.map(({ number, element, type, mean }, index) => (
-                <div
-                  key={`${number}_${element}_${type}_${mean}`}
-                  style={{
-                    transform: `translateY(${
-                      (index * -2 + 4) * (index > hand.length / 2 ? -1 : 1)
-                    }rem) rotate(${index * 5 - 10}deg)`,
-                  }}
-                >
+              hand.map(({ number, element, type, mean }) => (
+                <div key={`${number}_${element}_${type}_${mean}`}>
                   <Card
                     number={number}
-                    symbol={element}
+                    element={element}
                     type={type}
                     mean={mean}
+                    isVisible
                   />
                 </div>
               ))
