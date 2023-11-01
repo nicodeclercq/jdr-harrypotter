@@ -26,6 +26,7 @@ type Fields = {
 };
 const fields: Fields = {
   lockKeys: {
+    multiple: true,
     label: "Types de magie connue",
     defaultValue: [],
     values: Object.keys(MAGICS),

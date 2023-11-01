@@ -13,19 +13,22 @@ export const stateDecoder = LastState.stateDecoder;
 export type State = IO.TypeOf<typeof stateDecoder>;
 
 function update(promise: Promise<LastState.State>): Promise<State> {
-  return promise.then((state) =>
-    state.lockKeys == null || state.lockKeys.length === 0
-      ? prompt<State>(
-          (callback) => (
-            <Form
-              state={state}
-              callback={({ lockKeys }) => callback({ ...state, lockKeys })}
-            />
-          ),
-          <>Magie</>
-        )
-      : Promise.resolve(state)
-  );
+  return promise.then((state) => {
+    if (state.lockKeys == null || state.lockKeys.length === 0) {
+      return state.game === "FANTASY"
+        ? Promise.resolve({ ...state, lockKeys: [] })
+        : prompt<State>(
+            (callback) => (
+              <Form
+                state={state}
+                callback={({ lockKeys }) => callback({ ...state, lockKeys })}
+              />
+            ),
+            <>Magie</>
+          );
+    }
+    return Promise.resolve(state);
+  });
 }
 
 export function retrieve(currentState: unknown, name: string | undefined) {

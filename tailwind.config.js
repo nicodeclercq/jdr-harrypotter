@@ -11,6 +11,8 @@ module.exports = {
       "orange-400": "#fb923c",
       white: "#fff",
       gray: colors.gray,
+      red: colors.red,
+      green: colors.green,
       blue: {
         50: "#E7FAFE",
         100: "#B6F7FF",
