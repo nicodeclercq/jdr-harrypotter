@@ -48,6 +48,15 @@ function update(promise: Promise<LastState.State>): Promise<State> {
 
 export function retrieve(currentState: unknown, name: string | undefined) {
   return retrieveFromVersion(version, currentState, stateDecoder, () =>
-    pipe(currentState, (s) => LastState.retrieve(s, name), update)
+    pipe(
+      currentState,
+      (s) => {
+        if (s && typeof s === "object" && (!("game" in s) || !s.game)) {
+          LastState.retrieve({ ...s, game: "HP" }, name);
+        }
+        return LastState.retrieve(s, name);
+      },
+      update
+    )
   );
 }

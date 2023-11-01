@@ -23,8 +23,10 @@ const defaultTraits: Record<Trait, number> = {
 };
 
 export function Form({
+  game,
   callback,
 }: {
+  game: string;
   callback: (result: { traits: Record<Trait, number> }) => void;
 }) {
   const [remainingPoints, setRemainingPoints] = useState(0);
@@ -74,11 +76,12 @@ export function Form({
       setRemainingPoints(remainingPoints - (value ?? 0) + currentValue);
       callback(value);
     };
+  const { Pouvoir, ...fantasyTraits } = defaultTraits;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="w-full">
-        {keys(defaultTraits)
+        {keys(game === "FANTASY" ? fantasyTraits : defaultTraits)
           .sort()
           .map((trait: Trait) => (
             <div

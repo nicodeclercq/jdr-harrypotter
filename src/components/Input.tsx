@@ -80,7 +80,7 @@ export function Input({
     >
       <input
         {...rest}
-        defaultValue={value}
+        value={value}
         disabled={disabled}
         type={type}
         className={`w-full focus:ring-4 h-7 ${

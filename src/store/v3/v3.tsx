@@ -3,7 +3,8 @@ import * as IO from "io-ts";
 
 import { prompt } from "../../helpers/io";
 import * as V2 from "../v2/v2";
-import { Form } from "./Form";
+import { Form as TraitForm } from "./Form";
+import { Form } from "../../components/Form";
 import { retrieveFromVersion } from "../helper";
 
 const version = "V3";
@@ -36,19 +37,46 @@ export const stateDecoder = IO.intersection([
   IO.type({
     traits: traitsDecoder,
   }),
+  IO.type({
+    game: IO.string,
+  }),
 ]);
 
 export type State = IO.TypeOf<typeof stateDecoder>;
 
 function update(promise: Promise<V2.State>): Promise<State> {
-  return promise.then((state) =>
-    prompt<V2.State & { traits: Record<Trait, number> }>(
-      (callback) => (
-        <Form callback={(traits) => callback({ ...state, ...traits })} />
-      ),
-      <>Caractéristiques de mon Personnage</>
+  return promise
+    .then((state) =>
+      prompt<V2.State & { game: string }>(
+        (callback) => (
+          <Form
+            fields={{
+              game: {
+                label: "Type de jeu",
+                defaultValue: "HP",
+                values: [
+                  { label: "HP", value: "HP" },
+                  { label: "Fantasy", value: "FANTASY" },
+                ],
+              },
+            }}
+            onSubmit={({ game }) => callback({ ...state, game })}
+          />
+        ),
+        <>Type de Jeu</>
+      )
     )
-  );
+    .then((state) =>
+      prompt<State>(
+        (callback) => (
+          <TraitForm
+            game={state.game}
+            callback={(traits) => callback({ ...state, ...traits })}
+          />
+        ),
+        <>Caractéristiques de mon Personnage ({state.game})</>
+      )
+    );
 }
 
 export function retrieve(currentState: unknown, name: string | undefined) {

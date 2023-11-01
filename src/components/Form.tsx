@@ -51,6 +51,7 @@ export type ValuesFromList<T extends PrimitiveValue> = Omit<
   "validate" | "defaultValue"
 > & {
   defaultValue: T["defaultValue"][];
+  multiple: true;
   values: T extends StringValue
     ? Array<{ label: string; value: string } | string>
     : Array<{ label: string; value: number } | number>;
@@ -67,7 +68,7 @@ const isValueFromList = <P extends PrimitiveValue>(
 ): a is ValueFromList<P> => "values" in a;
 const isValuesFromList = <P extends PrimitiveValue>(
   a: FormValue
-): a is ValuesFromList<P> => "values" in a && a["values"] instanceof Array;
+): a is ValuesFromList<P> => "multiple" in a && a.multiple === true;
 
 type Fields<T extends string> = { [key in T]: FormValue };
 export type ValuesFromDefintion<T extends Fields<string>> = {
@@ -328,7 +329,7 @@ export function Form<T extends Fields<Key>, Key extends string>({
                   config={value}
                 />
               ) : (
-              /* default */ <></>
+                /* default */ <></>
               )}
             </div>
           </React.Fragment>

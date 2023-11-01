@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 import { Button } from "../../components/Button";
@@ -6,19 +6,24 @@ import { Input } from "../../components/Input";
 import { Skills } from "./v4";
 import { State } from "../v3/v3";
 import { Label } from "../../components/font/Label";
-import { skills } from "../../pages/skills/skills";
+import { hpSkills, fantasySkills } from "../../pages/skills/skills";
 import { entries } from "../../helpers/object";
 
 const REPARTITION_POINTS = 200;
-const defaultSkills = entries(skills);
 
 export function Form({
-  state: { traits },
+  state: { game, traits },
   callback,
 }: {
   state: State;
   callback: (result: { skills: Skills }) => void;
 }) {
+  const skills = useMemo(
+    () => (game === "FANTASY" ? fantasySkills : hpSkills),
+    [game]
+  );
+  const defaultSkills = useMemo(() => entries(skills), [skills]);
+
   const [remainingPoints, setRemainingPoints] = useState(REPARTITION_POINTS);
   const {
     handleSubmit,
@@ -86,12 +91,14 @@ export function Form({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="w-full">
         <div className="overflow-y-auto" style={{ height: "70vh" }}>
-          {defaultSkills.map(([skill]) => (
+          {defaultSkills.map(([skill, skillValue]) => (
             <div
               key={skill}
               className="flex flex-row p-2 border-gray-100 space-x-3 border-b-1"
             >
-              <Label htmlFor={`input-${skill}`}>{skill}</Label>
+              <Label htmlFor={`input-${skill}`}>
+                {skill} ({skillValue.baseTrait})
+              </Label>
               <Controller
                 name={skill}
                 control={control}

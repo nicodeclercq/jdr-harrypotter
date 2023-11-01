@@ -10,7 +10,7 @@ export function prompt<T>(
   return new Promise<T>((resolve) => {
     const onSubmit = (result: T) => {
       // @ts-expects-error
-      ReactPortalAppRoot.unmount();
+      // ReactPortalAppRoot.unmount();
       resolve(result);
     };
 
