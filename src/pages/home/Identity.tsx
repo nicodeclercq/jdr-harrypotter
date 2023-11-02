@@ -16,6 +16,7 @@ import { Separator } from "../../components/Separator";
 import { useLockKey } from "../../hooks/useLockKey";
 import { LOCK } from "../../lock";
 import { RemoteDataFold } from "../../components/RemoteDataFold";
+import { useGame } from "../../hooks/useGame";
 
 type FormType = {
   current: number;
@@ -168,13 +169,14 @@ function ImageUrlForm({
 }
 
 export function Identity() {
+  const { game } = useGame();
   const { life } = useLife();
   const { luckPoints } = useLuckPoints();
   const { name, imageUrl, setImageUrl } = useUser();
 
   return pipe(
-    sequence({ name, life, imageUrl, luckPoints }),
-    fromRemoteData(({ name, life, imageUrl, luckPoints }) => (
+    sequence({ game, name, life, imageUrl, luckPoints }),
+    fromRemoteData(({ game, name, life, imageUrl, luckPoints }) => (
       <Card>
         <div className="flex p-2 flex-column space-y-4">
           <div className="flex flex-row flex-wrap items-center w-full space-x-2">
@@ -182,6 +184,7 @@ export function Identity() {
               <Title>
                 <div className="flex items-center space-x-2">
                   <Avatar
+                    game={game}
                     text={name}
                     url={imageUrl}
                     onClick={() =>

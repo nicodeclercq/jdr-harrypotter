@@ -7,8 +7,11 @@ import { useConnectedUsers } from "../../hooks/useConnectedUsers";
 import { usePersistantState } from "../../hooks/usePersistantState";
 import { useSocket } from "../../hooks/useSocket";
 import { useTokens } from "../../hooks/useTokens";
+import { useGame } from "../../hooks/useGame";
+import { RemoteDataFold } from "../../components/RemoteDataFold";
 
 export function BattleMapPage() {
+  const { game } = useGame();
   const { tokens, updateToken } = useTokens();
   const { connectedUsers } = useConnectedUsers();
 
@@ -45,22 +48,28 @@ export function BattleMapPage() {
   const addToken = () => console.log("add token");
 
   return (
-    <Layout>
-      <div className="w-full h-full" onDoubleClick={addToken}>
-        <Button type="primary" onClick={() => setShow(!show)}>
-          {show ? "Cacher" : "Montrer"}
-        </Button>
-        {entries(tokens).map(([name, { x, y, image }]) => (
-          <AvatarToken
-            key={name}
-            name={name}
-            x={x}
-            y={y}
-            image={image}
-            onDragStop={onDragStop(name)}
-          />
-        ))}
-      </div>
-    </Layout>
+    <RemoteDataFold
+      data={game}
+      onSuccess={(game) => (
+        <Layout>
+          <div className="w-full h-full" onDoubleClick={addToken}>
+            <Button type="primary" onClick={() => setShow(!show)}>
+              {show ? "Cacher" : "Montrer"}
+            </Button>
+            {entries(tokens).map(([name, { x, y, image }]) => (
+              <AvatarToken
+                key={name}
+                name={name}
+                game={game}
+                x={x}
+                y={y}
+                image={image}
+                onDragStop={onDragStop(name)}
+              />
+            ))}
+          </div>
+        </Layout>
+      )}
+    />
   );
 }

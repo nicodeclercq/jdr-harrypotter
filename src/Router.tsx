@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { pipe } from "fp-ts/function";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Icon, IconName } from "./components/icons/Icon";
@@ -42,12 +42,24 @@ export type RouteDefinition = {
 
 export const ROUTES: Record<string, RouteDefinition> = {
   "/": {
-    icon: (state: State) =>
-      state.user.imageUrl ? (
-        <Avatar url={state.user.imageUrl} text={state.user.name} />
-      ) : (
-        <Icon name="SORCERER" />
-      ),
+    icon: (state: State) => {
+      if (state.user.imageUrl) {
+        return (
+          <Avatar
+            game={state.game}
+            url={state.user.imageUrl}
+            text={state.user.name}
+          />
+        );
+      }
+
+      return (
+        {
+          HP: <Icon name="SORCERER" />,
+          FANTASY: <Icon name="HELMET" />,
+        } as const
+      )[state.game] as ReactElement;
+    },
     label: (state: State) => state.user.name,
     Component: HomePage,
   },

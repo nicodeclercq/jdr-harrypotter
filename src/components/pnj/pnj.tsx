@@ -59,7 +59,6 @@ export function PNJ({ pnj }: Props) {
           <div className="flex items-center justify-between">
             <Title>
               <div className="flex items-center flex-rows space-x-2">
-                {/*<Avatar url={avatar} text={current.name} />*/}
                 <span>{pnj ? pnj.name : current.name}</span>
                 &nbsp;
                 {(pnj ? pnj.gender : current.gender) === "Homme" ? "♂︎" : "♀︎"}

@@ -11,6 +11,7 @@ export function useGame() {
   const [game] = useStore(gameLens);
 
   return {
+    game,
     isFantasy: RemoteData.map((game) => game === "FANTASY")(game),
     isHP: RemoteData.map((game) => game === "HP")(game),
   };

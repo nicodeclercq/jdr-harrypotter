@@ -9,6 +9,8 @@ import { State } from "../../store/State";
 import { fromRemoteData } from "../../helpers/remoteData";
 import { MySkills } from "../skills/MySkills";
 import { useUserSkills } from "./useUserSkills";
+import { useGame } from "../../hooks/useGame";
+import { RemoteDataFold } from "../../components/RemoteDataFold";
 
 function UserBestSkills({ name }: { name: string }) {
   const [state] = useUserSkills(name);
@@ -43,22 +45,28 @@ function UserBestSkills({ name }: { name: string }) {
 }
 
 export function UsersBestSkills() {
+  const { game } = useGame();
   const { connectedUsers } = useConnectedUsers();
   return (
-    <>
-      {Object.entries(connectedUsers).map(([name, avatar]) => (
-        <Card
-          key={name}
-          title={
-            <div className="flex flex-row items-center space-x-2">
-              <Avatar url={avatar} text={name} size="small" />
-              <Title>{name}</Title>
-            </div>
-          }
-        >
-          <UserBestSkills name={name} />
-        </Card>
-      ))}
-    </>
+    <RemoteDataFold
+      data={game}
+      onSuccess={(game) => (
+        <>
+          {Object.entries(connectedUsers).map(([name, avatar]) => (
+            <Card
+              key={name}
+              title={
+                <div className="flex flex-row items-center space-x-2">
+                  <Avatar game={game} url={avatar} text={name} size="small" />
+                  <Title>{name}</Title>
+                </div>
+              }
+            >
+              <UserBestSkills name={name} />
+            </Card>
+          ))}
+        </>
+      )}
+    />
   );
 }

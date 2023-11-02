@@ -10,8 +10,16 @@ import { Button } from "./Button";
 import { State } from "../store/State";
 import { Avatar } from "./Avatar";
 import { RichText } from "./font/RichText";
+import { useGame } from "../hooks/useGame";
+import { RemoteDataFold } from "./RemoteDataFold";
 
-function Notification({ notification }: { notification: NotificationType }) {
+function Notification({
+  notification,
+  game,
+}: {
+  notification: NotificationType;
+  game: string;
+}) {
   const renderIcon = (notification: NotificationType) => {
     const icons = {
       success: () => (
@@ -30,7 +38,7 @@ function Notification({ notification }: { notification: NotificationType }) {
         </div>
       ),
       message: ({ avatar, name }: { name: string; avatar: string }) => (
-        <Avatar text={name} url={avatar} />
+        <Avatar game={game} text={name} url={avatar} />
       ),
     } as const;
 
@@ -59,6 +67,7 @@ export const useNotification = () => {
 };
 
 export function NotificationStack() {
+  const { game } = useGame();
   const { remove, subject } = NotificationService;
   const [stack, setStack] = useState(subject.value);
   const [state] = useStore([
@@ -82,13 +91,22 @@ export function NotificationStack() {
   }, [remove, stack, state]);
 
   return (
-    <div
-      className="fixed bottom-0 right-0 w-1/3 m-2 space-y-2"
-      style={{ zIndex: 2 }}
-    >
-      {stack.map((notification) => (
-        <Notification key={notification.id} notification={notification} />
-      ))}
-    </div>
+    <RemoteDataFold
+      data={game}
+      onSuccess={(game) => (
+        <div
+          className="fixed bottom-0 right-0 w-1/3 m-2 space-y-2"
+          style={{ zIndex: 2 }}
+        >
+          {stack.map((notification) => (
+            <Notification
+              key={notification.id}
+              notification={notification}
+              game={game}
+            />
+          ))}
+        </div>
+      )}
+    />
   );
 }

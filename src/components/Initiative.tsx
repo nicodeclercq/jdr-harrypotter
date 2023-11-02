@@ -7,6 +7,8 @@ import { Card } from "./Card";
 import { BodyText } from "./font/BodyText";
 import { Title } from "./font/Title";
 import { Icon } from "./icons/Icon";
+import { useGame } from "../hooks/useGame";
+import { RemoteDataFold } from "./RemoteDataFold";
 
 function shuffle(connectedUsers: ConnectedUsers) {
   const pj = Object.entries(connectedUsers).map(([name, avatar]) => ({
@@ -25,6 +27,7 @@ type InitiativeType = {
 };
 
 export function Initiative() {
+  const { game } = useGame();
   const { connectedUsers } = useConnectedUsers();
   const [{ activeIndex, list }, setInitiative] =
     usePersistantState<InitiativeType>("INITIATIVE", {
@@ -77,7 +80,12 @@ export function Initiative() {
           onClick={() => setActiveIndex(index)}
         >
           <div className="flex items-center space-x-2">
-            <Avatar url={avatar} text={name} size="small" />
+            <RemoteDataFold
+              data={game}
+              onSuccess={(game) => (
+                <Avatar game={game} url={avatar} text={name} size="small" />
+              )}
+            />
             <BodyText>{name}</BodyText>
           </div>
           {activeIndex === index && <Icon name="CHECK" />}

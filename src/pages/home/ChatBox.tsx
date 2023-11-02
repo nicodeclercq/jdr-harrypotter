@@ -16,6 +16,7 @@ import { useRole } from "../../hooks/useRole";
 import { useSocket } from "../../hooks/useSocket";
 import { ChatMessage, COMMAND_MESSAGE, isChatMessage } from "../../message";
 import { State } from "../../store/State";
+import { useGame } from "../../hooks/useGame";
 
 type Message = {
   id: string;
@@ -39,6 +40,7 @@ export function ChatBox({ me, user, image, as: As = "div" }: Props) {
   const { stream, emit } = useSocket();
   const { connectedUsers } = useConnectedUsers();
   const { isMJ } = useRole();
+  const { game } = useGame();
   const id = useMemo(() => `${uuid()}_chat`, []);
 
   const { handleSubmit, setValue, control } = useForm<{ text: string }>({
@@ -115,169 +117,180 @@ export function ChatBox({ me, user, image, as: As = "div" }: Props) {
   }, [prepend, stream, user, me]);
 
   return (
-    <As
-      style={{
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        filter: "drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))",
-        transform: isVisible
-          ? "translateY(0)"
-          : "translateY(calc(-100% + 4.75rem))",
-        transition: "transform ease-in-out 0.2s",
-        minWidth: "5rem",
-        maxWidth: "15rem",
-      }}
-    >
-      <div
-        style={{
-          background: "white",
-          padding: "0.125rem 0.5rem 1.5rem",
-          borderBottomLeftRadius: "1rem",
-          borderBottomRightRadius: "1rem",
-          pointerEvents: "auto",
-          width: "100%",
-        }}
-      >
-        <div
-          className="p-2 my-2 bg-gray-100 rounded"
+    <RemoteDataFold
+      data={game}
+      onSuccess={(game) => (
+        <As
           style={{
-            width: "100%",
-            height: "10rem",
-            overflowY: "auto",
-            wordBreak: "break-word",
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            filter: "drop-shadow(0 0.25rem 0.5rem rgba(0,0,0,0.25))",
+            transform: isVisible
+              ? "translateY(0)"
+              : "translateY(calc(-100% + 4.75rem))",
+            transition: "transform ease-in-out 0.2s",
+            minWidth: "5rem",
+            maxWidth: "15rem",
           }}
         >
-          {messages
-            .sort((a, b) => {
-              if (a.date > b.date) {
-                return -1;
-              }
-              if (b.date > a.date) {
-                return 1;
-              }
-              return 0;
-            })
-            .map(({ id, user, text, date }) => (
-              <div key={id}>
-                <Comment>
-                  <div className="flex items-center space-x-1">
-                    <Avatar
-                      size="small"
-                      url={user.image}
-                      text={user.name || ""}
-                    />
-                    <span className="flex-grow">{user.name}</span>
-                    <span style={{ fontSize: "0.66rem" }}>
-                      à {date.getHours()}:{date.getMinutes()}
-                    </span>
-                  </div>
-                </Comment>
-                <BodyText>
-                  <RichText>{text}</RichText>
-                </BodyText>
-              </div>
-            ))}
-        </div>
-        <form
-          className="flex flex-row w-full border-2 rounded border-gray"
-          onSubmit={handleSubmit(send)}
-        >
-          <Controller
-            name="text"
-            control={control}
-            defaultValue=""
-            rules={{ required: true }}
-            render={(props) => (
-              <>
-                <input
-                  id={id}
-                  list={`${id}_datalist`}
-                  className="flex-grow flex-shrink w-full px-2 py-1"
-                  type="text"
-                  {...props}
-                />
-                {
-                  <RemoteDataFold
-                    data={isMJ}
-                    onSuccess={(d) =>
-                      d ? (
-                        <datalist id={`${id}_datalist`}>
-                          {Object.values(COMMAND_MESSAGE).map((m) => (
-                            <option value={m.toString()} key={m.toString()} />
-                          ))}
-                        </datalist>
-                      ) : (
-                        <></>
-                      )
-                    }
-                  />
-                }
-              </>
-            )}
-          />
-          <button
-            type="submit"
-            className="flex-grow-0 px-2 py-1 border-l-2 w-fit border-gray"
+          <div
+            style={{
+              background: "white",
+              padding: "0.125rem 0.5rem 1.5rem",
+              borderBottomLeftRadius: "1rem",
+              borderBottomRightRadius: "1rem",
+              pointerEvents: "auto",
+              width: "100%",
+            }}
           >
-            <Icon name="PAPER_PLANE" />
-          </button>
-        </form>
-        <div className="text-center">
-          <BodyText>{user === "all" ? "Tout le monde" : user}</BodyText>
-        </div>
-      </div>
-      {user !== "all" ? (
-        <svg
-          width={92}
-          height={28}
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M0 0c9.941 0 17.622 8.833 23.587 16.786C28.695 23.595 36.833 28 46 28s17.305-4.405 22.413-11.214C74.378 8.833 82.059 0 92 0H0z"
-            fill="#FFFFFF"
-          />
-        </svg>
-      ) : (
-        <div
-          style={{
-            background: "#FFF",
-            height: "28px",
-            borderBottomLeftRadius: "100%",
-            borderBottomRightRadius: "100%",
-          }}
-        ></div>
+            <div
+              className="p-2 my-2 bg-gray-100 rounded"
+              style={{
+                width: "100%",
+                height: "10rem",
+                overflowY: "auto",
+                wordBreak: "break-word",
+              }}
+            >
+              {messages
+                .sort((a, b) => {
+                  if (a.date > b.date) {
+                    return -1;
+                  }
+                  if (b.date > a.date) {
+                    return 1;
+                  }
+                  return 0;
+                })
+                .map(({ id, user, text, date }) => (
+                  <div key={id}>
+                    <Comment>
+                      <div className="flex items-center space-x-1">
+                        <Avatar
+                          game={game}
+                          size="small"
+                          url={user.image}
+                          text={user.name || ""}
+                        />
+                        <span className="flex-grow">{user.name}</span>
+                        <span style={{ fontSize: "0.66rem" }}>
+                          à {date.getHours()}:{date.getMinutes()}
+                        </span>
+                      </div>
+                    </Comment>
+                    <BodyText>
+                      <RichText>{text}</RichText>
+                    </BodyText>
+                  </div>
+                ))}
+            </div>
+            <form
+              className="flex flex-row w-full border-2 rounded border-gray"
+              onSubmit={handleSubmit(send)}
+            >
+              <Controller
+                name="text"
+                control={control}
+                defaultValue=""
+                rules={{ required: true }}
+                render={(props) => (
+                  <>
+                    <input
+                      id={id}
+                      list={`${id}_datalist`}
+                      className="flex-grow flex-shrink w-full px-2 py-1"
+                      type="text"
+                      {...props}
+                    />
+                    {
+                      <RemoteDataFold
+                        data={isMJ}
+                        onSuccess={(d) =>
+                          d ? (
+                            <datalist id={`${id}_datalist`}>
+                              {Object.values(COMMAND_MESSAGE).map((m) => (
+                                <option
+                                  value={m.toString()}
+                                  key={m.toString()}
+                                />
+                              ))}
+                            </datalist>
+                          ) : (
+                            <></>
+                          )
+                        }
+                      />
+                    }
+                  </>
+                )}
+              />
+              <button
+                type="submit"
+                className="flex-grow-0 px-2 py-1 border-l-2 w-fit border-gray"
+              >
+                <Icon name="PAPER_PLANE" />
+              </button>
+            </form>
+            <div className="text-center">
+              <BodyText>{user === "all" ? "Tout le monde" : user}</BodyText>
+            </div>
+          </div>
+          {user !== "all" ? (
+            <svg
+              width={92}
+              height={28}
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M0 0c9.941 0 17.622 8.833 23.587 16.786C28.695 23.595 36.833 28 46 28s17.305-4.405 22.413-11.214C74.378 8.833 82.059 0 92 0H0z"
+                fill="#FFFFFF"
+              />
+            </svg>
+          ) : (
+            <div
+              style={{
+                background: "#FFF",
+                height: "28px",
+                borderBottomLeftRadius: "100%",
+                borderBottomRightRadius: "100%",
+              }}
+            ></div>
+          )}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "0.25rem",
+              left: "50%",
+              cursor: "pointer",
+              transform: "translateX(-50%)",
+              pointerEvents: "auto",
+            }}
+          >
+            {user === "all" ? (
+              <AvatarList
+                game={game}
+                avatars={players}
+                onClick={() => setIsVisible(!isVisible)}
+                icon={isVisible ? "UP" : "DOWN"}
+              />
+            ) : (
+              <Avatar
+                game={game}
+                size="small"
+                url={image}
+                text={user || ""}
+                onClick={() => setIsVisible(!isVisible)}
+                icon={isVisible ? "UP" : "DOWN"}
+              />
+            )}
+          </div>
+        </As>
       )}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "0.25rem",
-          left: "50%",
-          cursor: "pointer",
-          transform: "translateX(-50%)",
-          pointerEvents: "auto",
-        }}
-      >
-        {user === "all" ? (
-          <AvatarList
-            avatars={players}
-            onClick={() => setIsVisible(!isVisible)}
-            icon={isVisible ? "UP" : "DOWN"}
-          />
-        ) : (
-          <Avatar
-            size="small"
-            url={image}
-            text={user || ""}
-            onClick={() => setIsVisible(!isVisible)}
-            icon={isVisible ? "UP" : "DOWN"}
-          />
-        )}
-      </div>
-    </As>
+    />
   );
 }

@@ -11,6 +11,7 @@ type Clickable = {
   icon: IconName;
 };
 type BaseProps = {
+  game: string;
   text: string;
   url: string | undefined | null;
   size?: keyof typeof size;
@@ -46,7 +47,13 @@ export function Avatar(props: Props) {
         backgroundSize: "cover",
       }}
     >
-      {props.url ? "" : <Icon name="SORCERER" />}
+      {props.url ? (
+        ""
+      ) : props.game === "FANTASY" ? (
+        <Icon name="HELMET" />
+      ) : (
+        <Icon name="SORCERER" />
+      )}
       {isClickable(props) && (
         <button
           className="absolute flex items-center justify-center w-6 h-6 p-0 text-gray-700 bg-white border border-gray-500 rounded-full shadow"

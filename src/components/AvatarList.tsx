@@ -17,6 +17,7 @@ type Clickable = {
   icon: IconName;
 };
 type BaseProps = {
+  game: string;
   avatars: {
     text: string;
     url: string | undefined | null;
@@ -42,7 +43,7 @@ export function AvatarList(props: Props) {
           key={avatar.url}
           style={{ marginLeft: index > 0 ? margin[props.size || "medium"] : 0 }}
         >
-          <Avatar size={props.size} {...avatar} />
+          <Avatar game={props.game} size={props.size} {...avatar} />
         </div>
       ))}
       {isClickable(props) && (
