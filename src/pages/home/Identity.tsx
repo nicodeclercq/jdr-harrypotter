@@ -13,6 +13,9 @@ import { prompt } from "../../helpers/io";
 import { Button } from "../../components/Button";
 import { useLuckPoints } from "./useLuckPoints";
 import { Separator } from "../../components/Separator";
+import { useLockKey } from "../../hooks/useLockKey";
+import { LOCK } from "../../lock";
+import { RemoteDataFold } from "../../components/RemoteDataFold";
 
 type FormType = {
   current: number;
@@ -25,6 +28,7 @@ function LifeForm({
   max,
   luckPoints,
 }: State["life"] & { luckPoints: State["luckPoints"] }) {
+  const { isUnlocked } = useLockKey();
   const { setLife } = useLife();
   const { setLuckPoints } = useLuckPoints();
   const {
@@ -84,29 +88,38 @@ function LifeForm({
       <span className="text-red-400">
         <Icon name="HEART" />
       </span>
-      <Separator isVertical />
+      <RemoteDataFold
+        data={isUnlocked(LOCK.LUCK)}
+        onSuccess={(hasLuck) =>
+          hasLuck && (
+            <>
+              <Separator isVertical />
 
-      <span className="text-green-400">
-        <Icon name="DICE" />
-      </span>
-      <Controller
-        name="luck"
-        control={control}
-        rules={{ required: true, min: 0, max: 500 }}
-        render={({ field: { value, onChange } }) => (
-          <Input
-            id="input-luck_current"
-            errors={errors["luck"]}
-            value={value}
-            type="number"
-            min="0"
-            max="500"
-            theme="neutral"
-            onChange={onChange}
-            onBlur={handleSubmit(onSubmit)}
-            size={1}
-          />
-        )}
+              <span className="text-green-400">
+                <Icon name="DICE" />
+              </span>
+              <Controller
+                name="luck"
+                control={control}
+                rules={{ required: true, min: 0, max: 500 }}
+                render={({ field: { value, onChange } }) => (
+                  <Input
+                    id="input-luck_current"
+                    errors={errors["luck"]}
+                    value={value}
+                    type="number"
+                    min="0"
+                    max="500"
+                    theme="neutral"
+                    onChange={onChange}
+                    onBlur={handleSubmit(onSubmit)}
+                    size={1}
+                  />
+                )}
+              />
+            </>
+          )
+        }
       />
     </form>
   );

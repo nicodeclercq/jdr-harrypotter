@@ -29,6 +29,7 @@ import { CombatPage } from "./pages/combat/CombatPage";
 import { PnjsPage } from "./pages/pnjs/PnjsPage";
 import { BattleMapPage } from "./pages/battleMap/battleMapPage";
 import { CardsPage } from "./pages/cards/CardsPage";
+import { LOCK } from "./lock";
 
 export type RouteDefinition = {
   label: ((state: State) => string) | string;
@@ -73,25 +74,25 @@ export const ROUTES: Record<string, RouteDefinition> = {
     icon: "BOOK",
     label: "Sorts",
     Component: SpellsPage,
-    lockKey: "alohomora",
+    lockKey: LOCK.SPELL,
   },
   "/runes": {
     icon: "RUNE",
     label: "Runes",
     Component: RunesPage,
-    lockKey: "futhark",
+    lockKey: LOCK.RUNE,
   },
   "/cartomancy": {
     icon: "CARD",
     label: "Cartomancie",
     Component: CartomancyPage,
-    lockKey: "double vue",
+    lockKey: LOCK.CARTOMANCY,
   },
   "/arithmancy": {
     icon: "ABACUS",
     label: "Arithmancy",
     Component: ArithmancyPage,
-    lockKey: "pythagore",
+    lockKey: LOCK.ARITHMENCY,
   },
   "/objects": {
     icon: "BACKPACK",
@@ -107,7 +108,7 @@ export const ROUTES: Record<string, RouteDefinition> = {
     icon: "CAULDRON",
     label: "Potions",
     Component: PotionsPage,
-    lockKey: "felix felicis",
+    lockKey: LOCK.POTION,
   },
   "/shop": {
     icon: "SHOP",
