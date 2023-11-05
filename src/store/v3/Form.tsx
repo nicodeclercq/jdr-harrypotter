@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { pipe } from "fp-ts/function";
 import * as ArrayFP from "fp-ts/Array";
@@ -54,7 +54,7 @@ export function Form({
   } = useForm<Record<Trait, number>>({
     defaultValues: defaultTraits,
   });
-  const Pouvoir = roll(2, "d6") + 6;
+  const Pouvoir = useMemo(() => roll(2, "d6") + 6, []);
 
   const onSubmit = (traits: Record<Trait, number>) => {
     callback({ traits: map((trait) => trait * 1, traits) });
