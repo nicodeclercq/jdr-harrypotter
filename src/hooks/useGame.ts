@@ -1,9 +1,8 @@
 import { lens } from "../helpers/object";
-import { pipe } from "fp-ts/function";
-import { onSuccess } from "../helpers/remoteData";
 import { State } from "../store/State";
 import { useStore } from "./useStore";
 import * as RemoteData from "@devexperts/remote-data-ts";
+import { GAME } from "../store/v3/v3";
 
 const gameLens = lens<State, "game">("game");
 
@@ -12,7 +11,7 @@ export function useGame() {
 
   return {
     game,
-    isFantasy: RemoteData.map((game) => game === "FANTASY")(game),
+    isFantasy: RemoteData.map((game) => game === GAME.FANTASY)(game),
     isHP: RemoteData.map((game) => game === "HP")(game),
   };
 }

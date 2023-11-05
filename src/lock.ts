@@ -1,4 +1,5 @@
 export const LOCK = {
+  NONE: "none",
   ARITHMENCY: "pythagore",
   POTION: "felix felicis",
   CARTOMANCY: "double vue",

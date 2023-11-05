@@ -32,13 +32,20 @@ export type Trait = IO.TypeOf<typeof traitDecoder>;
 
 export const traitsDecoder = IO.record(traitDecoder, IO.number);
 
+export const gameDecoder = IO.union([IO.literal("HP"), IO.literal("FANTASY")]);
+export type Game = IO.TypeOf<typeof gameDecoder>;
+export const GAME = {
+  HP: "HP",
+  FANTASY: "FANTASY",
+} as const;
+
 export const stateDecoder = IO.intersection([
   V2.stateDecoder,
   IO.type({
     traits: traitsDecoder,
   }),
   IO.type({
-    game: IO.string,
+    game: gameDecoder,
   }),
 ]);
 
@@ -47,7 +54,7 @@ export type State = IO.TypeOf<typeof stateDecoder>;
 function update(promise: Promise<V2.State>): Promise<State> {
   return promise
     .then((state) =>
-      prompt<V2.State & { game: string }>(
+      prompt<V2.State & { game: Game }>(
         (callback) => (
           <Form
             fields={{
@@ -55,12 +62,12 @@ function update(promise: Promise<V2.State>): Promise<State> {
                 label: "Type de jeu",
                 defaultValue: "HP",
                 values: [
-                  { label: "HP", value: "HP" },
-                  { label: "Fantasy", value: "FANTASY" },
+                  { label: "HP", value: GAME.HP },
+                  { label: "Fantasy", value: GAME.FANTASY },
                 ],
               },
             }}
-            onSubmit={({ game }) => callback({ ...state, game })}
+            onSubmit={({ game }) => callback({ ...state, game: game as Game })}
           />
         ),
         <>Type de Jeu</>

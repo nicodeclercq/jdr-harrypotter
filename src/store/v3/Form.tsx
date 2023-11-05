@@ -1,26 +1,41 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { pipe } from "fp-ts/function";
+import * as ArrayFP from "fp-ts/Array";
 
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
-import { Trait } from "./v3";
-import { roll, random } from "../../helpers/number";
+import { GAME, Trait } from "./v3";
+import { roll } from "../../helpers/number";
 import { Label } from "../../components/font/Label";
 import { Icon } from "../../components/icons/Icon";
 import { keys, map } from "../../helpers/object";
-import { createArray } from "../../helpers/array";
+import { shuffle } from "../../helpers/array";
 
-const rollTrait = () => roll(2, "d6") + 6;
+const MID_TRAIT = 12;
+const rollTraits = () =>
+  pipe(
+    shuffle([
+      "Force",
+      "Constitution",
+      "Perception",
+      "Intelligence",
+      "Dextérité",
+      "Charisme",
+    ]),
+    ArrayFP.partitionWithIndex((index) => index % 2 === 0),
+    ({ left, right }) =>
+      left.reduce((acc, l, index) => {
+        const r = roll(1, "d6");
+        return {
+          ...acc,
+          [l]: MID_TRAIT + r,
+          [right[index]]: MID_TRAIT - r,
+        };
+      }, {} as Record<Trait, number>)
+  );
 
-const defaultTraits: Record<Trait, number> = {
-  Force: rollTrait(),
-  Constitution: rollTrait(),
-  Perception: rollTrait(),
-  Intelligence: rollTrait(),
-  Dextérité: rollTrait(),
-  Charisme: rollTrait(),
-  Pouvoir: rollTrait(),
-};
+const defaultTraits = rollTraits();
 
 export function Form({
   game,
@@ -39,34 +54,16 @@ export function Form({
   } = useForm<Record<Trait, number>>({
     defaultValues: defaultTraits,
   });
+  const Pouvoir = roll(2, "d6") + 6;
 
   const onSubmit = (traits: Record<Trait, number>) => {
     callback({ traits: map((trait) => trait * 1, traits) });
   };
 
   const rollAll = () => {
-    const MIDDLE = 12;
-
-    const traits = keys(defaultTraits);
-    const randomValues = createArray(Math.floor(traits.length / 2), 0).map(() =>
-      random(0, 6)
-    );
-
-    traits
-      .sort(() => random(-1, 1))
-      .map((trait, index) => {
-        if (index < randomValues.length) {
-          return { trait, value: MIDDLE + randomValues[index] };
-        }
-        const i = index % randomValues.length;
-        if (Math.floor(index / 2) < randomValues.length) {
-          return { trait, value: MIDDLE - randomValues[i] };
-        }
-        return { trait, value: MIDDLE };
-      })
-      .forEach(({ trait, value }) => {
-        setValue(trait, value);
-      });
+    Object.entries(rollTraits()).forEach(([trait, value]) => {
+      setValue(trait as Trait, value);
+    });
   };
 
   const onTraitChange =
@@ -76,12 +73,13 @@ export function Form({
       setRemainingPoints(remainingPoints - (value ?? 0) + currentValue);
       callback(value);
     };
-  const { Pouvoir, ...fantasyTraits } = defaultTraits;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="w-full">
-        {keys(game === "FANTASY" ? fantasyTraits : defaultTraits)
+        {keys(
+          game === GAME.FANTASY ? defaultTraits : { ...defaultTraits, Pouvoir }
+        )
           .sort()
           .map((trait: Trait) => (
             <div

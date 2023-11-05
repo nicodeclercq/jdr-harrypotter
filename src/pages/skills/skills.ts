@@ -11,13 +11,13 @@ export const fantasySkills: Record<string, SkillValue> = {
   Convaincre: { min: 10, baseTrait: "Charisme" },
   Mentir: { min: 10, baseTrait: "Charisme" },
   Athlétisme: { min: 10, baseTrait: "Constitution" },
-  Acrobatie: { min: 10, baseTrait: "Constitution" },
+  Discrétion: { min: 10, baseTrait: "Constitution" },
   Bricolage: { min: 10, baseTrait: "Dextérité" },
-  Escamotage: { min: 10, baseTrait: "Dextérité" },
+  "Passe-passe": { min: 10, baseTrait: "Dextérité" },
   Médecine: { min: 10, baseTrait: "Intelligence" },
   Connaissances: { min: 10, baseTrait: "Intelligence" },
   Psychologie: { min: 10, baseTrait: "Perception" },
-  Discrétion: { min: 10, baseTrait: "Perception" },
+  "Survie / Instinct": { min: 10, baseTrait: "Perception" },
 };
 
 export const hpSkills: Record<string, SkillValue> = {

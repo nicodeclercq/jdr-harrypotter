@@ -1,5 +1,6 @@
 import { constVoid } from "fp-ts/lib/function";
 import { Icon, IconName } from "./icons/Icon";
+import { GAME } from "../store/v3/v3";
 
 const size = {
   small: "w-6 h-6",
@@ -49,7 +50,7 @@ export function Avatar(props: Props) {
     >
       {props.url ? (
         ""
-      ) : props.game === "FANTASY" ? (
+      ) : props.game === GAME.FANTASY ? (
         <Icon name="HELMET" />
       ) : (
         <Icon name="SORCERER" />
