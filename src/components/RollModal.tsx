@@ -238,7 +238,7 @@ export function RollModal({
   const [percentage, setPercentage] = useState(NaN);
 
   useEffect(() => {
-    if (percentage) {
+    if (percentage || !successPercentage) {
       if (rollType === "none") {
         setValue(value1);
       }

@@ -211,6 +211,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           title="Lancé libre"
           isCancellable={false}
           onRollEnd={() => {
+            console.log("end");
             setRollModal(undefined);
           }}
           dices={rollModal}
