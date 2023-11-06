@@ -5,16 +5,18 @@ import { Card } from "../../components/Card";
 import { Icon } from "../../components/icons/Icon";
 import { RollModal } from "../../components/RollModal";
 import { entries } from "../../helpers/object";
-import { fromRemoteData } from "../../helpers/remoteData";
+import { fromRemoteData, sequence } from "../../helpers/remoteData";
 import { Trait } from "../../store/State";
 import { useTraits } from "../home/useTraits";
+import { useGame } from "../../hooks/useGame";
 
 type Props = {
+  isHP: boolean;
   userTraits: Record<Trait, number>;
 };
 
 type Caracteristics = "Instinct" | "Chance";
-function UserTraits({ userTraits }: Props) {
+function UserTraits({ userTraits, isHP }: Props) {
   const [rollModalCaracteristic, setRollModalCaracteristic] = useState<
     Caracteristics | undefined
   >(undefined);
@@ -22,7 +24,7 @@ function UserTraits({ userTraits }: Props) {
     undefined
   );
 
-  const caracteristics = {
+  const hpCaracteristics = {
     Instinct: userTraits.Intelligence * 5,
     Chance: userTraits.Pouvoir * 5,
   };
@@ -53,25 +55,26 @@ function UserTraits({ userTraits }: Props) {
             </div>
           ))}
           <div></div>
-          {entries(caracteristics).map(([key, value]) => (
-            <div key={`caracteristics_${key}`} className="flex p-2 space-x-2">
-              <div>
-                <Button
-                  onClick={() => setRollModalCaracteristic(key)}
-                  type="secondary"
-                >
-                  <Icon name="DICE" />
-                </Button>
+          {isHP &&
+            entries(hpCaracteristics).map(([key, value]) => (
+              <div key={`caracteristics_${key}`} className="flex p-2 space-x-2">
+                <div>
+                  <Button
+                    onClick={() => setRollModalCaracteristic(key)}
+                    type="secondary"
+                  >
+                    <Icon name="DICE" />
+                  </Button>
+                </div>
+                <div className="flex-grow">{key}</div>
+                <div>{value}%</div>
               </div>
-              <div className="flex-grow">{key}</div>
-              <div>{value}%</div>
-            </div>
-          ))}
+            ))}
         </div>
       </Card>
       {rollModalCaracteristic != null && (
         <RollModal
-          successPercentage={caracteristics[rollModalCaracteristic]}
+          successPercentage={hpCaracteristics[rollModalCaracteristic]}
           title={rollModalCaracteristic}
           isCancellable={false}
           onRollEnd={() => {
@@ -95,9 +98,12 @@ function UserTraits({ userTraits }: Props) {
 
 export function MyTraits() {
   const { traits } = useTraits();
+  const { isHP } = useGame();
 
   return pipe(
-    traits,
-    fromRemoteData((traits) => <UserTraits userTraits={traits} />)
+    sequence({ traits, isHP }),
+    fromRemoteData(({ traits, isHP }) => (
+      <UserTraits userTraits={traits} isHP={isHP} />
+    ))
   );
 }
