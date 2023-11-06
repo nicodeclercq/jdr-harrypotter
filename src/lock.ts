@@ -7,4 +7,5 @@ export const LOCK = {
   SPELL: "alohomora",
   BENNIES: "coin",
   LUCK: "lucky",
+  ADVANTAGE: "youpi",
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { pipe } from "fp-ts/function";
 
 import { Button } from "./Button";
@@ -11,6 +11,11 @@ import * as Interaction from "../helpers/interaction";
 import { Dice } from "./dice/dice";
 import { useSocket } from "../hooks/useSocket";
 import { Input } from "./Input";
+import { useLockKey } from "../hooks/useLockKey";
+import { RemoteDataFold } from "./RemoteDataFold";
+import { LOCK } from "../lock";
+import { Select } from "./Select";
+import { Label } from "./font/Label";
 
 export type Interpretation = {
   predicate: (value: number, percentage: number) => boolean;
@@ -29,14 +34,20 @@ type Props = {
   resultsInterpretation?: Interpretation[];
 };
 
+type RollType = "advantage" | "disadvantage" | "none";
+
 function DifficultySelection({
+  withAdvantage,
   successPercentage,
   onSelection,
 }: {
+  withAdvantage: boolean;
   successPercentage: number;
-  onSelection: (value: number) => void;
+  onSelection: (value: number, rollType: RollType) => void;
 }) {
   const [customDifficulty, setCustomDifficulty] = useState(0);
+  const [rollType, setRollType] = useState<RollType>("none");
+
   const successPercentages = {
     veryEasy: successPercentage + 20,
     easy: successPercentage + 10,
@@ -50,6 +61,21 @@ function DifficultySelection({
       <Title>Chances de succès: {successPercentage}%</Title>
       <br />
       <hr />
+      {withAdvantage && (
+        <>
+          <Label htmlFor="rollType">Avantage / Désavantage</Label>
+          <Select<RollType>
+            id="rollType"
+            onChange={(r) => setRollType(r as RollType)}
+            options={[
+              { label: "-", value: "none" },
+              { label: "Avantage", value: "advantage" },
+              { label: "Désavantage", value: "disadvantage" },
+            ]}
+          />
+        </>
+      )}
+
       <br />
       <Caption>Sélection de la difficulté:</Caption>
       <Button
@@ -59,7 +85,8 @@ function DifficultySelection({
           onSelection(
             successPercentages.veryEasy <= 100
               ? successPercentages.veryEasy
-              : 100
+              : 100,
+            rollType
           )
         }
       >
@@ -70,7 +97,8 @@ function DifficultySelection({
         type="secondary"
         onClick={() =>
           onSelection(
-            successPercentages.easy <= 100 ? successPercentages.easy : 100
+            successPercentages.easy <= 100 ? successPercentages.easy : 100,
+            rollType
           )
         }
       >
@@ -81,7 +109,8 @@ function DifficultySelection({
         type="primary"
         onClick={() =>
           onSelection(
-            successPercentages.normal <= 100 ? successPercentages.normal : 100
+            successPercentages.normal <= 100 ? successPercentages.normal : 100,
+            rollType
           )
         }
       >
@@ -92,7 +121,8 @@ function DifficultySelection({
         type="secondary"
         onClick={() =>
           onSelection(
-            successPercentages.hard <= 100 ? successPercentages.hard : 100
+            successPercentages.hard <= 100 ? successPercentages.hard : 100,
+            rollType
           )
         }
       >
@@ -105,7 +135,8 @@ function DifficultySelection({
           onSelection(
             successPercentages.veryHard <= 100
               ? successPercentages.veryHard
-              : 100
+              : 100,
+            rollType
           )
         }
       >
@@ -132,7 +163,8 @@ function DifficultySelection({
               onSelection(
                 successPercentage + customDifficulty <= 100
                   ? successPercentage + customDifficulty
-                  : 100
+                  : 100,
+                rollType
               )
             }
           >
@@ -148,7 +180,7 @@ function DifficultySelection({
       <hr />
       <br />
       <div className="flex flex-col items-end justify-end">
-        <Button type="secondary" onClick={() => onSelection(0)}>
+        <Button type="secondary" onClick={() => onSelection(0, rollType)}>
           Annuler
         </Button>
       </div>
@@ -197,9 +229,27 @@ export function RollModal({
   isCancellable = true,
   resultsInterpretation = defaultInterpretation,
 }: Props) {
+  const { isUnlocked } = useLockKey();
   const { emit } = useSocket();
   const [value, setValue] = useState(NaN);
+  const [value1, setValue1] = useState(NaN);
+  const [value2, setValue2] = useState(NaN);
+  const [rollType, setRollType] = useState<RollType>("none");
   const [percentage, setPercentage] = useState(NaN);
+
+  useEffect(() => {
+    if (percentage) {
+      if (rollType === "none") {
+        setValue(value1);
+      }
+      if (rollType === "advantage") {
+        setValue(Math.min(value1, value2));
+      }
+      if (rollType === "disadvantage") {
+        setValue(Math.max(value1, value2));
+      }
+    }
+  }, [value1, value2, rollType, percentage]);
 
   const isD100 = (dices: Dice[]): dices is ["d100", "d10"] => {
     return dices.length === 2 && dices[0] === "d100" && dices[1] === "d10";
@@ -253,79 +303,100 @@ export function RollModal({
   };
 
   return (
-    <Modal header={<span className="space-x-2">{title}</span>}>
-      {isNaN(percentage) && successPercentage ? (
-        <DifficultySelection
-          successPercentage={successPercentage}
-          onSelection={(value) => {
-            if (value === 0) {
-              onRollEnd(Interaction.canceled());
-            } else {
-              setPercentage(value);
-            }
-          }}
-        />
-      ) : (
-        <>
-          {!isNaN(percentage) && (
-            <span className="text-center text-m">
-              Niveau actuel: {percentage}%
-            </span>
-          )}
-          <div className="flex justify-center">
-            <Roll
-              dices={dices}
-              concat={isD100(dices) ? concatD100 : concat}
-              onRollEnd={(val) => setValue(val)}
+    <RemoteDataFold
+      data={isUnlocked(LOCK.ADVANTAGE)}
+      onSuccess={(withAdvantage) => (
+        <Modal header={<span className="space-x-2">{title}</span>}>
+          {isNaN(percentage) && successPercentage ? (
+            <DifficultySelection
+              withAdvantage={withAdvantage}
+              successPercentage={successPercentage}
+              onSelection={(value, rollType) => {
+                if (value === 0) {
+                  onRollEnd(Interaction.canceled());
+                } else {
+                  setPercentage(value);
+                  setRollType(rollType);
+                }
+              }}
             />
-          </div>
-          <div className="flex flex-col items-center justify-center mb-2 space-y-4">
-            {!isNaN(value) && (
-              <>
-                <span className="text-4xl">{value}</span>
-                {!isNaN(percentage) && (
-                  <div className="flex flex-col items-center justify-center space-y-1">
-                    {pipe(getInterpretation(), (interpretation) =>
-                      interpretation != null ? (
-                        <>
-                          <span className="text-m">
-                            {interpretation.result.type === "success" ||
-                            interpretation.result.type === "critical-success"
-                              ? "😀"
-                              : "🙁"}
-                          </span>
-                          <span>{interpretation.result.message}</span>
-                        </>
-                      ) : (
-                        <></>
-                      )
-                    )}
-                  </div>
+          ) : (
+            <>
+              {!isNaN(percentage) && (
+                <span className="text-center text-m">
+                  Niveau actuel: {percentage}%
+                </span>
+              )}
+              <div className="flex justify-center">
+                <Roll
+                  dices={dices}
+                  concat={isD100(dices) ? concatD100 : concat}
+                  onRollEnd={(val) => setValue1(val)}
+                />
+                {rollType !== "none" && (
+                  <Roll
+                    dices={dices}
+                    concat={isD100(dices) ? concatD100 : concat}
+                    onRollEnd={(val) => setValue2(val)}
+                  />
                 )}
-              </>
-            )}
-          </div>
-          <div className="flex justify-end space-x-4">
-            {isCancellable && (
-              <Button
-                type="secondary"
-                title="Ce jet de dés ne sera pas comptabilisé"
-                onClick={() => onRollEnd(Interaction.canceled())}
-              >
-                Annuler
-              </Button>
-            )}
-            <Button
-              disabled={isNaN(value)}
-              type="primary"
-              title="En validant tes jets de dés tu enregistres une utilisation qui te permet d'améliorer tes sorts ou compétences petit à petit"
-              onClick={onRollEndEvent}
-            >
-              Valider ce jet
-            </Button>
-          </div>
-        </>
+              </div>
+              <div className="flex flex-col items-center justify-center mb-2 space-y-4">
+                {!isNaN(value) && (
+                  <>
+                    <span className="text-4xl">{value}</span>
+                    {rollType !== "none" && (
+                      <span>
+                        (avec&nbsp;
+                        {rollType === "advantage" ? "Avantage" : "Désavantage"})
+                      </span>
+                    )}
+                    {!isNaN(percentage) && (
+                      <div className="flex flex-col items-center justify-center space-y-1">
+                        {pipe(getInterpretation(), (interpretation) =>
+                          interpretation != null ? (
+                            <>
+                              <span className="text-m">
+                                {interpretation.result.type === "success" ||
+                                interpretation.result.type ===
+                                  "critical-success"
+                                  ? "😀"
+                                  : "🙁"}
+                              </span>
+                              <span>{interpretation.result.message}</span>
+                            </>
+                          ) : (
+                            <></>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+              <div className="flex justify-end space-x-4">
+                {isCancellable && (
+                  <Button
+                    type="secondary"
+                    title="Ce jet de dés ne sera pas comptabilisé"
+                    onClick={() => onRollEnd(Interaction.canceled())}
+                  >
+                    Annuler
+                  </Button>
+                )}
+                <Button
+                  disabled={isNaN(value)}
+                  type="primary"
+                  title="En validant tes jets de dés tu enregistres une utilisation qui te permet d'améliorer tes sorts ou compétences petit à petit"
+                  onClick={onRollEndEvent}
+                >
+                  Valider ce jet
+                </Button>
+              </div>
+            </>
+          )}
+        </Modal>
       )}
-    </Modal>
+    />
   );
 }
