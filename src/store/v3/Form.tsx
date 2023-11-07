@@ -45,6 +45,7 @@ export function Form({
   callback: (result: { traits: Record<Trait, number> }) => void;
 }) {
   const [remainingPoints, setRemainingPoints] = useState(0);
+  const Pouvoir = useMemo(() => roll(2, "d6") + 6, []);
   const {
     handleSubmit,
     setValue,
@@ -52,12 +53,16 @@ export function Form({
     control,
     formState: { errors },
   } = useForm<Record<Trait, number>>({
-    defaultValues: defaultTraits,
+    defaultValues: {
+      ...defaultTraits,
+      Pouvoir,
+    },
   });
-  const Pouvoir = useMemo(() => roll(2, "d6") + 6, []);
 
   const onSubmit = (traits: Record<Trait, number>) => {
-    callback({ traits: map((trait) => trait * 1, traits) });
+    callback({
+      traits: map((trait) => trait * 1, traits),
+    });
   };
 
   const rollAll = () => {

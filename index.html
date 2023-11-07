@@ -38,5 +38,10 @@
     <audio id="sound-time" src="/time.wav" preload="auto"></audio>
     <audio id="sound-dice" src="/dice.mp3" preload="auto"></audio>
     <audio id="sound-dice-short" src="/dice-short.mp3" preload="auto"></audio>
+    <script>
+      Array.from(document.getElementsByTagName("audio")).forEach((audio) => {
+        audio.volume = 0.2;
+      });
+    </script>
   </body>
 </html>

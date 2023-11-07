@@ -4,7 +4,7 @@ import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 import { Icon } from "../../components/icons/Icon";
 import { RollModal } from "../../components/RollModal";
-import { entries } from "../../helpers/object";
+import { entries, remove } from "../../helpers/object";
 import { fromRemoteData, sequence } from "../../helpers/remoteData";
 import { Trait } from "../../store/State";
 import { useTraits } from "../home/useTraits";
@@ -15,18 +15,20 @@ type Props = {
   userTraits: Record<Trait, number>;
 };
 
-type Caracteristics = "Instinct" | "Chance";
-function UserTraits({ userTraits, isHP }: Props) {
+type Caracteristics = "Pouvoir" | "Instinct" | "Chance";
+function UserTraits({ userTraits: traits, isHP }: Props) {
   const [rollModalCaracteristic, setRollModalCaracteristic] = useState<
     Caracteristics | undefined
   >(undefined);
   const [rollModalTrait, setRollModalTrait] = useState<Trait | undefined>(
     undefined
   );
+  const userTraits = remove("Pouvoir", traits) as Record<Trait, number>;
 
   const hpCaracteristics = {
-    Instinct: userTraits.Intelligence * 5,
-    Chance: userTraits.Pouvoir * 5,
+    Pouvoir: traits.Pouvoir * 5,
+    Instinct: traits.Intelligence * 5,
+    Chance: traits.Pouvoir * 5,
   };
 
   return (
