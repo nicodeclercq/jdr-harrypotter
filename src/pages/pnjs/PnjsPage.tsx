@@ -2,7 +2,7 @@ import { useState } from "react";
 import { pipe } from "fp-ts/function";
 import { Layout } from "../../components/Layout";
 import { usePNJ } from "../../hooks/usePNJ";
-import { PNJ } from "../../components/pnj/pnj";
+import { HPPNJ } from "../../components/pnj/pnj";
 import { Input } from "../../components/Input";
 import { fromReloadable } from "../../helpers/Reloadable";
 import { Loader } from "../../components/Loader";
@@ -46,7 +46,7 @@ export function PnjsPage() {
                           .includes(searchQuery)
                     )
                     .map((pnj) => (
-                      <PNJ key={pnj.name} pnj={pnj} />
+                      <HPPNJ key={pnj.name} pnj={pnj} />
                     ))}
                 </div>
               </>

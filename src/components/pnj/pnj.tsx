@@ -44,7 +44,7 @@ type Props = {
   pnj?: PNJType;
 };
 
-export function PNJ({ pnj }: Props) {
+export function HPPNJ({ pnj }: Props) {
   const [showEditModal, setShowEditModal] = useState(false);
   const { add, remove, update } = usePNJ();
   const [current, setCurrent] = usePersistantState<PNJType>(
