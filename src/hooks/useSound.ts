@@ -15,6 +15,7 @@ type Sound = (typeof sounds)[number];
 export function useSound() {
   const play = useCallback((name: Sound) => {
     const sound = document.getElementById(`sound-${name}`) as HTMLAudioElement;
+    sound.volume = 0.1;
     sound.play();
   }, []);
 
