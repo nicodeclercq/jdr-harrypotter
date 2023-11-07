@@ -22,7 +22,10 @@ export function Form({
     () => (game === GAME.FANTASY ? fantasySkills : hpSkills),
     [game]
   );
-  const defaultSkills = useMemo(() => entries(skills), [skills]);
+  const defaultSkills = useMemo(
+    () => entries(skills).sort(([s1], [s2]) => s1.localeCompare(s2)),
+    [skills]
+  );
 
   const [remainingPoints, setRemainingPoints] = useState(REPARTITION_POINTS);
   const {
