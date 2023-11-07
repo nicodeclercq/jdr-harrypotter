@@ -96,7 +96,7 @@ function LifeForm({
             <>
               <Separator isVertical />
 
-              <span className="text-green-400">
+              <span className="text-green-600">
                 <Icon name="DICE" />
               </span>
               <Controller
