@@ -15,7 +15,7 @@ export const stateDecoder = LastState.stateDecoder;
 export type State = IO.TypeOf<typeof stateDecoder>;
 
 const defaultLocksByGame = {
-  [GAME.FANTASY]: [LOCK.CARTOMANCY, LOCK.LUCK, LOCK.ADVANTAGE],
+  [GAME.FANTASY]: [LOCK.CARTOMANCY, LOCK.LUCK, LOCK.ADVANTAGE, LOCK.DAMAGES],
   [GAME.HP]: [LOCK.BENNIES, LOCK.SPELL],
 };
 

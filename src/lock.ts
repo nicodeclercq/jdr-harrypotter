@@ -8,4 +8,5 @@ export const LOCK = {
   BENNIES: "coin",
   LUCK: "lucky",
   ADVANTAGE: "youpi",
+  DAMAGES: "aïe ouille ouille",
 };

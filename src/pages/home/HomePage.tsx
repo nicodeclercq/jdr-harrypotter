@@ -17,6 +17,9 @@ import { Benny } from "../../components/Benny";
 import { useBenny } from "../../hooks/useBenny";
 import { useGame } from "../../hooks/useGame";
 import { RemoteDataFold } from "../../components/RemoteDataFold";
+import { BodyDamage } from "../../components/BodyDamage";
+import { useLockKey } from "../../hooks/useLockKey";
+import { LOCK } from "../../lock";
 
 function Home({
   isMJ,
@@ -29,17 +32,23 @@ function Home({
 }) {
   useTitle(`${life.current}/${life.max}♥ - ${user}`);
   const { game } = useGame();
+  const { isUnlocked } = useLockKey();
   const { bennies, moveBenny, removeBenny } = useBenny();
 
   return (
     <Layout>
       <RemoteDataFold
-        data={sequence({ bennies, game })}
-        onSuccess={({ bennies, game }) => (
+        data={sequence({
+          areDamagesUnlocked: isUnlocked(LOCK.DAMAGES),
+          bennies,
+          game,
+        })}
+        onSuccess={({ areDamagesUnlocked, bennies, game }) => (
           <>
             <div className="w-full h-full grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="w-full space-y-4">
                 {isMJ && <Timer />}
+                {areDamagesUnlocked && <BodyDamage />}
                 {isMJ && game === "HP" && <MoneyConverter showEuro />}
                 {isMJ && game === "HP" && <OppositionRollTable />}
                 <div

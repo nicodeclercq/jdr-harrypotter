@@ -1,0 +1,7 @@
+.bodyDamage path {
+  opacity: 0.5;
+}
+.bodyDamage path:hover {
+  cursor: pointer;
+  opacity: 1;
+}
