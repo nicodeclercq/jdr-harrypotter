@@ -1,6 +1,6 @@
 export const DAMAGE_LEVEL = {
   healthy: "-",
-  softlyInconvenient: "légèrement génant",
+  softlyInconvenient: "fragile",
   painful: "douloureux",
   veryPainful: "très douloureux",
   unusable: "inutilisable",

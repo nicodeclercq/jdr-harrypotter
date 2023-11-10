@@ -1,3 +1,7 @@
+.bodyDamage text {
+  font-size: 0.75em;
+  pointer-events: none;
+}
 .bodyDamage path {
   opacity: 0.8;
 }
