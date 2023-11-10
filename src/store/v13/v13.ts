@@ -1,37 +1,31 @@
 import { pipe } from "fp-ts/lib/function";
 import * as IO from "io-ts";
+import * as Record from "fp-ts/Record";
 
 import { retrieveFromVersion } from "../helper";
+import { UnionToTuple, decoderFromReadonlyArray } from "../../helpers/io-ts";
 import * as LastState from "../v12/v12";
+import { emptyRecord } from "../../helpers/object";
+import { DAMAGE_LEVEL, DAMAGE_LOCATION } from "./damages";
 
 const version = "V13";
 
-const damageLocationDecoder = IO.union([
-  IO.literal("head"),
-  IO.literal("neck"),
-  IO.literal("shoulder left"),
-  IO.literal("shoulder right"),
-  IO.literal("torax"),
-  IO.literal("arm left"),
-  IO.literal("arm right"),
-  IO.literal("belly"),
-  IO.literal("pelvis"),
-  IO.literal("hand left"),
-  IO.literal("hand right"),
-  IO.literal("thigh left"),
-  IO.literal("thigh right"),
-  IO.literal("knee left"),
-  IO.literal("knee right"),
-  IO.literal("calf left"),
-  IO.literal("calf right"),
-  IO.literal("foot left"),
-  IO.literal("foot right"),
-]);
+const damageLevelDecoder = decoderFromReadonlyArray(
+  Record.keys(DAMAGE_LEVEL) as UnionToTuple<keyof typeof DAMAGE_LEVEL>
+);
+
+type DamageLevel = IO.TypeOf<typeof damageLevelDecoder>;
+
+const damageLocationDecoder = decoderFromReadonlyArray(
+  Record.keys(DAMAGE_LOCATION) as UnionToTuple<keyof typeof DAMAGE_LOCATION>
+);
+
+type DamageLocation = IO.TypeOf<typeof damageLocationDecoder>;
 
 export const stateDecoder = IO.intersection([
   LastState.stateDecoder,
   IO.type({
-    damages: IO.array(damageLocationDecoder),
+    damages: IO.record(damageLocationDecoder, damageLevelDecoder),
   }),
 ]);
 
@@ -40,7 +34,13 @@ export type State = IO.TypeOf<typeof stateDecoder>;
 function update(promise: Promise<LastState.State>): Promise<State> {
   return promise.then((state) => ({
     ...state,
-    damages: [],
+    damages: Record.keys(DAMAGE_LOCATION).reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur]: "healthy",
+      }),
+      emptyRecord<DamageLocation, DamageLevel>()
+    ),
   }));
 }
 

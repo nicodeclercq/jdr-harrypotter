@@ -1,5 +1,5 @@
 .bodyDamage path {
-  opacity: 0.5;
+  opacity: 0.8;
 }
 .bodyDamage path:hover {
   cursor: pointer;

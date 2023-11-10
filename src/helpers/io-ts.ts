@@ -1,4 +1,5 @@
 import * as IO from "io-ts";
+import * as Record from "fp-ts/Record";
 
 const isTypeC = (value: IO.Mixed): value is IO.TypeC<IO.Props> =>
   "props" in value;
@@ -54,7 +55,7 @@ type LastInUnion<U> = UnionToIntersection<
 /**
  * UnionToTuple<1 | 2> = [1, 2].
  */
-type UnionToTuple<U, Last = LastInUnion<U>> = [U] extends [never]
+export type UnionToTuple<U, Last = LastInUnion<U>> = [U] extends [never]
   ? []
   : [...UnionToTuple<Exclude<U, Last>>, Last];
 
