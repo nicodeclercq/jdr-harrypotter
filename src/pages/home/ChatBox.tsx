@@ -195,14 +195,16 @@ export function ChatBox({ me, user, image, as: As = "div" }: Props) {
                 control={control}
                 defaultValue=""
                 rules={{ required: true }}
-                render={(props) => (
+                render={({ field: { value, onChange, onBlur } }) => (
                   <>
                     <input
                       id={id}
                       list={`${id}_datalist`}
                       className="flex-grow flex-shrink w-full px-2 py-1"
                       type="text"
-                      {...props}
+                      value={value}
+                      onChange={onChange}
+                      onBlur={onBlur}
                     />
                     {
                       <RemoteDataFold
