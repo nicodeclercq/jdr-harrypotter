@@ -21,6 +21,7 @@ import { BodyDamage } from "../../components/BodyDamage";
 import { useLockKey } from "../../hooks/useLockKey";
 import { LOCK } from "../../lock";
 import { FantasyDD } from "./FantasyDD";
+import { LogoutButton } from "./LogoutButton";
 
 function Home({
   isMJ,
@@ -46,6 +47,7 @@ function Home({
         })}
         onSuccess={({ areDamagesUnlocked, bennies, game }) => (
           <>
+            <LogoutButton />
             <div className="w-full h-full grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="w-full space-y-4">
                 {isMJ && <Timer />}
