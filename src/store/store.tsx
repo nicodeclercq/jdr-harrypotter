@@ -9,6 +9,7 @@ import { State, retrieve } from "../store/State";
 import { ExternalStoreManager } from "./externalStores/ExternalStoreManager";
 import { NameForm } from "../store/v1/NameForm";
 import { lastUpdateLens } from "./helper";
+import { CharacterForm } from "./v1/CharacterForm";
 
 export const subject = new BehaviorSubject<RemoteData.RemoteData<Error, State>>(
   RemoteData.initial
@@ -21,19 +22,31 @@ const onNoLocalState = () =>
       return [];
     })
     .then((names: string[]) =>
-      prompt<string>(
-        (callback: (result: string) => void) => (
-          <NameForm defaultValue="" names={names} callback={callback} />
+      prompt<string | undefined>(
+        (callback: (result: string | undefined) => void) => (
+          <CharacterForm defaultValue="" names={names} callback={callback} />
         ),
         <>Qui est ton personnage ?</>
-      ).then((name) =>
-        (names.includes(name)
-          ? ExternalStoreManager.read(name)
-          : Promise.resolve(undefined)
-        )
-          .then((state) => ({ state, name }))
-          .catch(() => ({ state: undefined, name }))
       )
+        .then((result) => {
+          if (result != null) {
+            return result;
+          }
+          return prompt<string>(
+            (callback: (result: string) => void) => (
+              <NameForm defaultValue="" names={names} callback={callback} />
+            ),
+            <>Donne un nom à ton personnage</>
+          );
+        })
+        .then((name) =>
+          (names.includes(name)
+            ? ExternalStoreManager.read(name)
+            : Promise.resolve(undefined)
+          )
+            .then((state) => ({ state, name }))
+            .catch(() => ({ state: undefined, name }))
+        )
     )
     .then(({ state, name }) => retrieve(state, name));
 

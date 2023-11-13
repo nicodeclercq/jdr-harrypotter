@@ -1,9 +1,7 @@
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "../../components/Button";
 import { Label } from "../../components/font/Label";
-import { Icon } from "../../components/icons/Icon";
 import { Input } from "../../components/Input";
-import { Select } from "../../components/Select";
 
 type FormType = {
   name: string;
@@ -17,76 +15,54 @@ type Props = {
 };
 
 export function NameForm({ defaultValue, names = [], callback }: Props) {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<FormType>({
+  const { handleSubmit, control } = useForm<FormType>({
     defaultValues: {
       name: defaultValue,
       newName: "",
     },
+    mode: "all",
   });
 
   const onSubmit = (formValues: FormType) => {
     callback(formValues.name ? formValues.name : formValues.newName);
   };
 
-  const options = ["", ...names].map((name) =>
-    name ? { label: name, value: name } : { label: "-", value: "" }
-  );
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <ul className="flex flex-col p-2 space-y-4">
-        <li>
-          <Controller
-            name="name"
-            control={control}
-            rules={{ required: true, min: 1, max: 20 }}
-            render={({ field: { value, onChange } }) => (
-              <div className="flex flex-row items-center flex-grow p-2 border-gray-100 space-x-3 border-b-1">
-                <Icon name="CHARACTER" />
-                <Label htmlFor="input-name">Choisit ton personnage</Label>
-                <Select
-                  id="input-name"
-                  options={options}
-                  onChange={onChange}
-                  value={value}
-                  width="50%"
-                  theme="neutral"
-                />
-              </div>
-            )}
-          />
-        </li>
-        <li>
-          <Controller
-            name="name"
-            control={control}
-            rules={{ required: true, min: 1, max: 20 }}
-            render={({ field: { value, onChange } }) => (
-              <div className="flex flex-row items-center flex-grow p-2 border-gray-100 space-x-3 border-b-1">
-                <Icon name="JIGSAW_BOX" />
-                <Label htmlFor="input-name">Ou crée en un nouveau</Label>
-                <Input
-                  id="input-name"
-                  errors={errors["name"]}
-                  value={value}
-                  type="text"
-                  theme="neutral"
-                  onChange={onChange}
-                  width="50%"
-                  autoComplete={names ? "on" : "off"}
-                />
-              </div>
-            )}
-          />
-        </li>
+    <form onSubmit={handleSubmit(onSubmit)} className="max-h-[75vh]">
+      <Controller
+        name="name"
+        control={control}
+        rules={{
+          required: true,
+          min: 1,
+          max: 20,
+          validate: (value: string) => {
+            if (names.includes(value)) {
+              return "Ce nom est déjà utilisé par quelqu'un d'autre...";
+            }
+          },
+        }}
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-4">
+              <Label htmlFor="input-name">Nom</Label>
+              <Input
+                id="input-name"
+                theme="neutral"
+                type="text"
+                value={value}
+                onChange={onChange}
+              />
+            </div>
+            {error ? <span className="text-red-700">{error.message}</span> : ""}
+          </div>
+        )}
+      />
+      <div className="mt-4 text-right">
         <Button onClick="submit" type="primary">
           Valider
         </Button>
-      </ul>
+      </div>
     </form>
   );
 }

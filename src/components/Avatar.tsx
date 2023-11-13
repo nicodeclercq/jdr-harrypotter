@@ -15,6 +15,7 @@ type BaseProps = {
   game: string;
   text: string;
   url: string | undefined | null;
+  replacementIcon?: IconName;
   size?: keyof typeof size;
 };
 
@@ -50,6 +51,8 @@ export function Avatar(props: Props) {
     >
       {props.url ? (
         ""
+      ) : props.replacementIcon ? (
+        <Icon name={props.replacementIcon} />
       ) : props.game === GAME.FANTASY ? (
         <Icon name="HELMET" />
       ) : (

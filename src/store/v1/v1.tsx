@@ -5,6 +5,7 @@ import { prompt } from "../../helpers/io";
 import { retrieveFromVersion } from "../helper";
 import { Welcome } from "./Welcome";
 import { NameForm } from "./NameForm";
+import { CharacterForm } from "./CharacterForm";
 import { ExternalStoreManager } from "../externalStores/ExternalStoreManager";
 import { NotificationService } from "../../NotificationService";
 
@@ -82,15 +83,28 @@ function update(
     .then(() =>
       name
         ? name
-        : prompt<string>(
-            (callback: (result: string) => void) => (
-              <NameForm
+        : prompt<string | undefined>(
+            (callback: (result: string | undefined) => void) => (
+              <CharacterForm
                 defaultValue={defaultState.user.name}
                 callback={callback}
               />
             ),
             <>Qui est ton personnage ?</>
-          )
+          ).then((result) => {
+            if (result != null) {
+              return result;
+            }
+            return prompt<string>(
+              (callback: (result: string) => void) => (
+                <NameForm
+                  defaultValue={defaultState.user.name}
+                  callback={callback}
+                />
+              ),
+              <>Donne un nom à ton personnage</>
+            );
+          })
     )
     .then(
       (name) =>
