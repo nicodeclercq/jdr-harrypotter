@@ -1,39 +1,126 @@
-import { useEffect } from "react";
+import { pipe } from "fp-ts/lib/function";
 import { Layout } from "../../components/Layout";
 import { Card } from "./Card";
 import { useDeck } from "./useDeck";
 import { RemoteDataFold } from "../../components/RemoteDataFold";
+import { Card as CardT } from "../../store/State";
+import { useSkill } from "../skills/useSkill";
+import { sequence } from "../../helpers/remoteData";
+import { useRole } from "../../hooks/useRole";
+import { Button } from "../../components/Button";
+import { createArrayOfIndex } from "../../helpers/array";
+import { useEffect } from "react";
 
-export function CardsPage() {
-  const { hand, reset } = useDeck();
+type Props = {
+  isMJ: boolean;
+  maxCardNb: number;
+  deck: CardT[];
+  hand: CardT[];
+  table: CardT[];
+};
+
+function Page({ deck, hand, table, isMJ, maxCardNb }: Props) {
+  const { reset, drawACard, playACard, clearCardTable } = useDeck();
 
   useEffect(() => {
-    reset();
-  }, []);
+    if (isMJ && deck.length === 0) {
+      reset();
+    }
+  }, [isMJ, deck]);
 
   return (
-    <Layout>
-      <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="w-full flex gap-2">
-          <RemoteDataFold
-            data={hand}
-            onSuccess={(hand) =>
-              hand.map(({ number, element, type, mean }) => (
-                <div key={`${number}_${element}_${type}_${mean}`}>
-                  <Card
-                    number={number}
-                    element={element}
-                    type={type}
-                    mean={mean}
-                    isVisible
-                  />
-                </div>
-              ))
+    <div className="w-full grid gap-4">
+      <div className="w-full grid gap-8">
+        <div className="flex flex-row gap-4 place-content-between">
+          {/* DECK */}
+          <div
+            className={
+              hand.length < maxCardNb ? "cursor-pointer" : "cursor-not-allowed"
             }
-          />
-          {}
+          >
+            <Card
+              element="Pique"
+              mean="Environnement"
+              number="10"
+              type="Attaque"
+              onClick={() => {
+                if (hand.length < maxCardNb) {
+                  drawACard();
+                }
+              }}
+            />
+          </div>
+          {/* TABLE */}
+          <div className="flex flex-row gap-4 items-center justify-center overflow-auto max-w-full py-4">
+            {table.map(({ number, element, type, mean }) => (
+              <div key={`${number}_${element}_${type}_${mean}`}>
+                <Card
+                  number={number}
+                  element={element}
+                  type={type}
+                  mean={mean}
+                  isVisible
+                />
+              </div>
+            ))}
+            {isMJ && (
+              <Button type="secondary" onClick={clearCardTable}>
+                Clear
+              </Button>
+            )}
+          </div>
+        </div>
+        {/* HAND */}
+        <div className="flex flex-row gap-4 items-center justify-center overflow-auto max-w-full py-4">
+          {createArrayOfIndex(maxCardNb).map((index) => (
+            <div key={index}>
+              {hand[index] ? (
+                <Card
+                  number={hand[index].number}
+                  element={hand[index].element}
+                  type={hand[index].type}
+                  mean={hand[index].mean}
+                  isVisible
+                  onClick={() => playACard(hand[index])}
+                />
+              ) : (
+                <div
+                  className="border border-dashed"
+                  style={{ width: "10rem", height: "15rem" }}
+                />
+              )}
+            </div>
+          ))}
         </div>
       </div>
-    </Layout>
+    </div>
+  );
+}
+
+export function CardsPage() {
+  const { isMJ } = useRole();
+  const { deck, hand, table } = useDeck();
+  const { getSkills } = useSkill();
+
+  return pipe(
+    sequence({ deck, hand, table, isMJ, skills: getSkills() }),
+    (data) => (
+      <Layout>
+        <RemoteDataFold
+          data={data}
+          onSuccess={({ isMJ, deck, hand, table, skills }) => (
+            <Page
+              isMJ={isMJ}
+              deck={deck}
+              hand={hand}
+              maxCardNb={Math.floor(
+                (skills["Combat"]?.currentLevel ?? 10) / 10
+              )}
+              table={table}
+            />
+          )}
+        />
+      </Layout>
+    )
   );
 }

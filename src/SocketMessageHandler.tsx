@@ -16,6 +16,8 @@ import {
   PlayMusicMessage,
   SetBattleMapTokensPosition,
   COMMAND_MESSAGE,
+  GiveACardMessage,
+  PlayACardMessage,
 } from "./message";
 import { useRole } from "./hooks/useRole";
 import { ChatBoxes } from "./pages/home/ChatBoxes";
@@ -29,6 +31,7 @@ import { useLockKey } from "./hooks/useLockKey";
 import { useTokens } from "./hooks/useTokens";
 import { values } from "./helpers/object";
 import { ROUTES, RouteDefinition } from "./Router";
+import { useDeck } from "./pages/cards/useDeck";
 
 type Props = {
   currentUserName: string;
@@ -41,6 +44,7 @@ let runNb = 20;
 export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
   const { unlock, lock } = useLockKey();
   const { setTokens } = useTokens();
+  const { giveACard, addCardToHand, playACard, clearCardTable } = useDeck();
   const {
     connectedUsers,
     add: connectUser,
@@ -120,7 +124,6 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
             )
             .map(({ lockKey }: RouteDefinition) => lockKey);
           const result = COMMAND_MESSAGE.UNLOCK.exec(message);
-          console.log("[YOUPI]", result, lockKeys);
           if (result) {
             if (
               result?.length >= 2 &&
@@ -260,6 +263,48 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
     [add, addBenny, isMJ]
   );
 
+  const drawACard = useCallback(
+    (_payload: undefined, author: Message["author"]) => {
+      pipe(
+        isMJ,
+        onSuccess((isCurrentUserMJ) => {
+          if (isCurrentUserMJ) {
+            giveACard(author.name);
+            add({
+              id: `give-a-card_${author.name}`,
+              type: "message",
+              author: {
+                name: author.name,
+                avatar: author.avatar ?? "",
+              },
+              message: `${author.name} a pioché une carte`,
+            });
+          }
+        })
+      );
+    },
+    [add, giveACard]
+  );
+
+  const getACard = useCallback(
+    (payload: GiveACardMessage["payload"]) => {
+      if (payload.recipient === currentUserName) {
+        addCardToHand(payload.card);
+      }
+    },
+    [addCardToHand]
+  );
+
+  const addCardToTable = useCallback(
+    (payload: PlayACardMessage["payload"]) => {
+      playACard(payload);
+    },
+    [playACard]
+  );
+  const dropAllCardsFromTable = useCallback(() => {
+    clearCardTable();
+  }, [clearCardTable]);
+
   useEffect(() => {
     if (musicRef.current) {
       musicRef.current.volume = 0.1;
@@ -313,6 +358,10 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         playMusic,
         stopMusic,
         setBattleMapTokensPosition,
+        drawACard,
+        giveACard: getACard,
+        playACard: addCardToTable,
+        clearCardTable: dropAllCardsFromTable,
       })(message);
     },
     [

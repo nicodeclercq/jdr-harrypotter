@@ -2,6 +2,7 @@ import * as IO from "io-ts";
 import { formatValidationErrors } from "io-ts-reporters";
 import { pipe, constVoid } from "fp-ts/function";
 import * as Either from "fp-ts/Either";
+import { cardDecoder } from "./store/v12/v12";
 
 const hasAlreadyJoinMessageDecoder = IO.type({
   type: IO.literal("hasAlreadyJoined"),
@@ -9,7 +10,9 @@ const hasAlreadyJoinMessageDecoder = IO.type({
     recipient: IO.string,
   }),
 });
-export type HasAlreadyJoinedMessage = IO.TypeOf<typeof hasAlreadyJoinMessageDecoder>;
+export type HasAlreadyJoinedMessage = IO.TypeOf<
+  typeof hasAlreadyJoinMessageDecoder
+>;
 
 const joinMessageDecoder = IO.type({
   type: IO.literal("join"),
@@ -48,7 +51,7 @@ const chatDecoder = IO.type({
     recipient: IO.string,
     message: IO.string,
     needsConfirmation: IO.boolean,
-  })
+  }),
 });
 export type ChatMessage = IO.TypeOf<typeof chatDecoder>;
 export const isChatMessage = chatDecoder.is;
@@ -65,8 +68,8 @@ const alertDecoder = IO.type({
     type: IO.union([
       IO.literal("playerIsAsleep"),
       IO.literal("playerNeedsPause"),
-    ])
-  })
+    ]),
+  }),
 });
 export type AlertMessage = IO.TypeOf<typeof alertDecoder>;
 
@@ -76,7 +79,6 @@ const timeMessageDecoder = IO.type({
 });
 export type TimeMessage = IO.TypeOf<typeof timeMessageDecoder>;
 export const isTimeMessage = timeMessageDecoder.is;
-
 
 const imageDecoder = IO.type({
   type: IO.literal("image"),
@@ -95,8 +97,8 @@ const playMusicDecoder = IO.type({
   type: IO.literal("playMusic"),
   payload: IO.type({
     name: IO.string,
-    url: IO.string
-  })
+    url: IO.string,
+  }),
 });
 export type PlayMusicMessage = IO.TypeOf<typeof playMusicDecoder>;
 
@@ -107,14 +109,41 @@ export type StopMusicMessage = IO.TypeOf<typeof playMusicDecoder>;
 
 const setBattleMapTokensPositionDecoder = IO.type({
   type: IO.literal("setBattleMapTokensPosition"),
-  payload: IO.record(IO.string, IO.type({
-    x: IO.number,
-    y: IO.number,
-    name: IO.string,
-    image: IO.union([IO.string, IO.undefined]),
-  }))
+  payload: IO.record(
+    IO.string,
+    IO.type({
+      x: IO.number,
+      y: IO.number,
+      name: IO.string,
+      image: IO.union([IO.string, IO.undefined]),
+    })
+  ),
 });
-export type SetBattleMapTokensPosition = IO.TypeOf<typeof setBattleMapTokensPositionDecoder>;
+export type SetBattleMapTokensPosition = IO.TypeOf<
+  typeof setBattleMapTokensPositionDecoder
+>;
+
+const drawACardDecoder = IO.type({
+  type: IO.literal("drawCard"),
+});
+export type DrawACardMessage = IO.TypeOf<typeof drawACardDecoder>;
+const giveACardDecoder = IO.type({
+  type: IO.literal("giveACard"),
+  payload: IO.type({
+    recipient: IO.string,
+    card: cardDecoder,
+  }),
+});
+export type GiveACardMessage = IO.TypeOf<typeof giveACardDecoder>;
+const playACardDecoder = IO.type({
+  type: IO.literal("playACard"),
+  payload: cardDecoder,
+});
+export type PlayACardMessage = IO.TypeOf<typeof playACardDecoder>;
+const clearCardTableDecoder = IO.type({
+  type: IO.literal("clearCardTable"),
+});
+export type ClearCardTableCardMessage = IO.TypeOf<typeof clearCardTableDecoder>;
 
 const messageDecoder = IO.type({
   author: IO.type({
@@ -134,91 +163,152 @@ const messageDecoder = IO.type({
     playMusicDecoder,
     stopMusicDecoder,
     setBattleMapTokensPositionDecoder,
-  ])
+    drawACardDecoder,
+    playACardDecoder,
+    giveACardDecoder,
+    clearCardTableDecoder,
+  ]),
 });
 
 export type Message = IO.TypeOf<typeof messageDecoder>;
 
+const shouldFilterSelfMessage =
+  (currentUserName: string) => (message: Message) => {
+    const messagesAvailableForSelf = [
+      imageDecoder.is,
+      playMusicDecoder.is,
+      stopMusicDecoder.is,
+    ];
 
-const shouldFilterSelfMessage = (currentUserName: string) => (message: Message) => {
-  const messagesAvailableForSelf = [
-    imageDecoder.is,
-    playMusicDecoder.is,
-    stopMusicDecoder.is,
-  ];
+    return message.author.name === currentUserName
+      ? messagesAvailableForSelf.reduce(
+          (acc, filterMessage) => acc || filterMessage(message.message),
+          false
+        )
+      : true;
+  };
 
-  return message.author.name === currentUserName
-    ? messagesAvailableForSelf.reduce((acc, filterMessage) => acc || filterMessage(message.message), false)
-    : true;
-};
-
-export const fold = (currentUserName: string, fns: {
-  hasAlreadyJoined: (payload: HasAlreadyJoinedMessage["payload"], author: Message["author"]) => void, 
-  join: (payload: JoinMessage["payload"], author: Message["author"]) => void,
-  quit: (payload: QuitMessage["payload"], author: Message["author"]) => void,
-  roll: (payload: RollMessage["payload"], author: Message["author"]) => void,
-  chat: (payload: ChatMessage["payload"], author: Message["author"]) => void,
-  alert: (payload: AlertMessage["payload"], author: Message["author"]) => void,
-  time: (payload: TimeMessage["payload"], author: Message["author"]) => void,
-  image: (payload: ImageMessage["payload"], author: Message["author"]) => void,
-  useBenny: (payload: undefined, author: Message["author"]) => void,
-  playMusic: (payload: PlayMusicMessage["payload"], author: Message["author"]) => void,
-  stopMusic: (payload: undefined, author: Message["author"]) => void,
-  setBattleMapTokensPosition: (payload: SetBattleMapTokensPosition["payload"], author: Message["author"]) => void,
-}) => (message: unknown) => pipe(
-  message,
-  (m) => {
-    console.log("received", m);
-    return m;
-  },
-  messageDecoder.decode,
-  Either.mapLeft((e) => {
-    console.log("error", message, formatValidationErrors(e));
-    return Either.left("Wrong encoding");
-  }),
-  Either.filterOrElse(
-    shouldFilterSelfMessage(currentUserName),
-    () => Either.left("Same user"),
-  ),
-  Either.fold(
-    constVoid,
-    (data) => {
-      if (hasAlreadyJoinMessageDecoder.is(data.message)) {
-        fns.hasAlreadyJoined(data.message.payload, data.author);
-      }
-      if (joinMessageDecoder.is(data.message)) {
-        fns.join(data.message.payload, data.author);
-      }
-      if (quitMessageDecoder.is(data.message)) {
-        fns.quit(data.message.payload, data.author);
-      }
-      if(rollMessageDecoder.is(data.message)) {
-        fns.roll(data.message.payload, data.author);
-      }
-      if(chatDecoder.is(data.message)) {
-        fns.chat(data.message.payload, data.author);
-      }
-      if(alertDecoder.is(data.message)) {
-        fns.alert(data.message.payload, data.author);
-      }
-      if(timeMessageDecoder.is(data.message)) {
-        fns.time(data.message.payload, data.author);
-      }
-      if(imageDecoder.is(data.message)) {
-        fns.image(data.message.payload, data.author);
-      }
-      if(useBennyDecoder.is(data.message)) {
-        fns.useBenny(undefined, data.author);
-      }
-      if(playMusicDecoder.is(data.message)) {
-        fns.playMusic(data.message.payload, data.author);
-      }
-      if(stopMusicDecoder.is(data.message)) {
-        fns.stopMusic(undefined, data.author);
-      }
-      if(setBattleMapTokensPositionDecoder.is(data.message)){
-        fns.setBattleMapTokensPosition(data.message.payload, data.author);
-      }
+export const fold =
+  (
+    currentUserName: string,
+    fns: {
+      hasAlreadyJoined: (
+        payload: HasAlreadyJoinedMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      join: (
+        payload: JoinMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      quit: (
+        payload: QuitMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      roll: (
+        payload: RollMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      chat: (
+        payload: ChatMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      alert: (
+        payload: AlertMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      time: (
+        payload: TimeMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      image: (
+        payload: ImageMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      useBenny: (payload: undefined, author: Message["author"]) => void;
+      playMusic: (
+        payload: PlayMusicMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      stopMusic: (payload: undefined, author: Message["author"]) => void;
+      setBattleMapTokensPosition: (
+        payload: SetBattleMapTokensPosition["payload"],
+        author: Message["author"]
+      ) => void;
+      drawACard: (payload: undefined, author: Message["author"]) => void;
+      playACard: (
+        payload: PlayACardMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      giveACard: (
+        payload: GiveACardMessage["payload"],
+        author: Message["author"]
+      ) => void;
+      clearCardTable: (payload: undefined, author: Message["author"]) => void;
     }
-  )
-);
+  ) =>
+  (message: unknown) =>
+    pipe(
+      message,
+      (m) => {
+        console.log("received", m);
+        return m;
+      },
+      messageDecoder.decode,
+      Either.mapLeft((e) => {
+        console.log("error", message, formatValidationErrors(e));
+        return Either.left("Wrong encoding");
+      }),
+      Either.filterOrElse(shouldFilterSelfMessage(currentUserName), () =>
+        Either.left("Same user")
+      ),
+      Either.fold(constVoid, (data) => {
+        if (hasAlreadyJoinMessageDecoder.is(data.message)) {
+          fns.hasAlreadyJoined(data.message.payload, data.author);
+        }
+        if (joinMessageDecoder.is(data.message)) {
+          fns.join(data.message.payload, data.author);
+        }
+        if (quitMessageDecoder.is(data.message)) {
+          fns.quit(data.message.payload, data.author);
+        }
+        if (rollMessageDecoder.is(data.message)) {
+          fns.roll(data.message.payload, data.author);
+        }
+        if (chatDecoder.is(data.message)) {
+          fns.chat(data.message.payload, data.author);
+        }
+        if (alertDecoder.is(data.message)) {
+          fns.alert(data.message.payload, data.author);
+        }
+        if (timeMessageDecoder.is(data.message)) {
+          fns.time(data.message.payload, data.author);
+        }
+        if (imageDecoder.is(data.message)) {
+          fns.image(data.message.payload, data.author);
+        }
+        if (useBennyDecoder.is(data.message)) {
+          fns.useBenny(undefined, data.author);
+        }
+        if (playMusicDecoder.is(data.message)) {
+          fns.playMusic(data.message.payload, data.author);
+        }
+        if (stopMusicDecoder.is(data.message)) {
+          fns.stopMusic(undefined, data.author);
+        }
+        if (setBattleMapTokensPositionDecoder.is(data.message)) {
+          fns.setBattleMapTokensPosition(data.message.payload, data.author);
+        }
+        if (drawACardDecoder.is(data.message)) {
+          fns.drawACard(undefined, data.author);
+        }
+        if (playACardDecoder.is(data.message)) {
+          fns.playACard(data.message.payload, data.author);
+        }
+        if (giveACardDecoder.is(data.message)) {
+          fns.giveACard(data.message.payload, data.author);
+        }
+        if (clearCardTableDecoder.is(data.message)) {
+          fns.clearCardTable(undefined, data.author);
+        }
+      })
+    );

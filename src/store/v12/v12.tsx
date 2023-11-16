@@ -13,7 +13,7 @@ const meansDecoder = decoderFromReadonlyArray(means);
 const numbersDecoder = decoderFromReadonlyArray(numbers);
 const elementsDecoder = decoderFromReadonlyArray(elements);
 
-const cardDecoder = IO.type({
+export const cardDecoder = IO.type({
   element: elementsDecoder,
   number: numbersDecoder,
   type: typesDecoder,
@@ -25,6 +25,7 @@ export const stateDecoder = IO.intersection([
   IO.type({
     cards: IO.type({
       deck: IO.array(cardDecoder),
+      table: IO.array(cardDecoder),
       drop: IO.array(cardDecoder),
       hand: IO.array(cardDecoder),
     }),
@@ -39,6 +40,7 @@ function update(promise: Promise<LastState.State>): Promise<State> {
     ...state,
     cards: {
       deck: [],
+      table: [],
       drop: [],
       hand: [],
     },

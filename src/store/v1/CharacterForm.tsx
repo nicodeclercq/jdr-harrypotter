@@ -1,7 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "../../components/Button";
 import { Label } from "../../components/font/Label";
-import { IconName } from "../../components/icons/Icon";
 import { Avatar } from "../../components/Avatar";
 
 type FormType = {
