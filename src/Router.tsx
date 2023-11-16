@@ -63,13 +63,6 @@ export const ROUTES: Record<string, RouteDefinition> = {
     label: (state: State) => state.user.name,
     Component: HomePage,
   },
-  "/deck": {
-    icon: "CARD_RANDOM",
-    label: "Cartes",
-    Component: CardsPage,
-    lockKey: (_lockKeys: State["lockKeys"], role: State["role"]) =>
-      role === "MJ",
-  },
   "/screens": {
     icon: "CLAPPER_BOARD",
     label: "Ambiance",
@@ -156,6 +149,12 @@ export const ROUTES: Record<string, RouteDefinition> = {
     Component: BattleMapPage,
     lockKey: (_lockKeys: State["lockKeys"], role: State["role"]) =>
       role === "MJ",
+  },
+  "/deck": {
+    icon: "CARD_RANDOM",
+    label: "Cartes",
+    Component: CardsPage,
+    lockKey: LOCK.CARD_GAME,
   },
 } as const;
 

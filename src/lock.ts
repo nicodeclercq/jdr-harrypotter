@@ -9,4 +9,5 @@ export const LOCK = {
   LUCK: "lucky",
   ADVANTAGE: "youpi",
   DAMAGES: "aïe ouille ouille",
+  CARD_GAME: "jack",
 };
