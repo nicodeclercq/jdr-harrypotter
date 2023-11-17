@@ -7,22 +7,25 @@ import { ObjectsForm } from "./ObjectsForm";
 import { useMoney } from "./useMoney";
 import { useObjects } from "./useObjects";
 import { MoneyConverter } from "../../components/MoneyConverter";
+import { useGame } from "../../hooks/useGame";
 
 export function ObjectsPage() {
   const { objects } = useObjects();
   const { money } = useMoney();
+  const { isHP } = useGame();
 
   return pipe(
     sequence({
       objects,
       money,
+      isHP,
     }),
-    fromRemoteData(({ objects, money }) => (
+    fromRemoteData(({ objects, money, isHP }) => (
       <Layout>
         <div className="w-full h-full m-3 space-y-2">
           <div className="items-end grid grid-flow-col grid-cols-2 gap-4">
             <MoneyForm money={money} />
-            <MoneyConverter />
+            {isHP && <MoneyConverter />}
           </div>
           <ObjectsForm objects={objects} columns={2} />
         </div>
