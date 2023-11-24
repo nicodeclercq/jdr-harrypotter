@@ -13,10 +13,12 @@ import { useSkill } from "./pages/skills/useSkill";
 import { ROUTES } from "./Router";
 import { useRole } from "./hooks/useRole";
 import { useCard } from "./pages/cartomancy/useCard";
+import { useGame } from "./hooks/useGame";
 
 export function WindowShortcuts() {
   const { name } = useUser();
   const { setRole } = useRole();
+  const { setGame } = useGame();
   const { setKnownRunes, learnAllRunes, setAllRunesDefinition } = useRune();
   const { setLockKeys: setKeys, unlock, lock } = useLockKey();
   const { setNumber: setArithmancyNumber } = useArithmancy();
@@ -60,6 +62,7 @@ export function WindowShortcuts() {
         learnAllRunes();
         setAllRunesDefinition();
       },
+      setGame,
       setKeys,
       setKnownRunes,
       learnAllRunes,

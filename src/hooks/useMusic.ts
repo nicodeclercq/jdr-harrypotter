@@ -3,6 +3,7 @@ import * as IO from "io-ts";
 
 import { useExternalStore } from "./useExternalStore";
 import { usePersistantState } from "./usePersistantState";
+import { secrets } from "../secrets";
 
 const decoder = IO.type({
   name: IO.string,
@@ -11,19 +12,22 @@ const decoder = IO.type({
 
 type Music = IO.TypeOf<typeof decoder>;
 
-export function useMusic(){
-  const [playingMusic, setPlayingMusic] = usePersistantState<string>("AMBIANCE_MUSIC", "");
+export function useMusic() {
+  const [playingMusic, setPlayingMusic] = usePersistantState<string>(
+    "AMBIANCE_MUSIC",
+    ""
+  );
   const { emit } = useSocket();
 
   const result = useExternalStore<Music, typeof decoder>({
-    name: "music",
+    name: secrets.firebaseCollectionId3,
     decoder,
   });
 
   const play = (name: string, url: string) => {
     emit({
       type: "playMusic",
-      payload: {name, url}
+      payload: { name, url },
     });
     setPlayingMusic(name);
   };
@@ -34,6 +38,5 @@ export function useMusic(){
     setPlayingMusic("");
   };
 
-  return {...result, playingMusic, play, stop} as const;
+  return { ...result, playingMusic, play, stop } as const;
 }
-

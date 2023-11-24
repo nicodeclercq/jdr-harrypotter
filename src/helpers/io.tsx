@@ -3,6 +3,17 @@ import { Button } from "../components/Button";
 import { Modal } from "../components/Modal";
 import { ReactPortalAppRoot } from "../root";
 
+export function log(message: string, ...args: unknown[]) {
+  return <T extends unknown>(value: T) => {
+    console.log(message, ...args, value);
+    return value;
+  };
+}
+
+export function throws<E extends unknown>(e: E) {
+  throw e;
+}
+
 export function prompt<T>(
   content: (resolve: (result: T) => void) => React.ReactNode,
   header?: React.ReactNode

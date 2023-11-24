@@ -7,10 +7,11 @@ import { GAME } from "../store/v3/v3";
 const gameLens = lens<State, "game">("game");
 
 export function useGame() {
-  const [game] = useStore(gameLens);
+  const [game, setGame] = useStore(gameLens);
 
   return {
     game,
+    setGame,
     isFantasy: RemoteData.map((game) => game === GAME.FANTASY)(game),
     isHP: RemoteData.map((game) => game === "HP")(game),
   };
