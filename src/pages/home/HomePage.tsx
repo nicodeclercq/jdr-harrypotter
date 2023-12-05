@@ -64,7 +64,7 @@ function Home({
                 </div>
               </div>
               <div className="w-full space-y-4">
-                {isMJ && game === "HP" && <HPPNJ />}
+                {isMJ && <HPPNJ />}
                 {isMJ && <UsersBestSkills />}
               </div>
             </div>
