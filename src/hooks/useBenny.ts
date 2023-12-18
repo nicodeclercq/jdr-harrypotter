@@ -1,16 +1,15 @@
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { pipe } from "fp-ts/function";
-import { lens } from "./../helpers/object";
 import { useSocket } from "./useSocket";
 import { onSuccess } from "../helpers/remoteData";
-import { State } from "./../store/State";
+import { stateLens } from "./../store/State";
 import { useSound } from "./useSound";
 import { useStore } from "./useStore";
 import { useLockKey } from "./useLockKey";
 import { sequence } from "../helpers/remoteData";
 import { LOCK } from "../lock";
 
-const benniesLens = lens<State, "bennies">("bennies");
+const benniesLens = stateLens.fromProperty("bennies");
 
 export function useBenny() {
   const { lockKeys } = useLockKey();

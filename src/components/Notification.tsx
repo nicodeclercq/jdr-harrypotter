@@ -7,7 +7,7 @@ import {
 } from "../NotificationService";
 import { useStore } from "../hooks/useStore";
 import { Button } from "./Button";
-import { State } from "../store/State";
+import { State, stateLens } from "../store/State";
 import { Avatar } from "./Avatar";
 import { RichText } from "./font/RichText";
 import { useGame } from "../hooks/useGame";
@@ -70,10 +70,7 @@ export function NotificationStack() {
   const { game } = useGame();
   const { remove, subject } = NotificationService;
   const [stack, setStack] = useState(subject.value);
-  const [state] = useStore([
-    identity,
-    (_state: State, newState: State) => newState,
-  ]);
+  const [state] = useStore(stateLens);
 
   useEffect(() => {
     const subscription = subject.subscribe((value) => {

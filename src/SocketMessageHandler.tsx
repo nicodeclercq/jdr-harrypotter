@@ -18,6 +18,7 @@ import {
   COMMAND_MESSAGE,
   GiveACardMessage,
   PlayACardMessage,
+  ResetCardsMessage,
 } from "./message";
 import { useRole } from "./hooks/useRole";
 import { ChatBoxes } from "./pages/home/ChatBoxes";
@@ -44,13 +45,14 @@ let runNb = 20;
 export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
   const { unlock, lock } = useLockKey();
   const { setTokens } = useTokens();
-  const { giveACard, addCardToHand, playACard, clearCardTable } = useDeck();
+  const { setCards, giveACard, addCardToHand, addCardToTable, clearCardTable } =
+    useDeck();
   const {
     connectedUsers,
     add: connectUser,
     remove: disconnectUser,
   } = useConnectedUsers();
-  const { add } = useNotification();
+  const { add: notify } = useNotification();
   const { isMJ } = useRole();
   const { user } = useUser();
   const { play } = useSound();
@@ -72,7 +74,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
   const join = useCallback(
     (_: JoinMessage["payload"], author: Message["author"]) => {
       connectUser(author.name, author.avatar);
-      add({
+      notify({
         id: `join_${author.name}`,
         type: "message",
         message: `${author.name} vient de rejoindre la partie`,
@@ -88,19 +90,19 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         },
       });
     },
-    [add, emit, connectUser]
+    [notify, emit, connectUser]
   );
 
   const quit = useCallback(
     ({ name }: QuitMessage["payload"], author: Message["author"]) => {
       disconnectUser(author.name);
-      add({
+      notify({
         id: `quit_${name}`,
         type: "success",
         message: `${name} vient de quitter la partie`,
       });
     },
-    [add, disconnectUser]
+    [notify, disconnectUser]
   );
 
   const chat = useCallback(
@@ -110,7 +112,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
     ) => {
       if (currentUserName === recipient) {
         if (message === COMMAND_MESSAGE.GIVE_BENNY) {
-          add({
+          notify({
             id: `chat_${recipient}${message}`,
             type: "message",
             message: "Tu as gagné un nouveau Joker",
@@ -129,7 +131,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
               result?.length >= 2 &&
               (lockKeys as string[]).includes(result[1])
             ) {
-              add({
+              notify({
                 id: `chat_${recipient}${message}`,
                 type: "success",
                 message: "Nouvelle capacité débloquée",
@@ -149,7 +151,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
               result?.length >= 2 &&
               (lockKeys as string[]).includes(result[1])
             ) {
-              add({
+              notify({
                 id: `chat_${recipient}${message}`,
                 type: "failure",
                 message: "Vous venez de perdre une capacité",
@@ -158,7 +160,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
             }
           }
         } else {
-          add({
+          notify({
             id: `chat_${recipient}${message}`,
             type: "message",
             message: `“${message}”`,
@@ -168,7 +170,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         }
       }
     },
-    [add, addBenny, currentUserName, lock, play, unlock]
+    [notify, addBenny, currentUserName, lock, play, unlock]
   );
 
   const roll = useCallback(
@@ -186,7 +188,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
       play("dice-short");
 
       const timeout = setTimeout(() => {
-        add({
+        notify({
           id: `roll_${author}_${title}_${value}`,
           type: "message",
           message: `"${title}": ${author.name} vient de faire ${value} (${types[type]})`,
@@ -200,7 +202,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
       }, 1000);
       return () => clearTimeout(timeout);
     },
-    [add, play]
+    [notify, play]
   );
 
   const alert = useCallback(
@@ -210,7 +212,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
           isMJ,
           onSuccess((isCurrentUserMJ) => {
             if (isCurrentUserMJ) {
-              add({
+              notify({
                 id: `sleepy_${author.name}`,
                 type: "message",
                 message: `${author.name} s'ennuie`,
@@ -225,7 +227,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         );
       }
       if (type === "playerNeedsPause") {
-        add({
+        notify({
           id: `halt_${author.name}`,
           type: "message",
           message: `${author.name} veut faire une pause`,
@@ -237,7 +239,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         play("error");
       }
     },
-    [add, isMJ, play]
+    [notify, isMJ, play]
   );
 
   const useBenny = useCallback(
@@ -248,7 +250,7 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
           if (isCurrentUserMJ) {
             addBenny();
           }
-          add({
+          notify({
             id: `benny_${author.name}`,
             type: "message",
             message: `${author.name} à utilisé un Joker`,
@@ -260,46 +262,47 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         })
       );
     },
-    [add, addBenny, isMJ]
+    [notify, addBenny, isMJ]
   );
 
-  const drawACard = useCallback(
-    (_payload: undefined, author: Message["author"]) => {
-      pipe(
-        isMJ,
-        onSuccess((isCurrentUserMJ) => {
-          if (isCurrentUserMJ) {
-            giveACard(author.name);
-            add({
-              id: `give-a-card_${author.name}`,
-              type: "message",
-              author: {
-                name: author.name,
-                avatar: author.avatar ?? "",
-              },
-              message: `${author.name} a pioché une carte`,
-            });
-          }
-        })
-      );
+  const resetCards = useCallback(
+    (cards: ResetCardsMessage["cards"], _author: Message["author"]) => {
+      setCards(cards);
     },
-    [add, giveACard]
+    [setCards]
   );
 
-  const getACard = useCallback(
-    (payload: GiveACardMessage["payload"]) => {
-      if (payload.recipient === currentUserName) {
-        addCardToHand(payload.card);
-      }
-    },
-    [addCardToHand]
-  );
+  const drawACard = (_payload: undefined, author: Message["author"]) => {
+    pipe(
+      isMJ,
+      onSuccess((isCurrentUserMJ) => {
+        if (isCurrentUserMJ) {
+          giveACard(author.name);
+          notify({
+            id: `give-a-card_${author.name}`,
+            type: "message",
+            author: {
+              name: author.name,
+              avatar: author.avatar ?? "",
+            },
+            message: `${author.name} a pioché une carte`,
+          });
+        }
+      })
+    );
+  };
 
-  const addCardToTable = useCallback(
+  const getACard = (payload: GiveACardMessage["payload"]) => {
+    if (payload.recipient === currentUserName) {
+      addCardToHand(payload.card);
+    }
+  };
+
+  const playACard = useCallback(
     (payload: PlayACardMessage["payload"]) => {
-      playACard(payload);
+      addCardToTable(payload);
     },
-    [playACard]
+    [addCardToTable]
   );
   const dropAllCardsFromTable = useCallback(() => {
     clearCardTable();
@@ -358,9 +361,10 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         playMusic,
         stopMusic,
         setBattleMapTokensPosition,
+        resetCards,
         drawACard,
         giveACard: getACard,
-        playACard: addCardToTable,
+        playACard,
         clearCardTable: dropAllCardsFromTable,
       })(message);
     },
@@ -376,6 +380,11 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
       stopMusic,
       useBenny,
       setBattleMapTokensPosition,
+      resetCards,
+      drawACard,
+      getACard,
+      addCardToTable,
+      dropAllCardsFromTable,
     ]
   );
 

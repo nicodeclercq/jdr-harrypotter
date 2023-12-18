@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { useHover } from "react-use";
-import { identity, pipe } from "fp-ts/function";
+import { pipe } from "fp-ts/function";
 
 import { getAvailableRoutes, ROUTES } from "../Router";
 import { getColor } from "../theme";
@@ -15,7 +15,7 @@ import { RollModal } from "./RollModal";
 import { Icon, IconName } from "./icons/Icon";
 import { useStore } from "../hooks/useStore";
 import { fromRemoteData, sequence } from "../helpers/remoteData";
-import { State } from "../store/State";
+import { State, stateLens } from "../store/State";
 import { useLockKey } from "../hooks/useLockKey";
 import { QuickActions } from "../pages/home/QuickActions";
 import { useRole } from "../hooks/useRole";
@@ -99,10 +99,7 @@ const displayIcon = (
 export function Layout({ children }: { children: React.ReactNode }) {
   const { lockKeys } = useLockKey();
   const { role } = useRole();
-  const [state] = useStore([
-    identity,
-    (_state: State, newState: State) => newState,
-  ]);
+  const [state] = useStore(stateLens);
 
   const [rollModal, setRollModal] = useState<Dice[] | undefined>(undefined);
   const [hoverable] = useHover((hovered: boolean) =>

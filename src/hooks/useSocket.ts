@@ -18,7 +18,10 @@ let author: string = DEFAULT_AUTHOR;
 let avatar: string = "";
 
 const emit = (message: Message["message"]) => {
-  console.log("send", { author: { name: author, avatar }, message });
+  console.log("send", message.type, {
+    author: { name: author, avatar },
+    message,
+  });
   if (isJoinMessage(message)) {
     socket.emit("join", author);
   }

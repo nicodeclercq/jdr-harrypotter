@@ -1,8 +1,7 @@
-import { lens } from "../../helpers/object";
 import { useStore } from "../../hooks/useStore";
-import { State } from "../../store/State";
+import { stateLens } from "../../store/State";
 
-const objectsLens = lens<State, "objects">("objects");
+const objectsLens = stateLens.fromProperty("objects");
 
 export const useObjects = () => {
   const [objects, setObjects] = useStore(objectsLens);

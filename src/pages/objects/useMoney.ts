@@ -2,10 +2,9 @@ import { pipe } from "fp-ts/function";
 
 import { useStore } from "../../hooks/useStore";
 import { onSuccess } from "../../helpers/remoteData";
-import { State } from "../../store/State";
-import { lens } from "../../helpers/object";
+import { stateLens } from "../../store/State";
 
-const moneyLens = lens<State, "money">("money");
+const moneyLens = stateLens.fromProperty("money");
 
 export const useMoney = () => {
   const [money, setMoney] = useStore(moneyLens);
@@ -13,7 +12,7 @@ export const useMoney = () => {
   const addMoney = (newMoney: number) => {
     return pipe(
       money,
-      onSuccess((money) => setMoney(money + newMoney)),
+      onSuccess((money) => setMoney(money + newMoney))
     );
   };
 

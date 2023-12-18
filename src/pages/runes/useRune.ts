@@ -4,12 +4,12 @@ import { pipe } from "fp-ts/function";
 import { RUNES } from "./../../components/Runes";
 import { useStore } from "../../hooks/useStore";
 import { RuneName } from "../../components/Runes";
-import { State } from "../../store/State";
+import { stateLens } from "../../store/State";
 import { onSuccess } from "../../helpers/remoteData";
-import { keys, lens } from "../../helpers/object";
+import { keys } from "../../helpers/object";
 
-const runesDefinitionLens = lens<State, "runesDefinition">("runesDefinition");
-const knownRunesLens = lens<State, "knownRunes">("knownRunes");
+const runesDefinitionLens = stateLens.fromProperty("runesDefinition");
+const knownRunesLens = stateLens.fromProperty("knownRunes");
 
 export const useRune = () => {
   const [runesDefinition, setRunesDefinition] = useStore(runesDefinitionLens);
@@ -18,13 +18,11 @@ export const useRune = () => {
   const setSignification = (name: RuneName, signification: string) => {
     pipe(
       runesDefinition,
-      RemoteData.map(
-        runesDefinition => ({
-          ...runesDefinition,
-          [name]: signification
-        })
-      ),
-      onSuccess(setRunesDefinition),
+      RemoteData.map((runesDefinition) => ({
+        ...runesDefinition,
+        [name]: signification,
+      })),
+      onSuccess(setRunesDefinition)
     );
   };
 
@@ -41,6 +39,6 @@ export const useRune = () => {
     setSignification,
     setKnownRunes,
     learnAllRunes,
-    setAllRunesDefinition
+    setAllRunesDefinition,
   };
 };

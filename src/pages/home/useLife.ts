@@ -1,8 +1,7 @@
-import { lens } from "../../helpers/object";
 import { useStore } from "../../hooks/useStore";
-import { State } from "../../store/State";
+import { stateLens } from "../../store/State";
 
-const lifeLens = lens<State, "life">("life");
+const lifeLens = stateLens.fromProperty("life");
 
 export const useLife = () => {
   const [life, setLife] = useStore(lifeLens);

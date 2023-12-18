@@ -3,14 +3,14 @@ import { useTraits } from "./../home/useTraits";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { pipe } from "fp-ts/function";
 
-import { State } from "../../store/State";
+import { State, stateLens } from "../../store/State";
 import { useStore } from "../../hooks/useStore";
 import { Spell } from "./domain/Spell";
 import * as Objects from "../../helpers/object";
 import * as Interaction from "../../helpers/interaction";
 import { onSuccess } from "../../helpers/remoteData";
 
-const userSpellsLens = Objects.lens<State, "userSpells">("userSpells");
+const userSpellsLens = stateLens.fromProperty("userSpells");
 
 export const useSpell = () => {
   const [userSpells, setUserSpells] = useStore(userSpellsLens);
@@ -88,13 +88,13 @@ export const useSpell = () => {
             success: (points) =>
               currentLevel + points < traits.Pouvoir * 5
                 ? {
-                  currentLevel: currentLevel + points,
-                  uses: 0,
-                }
+                    currentLevel: currentLevel + points,
+                    uses: 0,
+                  }
                 : {
-                  currentLevel: traits.Pouvoir * 5,
-                  uses: 0,
-                },
+                    currentLevel: traits.Pouvoir * 5,
+                    uses: 0,
+                  },
             failure: () => ({
               currentLevel,
               uses: 0,

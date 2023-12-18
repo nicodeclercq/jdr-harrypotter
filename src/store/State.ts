@@ -1,9 +1,11 @@
-import { KeyOf, ValueOf } from "../helpers/object";
+import { KeyOf, ValueOf, createLens } from "../helpers/object";
 import {
   State as CurrentState,
   stateDecoder as CurrentStateDecoder,
   retrieve as currentRetrieve,
 } from "./v13/v13";
+
+export const stateLens = createLens<State>();
 
 export const retrieve = currentRetrieve;
 export const StateDecoder = CurrentStateDecoder;

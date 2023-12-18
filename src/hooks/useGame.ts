@@ -1,10 +1,9 @@
-import { lens } from "../helpers/object";
-import { State } from "../store/State";
+import { stateLens } from "../store/State";
 import { useStore } from "./useStore";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { GAME } from "../store/v3/v3";
 
-const gameLens = lens<State, "game">("game");
+const gameLens = stateLens.fromProperty("game");
 
 export function useGame() {
   const [game, setGame] = useStore(gameLens);

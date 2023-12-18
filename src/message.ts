@@ -123,6 +123,16 @@ export type SetBattleMapTokensPosition = IO.TypeOf<
   typeof setBattleMapTokensPositionDecoder
 >;
 
+const resetCardsDecoder = IO.type({
+  type: IO.literal("resetCards"),
+  cards: IO.type({
+    deck: IO.array(cardDecoder),
+    table: IO.array(cardDecoder),
+    drop: IO.array(cardDecoder),
+    hand: IO.array(cardDecoder),
+  }),
+});
+export type ResetCardsMessage = IO.TypeOf<typeof resetCardsDecoder>;
 const drawACardDecoder = IO.type({
   type: IO.literal("drawCard"),
 });
@@ -163,6 +173,7 @@ const messageDecoder = IO.type({
     playMusicDecoder,
     stopMusicDecoder,
     setBattleMapTokensPositionDecoder,
+    resetCardsDecoder,
     drawACardDecoder,
     playACardDecoder,
     giveACardDecoder,
@@ -234,6 +245,10 @@ export const fold =
         payload: SetBattleMapTokensPosition["payload"],
         author: Message["author"]
       ) => void;
+      resetCards: (
+        payload: ResetCardsMessage["cards"],
+        author: Message["author"]
+      ) => void;
       drawACard: (payload: undefined, author: Message["author"]) => void;
       playACard: (
         payload: PlayACardMessage["payload"],
@@ -249,10 +264,6 @@ export const fold =
   (message: unknown) =>
     pipe(
       message,
-      (m) => {
-        console.log("received", m);
-        return m;
-      },
       messageDecoder.decode,
       Either.mapLeft((e) => {
         console.log("error", message, formatValidationErrors(e));
@@ -261,6 +272,10 @@ export const fold =
       Either.filterOrElse(shouldFilterSelfMessage(currentUserName), () =>
         Either.left("Same user")
       ),
+      Either.map((m) => {
+        console.log("received", m.author.name, m.message.type, m);
+        return m;
+      }),
       Either.fold(constVoid, (data) => {
         if (hasAlreadyJoinMessageDecoder.is(data.message)) {
           fns.hasAlreadyJoined(data.message.payload, data.author);
@@ -297,6 +312,9 @@ export const fold =
         }
         if (setBattleMapTokensPositionDecoder.is(data.message)) {
           fns.setBattleMapTokensPosition(data.message.payload, data.author);
+        }
+        if (resetCardsDecoder.is(data.message)) {
+          fns.resetCards(data.message.cards, data.author);
         }
         if (drawACardDecoder.is(data.message)) {
           fns.drawACard(undefined, data.author);

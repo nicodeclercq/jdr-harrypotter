@@ -1,8 +1,7 @@
-import { lens } from "../../helpers/object";
 import { useStore } from "../../hooks/useStore";
-import { State } from "../../store/State";
+import { stateLens } from "../../store/State";
 
-const luckLens = lens<State, "luckPoints">("luckPoints");
+const luckLens = stateLens.fromProperty("luckPoints");
 
 export const useLuckPoints = () => {
   const [luckPoints, setLuckPoints] = useStore(luckLens);

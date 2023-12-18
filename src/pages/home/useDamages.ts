@@ -2,8 +2,7 @@ import * as RemoteData from "@devexperts/remote-data-ts";
 import { pipe } from "fp-ts/lib/function";
 
 import { useStore } from "../../hooks/useStore";
-import { State } from "../../store/State";
-import { lens } from "../../helpers/object";
+import { stateLens } from "../../store/State";
 import { onSuccess } from "../../helpers/remoteData";
 import {
   DAMAGE_LEVEL,
@@ -11,7 +10,7 @@ import {
   DamageLocation,
 } from "../../store/v13/damages";
 
-const damageLens = lens<State, "damages">("damages");
+const damageLens = stateLens.fromProperty("damages");
 
 const getNextLevelDamaga = (damage: DamageLevel) => {
   const entries = Object.entries(DAMAGE_LEVEL);

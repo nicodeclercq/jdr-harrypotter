@@ -3,34 +3,34 @@ import * as RemoteData from "@devexperts/remote-data-ts";
 
 import { removeDupplicates } from "../helpers/array";
 import { useStore } from "./useStore";
-import { State } from "../store/State";
+import { stateLens } from "../store/State";
 import { onSuccess } from "../helpers/remoteData";
-import { lens } from "../helpers/object";
 
-const lockKeysLens = lens<State, "lockKeys">("lockKeys");
+const lockKeysLens = stateLens.fromProperty("lockKeys");
 
 export const useLockKey = () => {
-  const [ lockKeys, setLockKeys ] = useStore(lockKeysLens);
+  const [lockKeys, setLockKeys] = useStore(lockKeysLens);
 
-  const unlock = (lockKey: string) => pipe(
-    lockKeys,
-    onSuccess(currentKeys => setLockKeys(
-      removeDupplicates([...currentKeys, lockKey])
-    ))
-  );
+  const unlock = (lockKey: string) =>
+    pipe(
+      lockKeys,
+      onSuccess((currentKeys) =>
+        setLockKeys(removeDupplicates([...currentKeys, lockKey]))
+      )
+    );
 
-  const lock = (lockKey: string) => pipe(
-    lockKeys,
-    onSuccess(currentKeys => setLockKeys(
-      currentKeys.filter(key => key !== lockKey)
-    ))
-  );
-
+  const lock = (lockKey: string) =>
+    pipe(
+      lockKeys,
+      onSuccess((currentKeys) =>
+        setLockKeys(currentKeys.filter((key) => key !== lockKey))
+      )
+    );
 
   const isUnlocked = (lockKey: string) => {
     return pipe(
       lockKeys,
-      RemoteData.map(lockKeys => lockKeys.includes(lockKey)),
+      RemoteData.map((lockKeys) => lockKeys.includes(lockKey))
     );
   };
 

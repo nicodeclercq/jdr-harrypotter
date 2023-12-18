@@ -1,27 +1,32 @@
 import { pipe } from "fp-ts/function";
 import * as RemoteData from "@devexperts/remote-data-ts";
 import { shuffle } from "../../helpers/array";
-import { lens, getPropertyCurried } from "../../helpers/object";
 import { useStore } from "../../hooks/useStore";
-import { Card, State } from "../../store/State";
-import { deck } from "./deck";
+import { Card, State, stateLens } from "../../store/State";
 import { useSocket } from "../../hooks/useSocket";
 import { useRole } from "../../hooks/useRole";
 import { sequence } from "../../helpers/remoteData";
 
-const cardsLens = lens<State, "cards">("cards");
-
-const INITIAL_CARD_NB_PER_USER = 5;
+const cardsLens = stateLens.fromProperty("cards");
+const deckLens = stateLens.fromPath(["cards", "deck"]);
+const tableLens = stateLens.fromPath(["cards", "table"]);
+const handLens = stateLens.fromPath(["cards", "hand"]);
+const dropLens = stateLens.fromPath(["cards", "drop"]);
 
 type Deck = State["cards"];
 
-const isEqual = (c1: Card, c2: Card) =>
+const isEqual = (c1: Card) => (c2: Card) =>
   c1.element === c2.element &&
   c1.mean === c2.mean &&
   c1.number === c2.number &&
   c1.type === c2.type;
 
-const deal = (deck: Card[], cardsNb: number) => {
+const not =
+  <A>(predicate: (a: A) => boolean) =>
+  (a: A) =>
+    !predicate(a);
+
+const deal = (deck: Card[]) => {
   type Tmp = {
     newDeck: Deck;
     remainingCards: number;
@@ -61,7 +66,7 @@ const deal = (deck: Card[], cardsNb: number) => {
             drop: [] as Deck["drop"],
             hand: [] as Deck["hand"],
           },
-          remainingCards: cardsNb,
+          remainingCards: 0,
         } as Tmp
       ),
     (d) => d.newDeck
@@ -70,115 +75,132 @@ const deal = (deck: Card[], cardsNb: number) => {
 
 export const useDeck = () => {
   const { isMJ } = useRole();
-  const [cards, setCards] = useStore(cardsLens);
+  const [_cards, setCards] = useStore(cardsLens);
+  const [deck, setDeck] = useStore(deckLens);
+  const [hand, setHand] = useStore(handLens);
+  const [drop, setDrop] = useStore(dropLens);
+  const [table, setTable] = useStore(tableLens);
+
   const { emit } = useSocket();
+
+  const store = {
+    draw: () =>
+      pipe(
+        deck,
+        RemoteData.map((deck) => {
+          const [card, ...newDeck] = deck;
+          return {
+            card,
+            newDeck,
+          };
+        })
+      ),
+  };
 
   const reset = () =>
     pipe(
-      cards,
-      RemoteData.map(() => {
-        const newCards = deal(deck, INITIAL_CARD_NB_PER_USER);
-        setCards(newCards);
+      sequence({ isMJ, deck }),
+      RemoteData.map(({ isMJ, deck }) => {
+        if (isMJ) {
+          pipe(deck, deal, setCards);
+
+          emit({
+            type: "resetCards",
+            cards: { deck: [], drop: [], hand: [], table: [] },
+          });
+        }
       })
     );
 
-  const drawACard = () => {
+  const drawACard = () =>
     pipe(
-      sequence({ isMJ, cards }),
-      RemoteData.map(({ isMJ, cards: { deck, hand, drop, table } }) => {
+      sequence({ isMJ, hand, draw: store.draw() }),
+      RemoteData.map(({ isMJ, hand, draw: { card, newDeck } }) => {
         if (isMJ) {
-          const [card, ...newDeck] = deck;
-          setCards({
-            deck: newDeck,
-            hand: [...hand, card],
-            drop,
-            table,
-          });
+          setDeck(newDeck);
+          setHand([...hand, card]);
         } else {
           emit({ type: "drawCard" });
         }
       })
     );
-  };
+
   const giveACard = (recipient: string) =>
     pipe(
-      cards,
-      RemoteData.map(({ deck, hand, table, drop }) => {
-        const [card, ...newDeck] = deck;
-        setCards({
-          deck: newDeck,
-          hand,
-          drop,
-          table,
-        });
-
-        emit({
-          type: "giveACard",
-          payload: {
-            card,
-            recipient,
-          },
-        });
+      sequence({ isMJ, draw: store.draw() }),
+      RemoteData.map(({ isMJ, draw: { card, newDeck } }) => {
+        if (isMJ) {
+          emit({
+            type: "giveACard",
+            payload: {
+              card,
+              recipient,
+            },
+          });
+          setDeck(newDeck);
+        }
       })
     );
-  const playACard = (card: Card) =>
+
+  const playACard = (card: Card) => {
     pipe(
-      cards,
-      RemoteData.map(({ deck, hand, table, drop }) => {
-        setCards({
-          hand: hand.filter((c) => !isEqual(c, card)),
-          table: [...table, card],
-          drop,
-          deck,
-        });
-
-        emit({
-          type: "playACard",
-          payload: card,
-        });
+      sequence({ hand, table }),
+      RemoteData.map(({ hand, table }) => {
+        setHand(hand.filter(not(isEqual(card))));
+        setTable(isMJ ? [...table, card] : table);
       })
     );
+
+    emit({
+      type: "playACard",
+      payload: card,
+    });
+  };
+
   const clearCardTable = () =>
     pipe(
-      cards,
-      RemoteData.map(({ deck, hand, table, drop }) => {
-        setCards({
-          hand,
-          table: [],
-          drop: [...drop, ...table],
-          deck,
-        });
+      sequence({ isMJ, drop, table }),
+      RemoteData.map(({ isMJ, table, drop }) => {
+        setTable([]);
+        setDrop([...drop, ...table]);
 
-        emit({
-          type: "clearCardTable",
-        });
+        if (isMJ) {
+          emit({
+            type: "clearCardTable",
+          });
+        }
       })
     );
 
   const addCardToHand = (card: Card) => {
     pipe(
-      cards,
-      RemoteData.map(({ deck, hand, table, drop }) => {
-        setCards({
-          hand: [...hand, card],
-          table,
-          drop,
-          deck,
-        });
+      hand,
+      RemoteData.map((hand) => {
+        setHand([...hand, card]);
+      })
+    );
+  };
+  const addCardToTable = (card: Card) => {
+    pipe(
+      table,
+      RemoteData.map((table) => {
+        setTable([...table, card]);
       })
     );
   };
 
   return {
-    deck: pipe(cards, RemoteData.map(getPropertyCurried("deck"))),
-    table: pipe(cards, RemoteData.map(getPropertyCurried("table"))),
-    drop: pipe(cards, RemoteData.map(getPropertyCurried("drop"))),
-    hand: pipe(cards, RemoteData.map(getPropertyCurried("hand"))),
+    deck,
+    table,
+    drop,
+    hand,
+    setCards,
     reset,
     drawACard,
     giveACard,
     playACard,
+    addCardToTable,
     clearCardTable,
     addCardToHand,
-  };
+  } as const;
 };

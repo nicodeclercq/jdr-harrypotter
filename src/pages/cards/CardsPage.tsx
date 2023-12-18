@@ -5,7 +5,7 @@ import { useDeck } from "./useDeck";
 import { RemoteDataFold } from "../../components/RemoteDataFold";
 import { Card as CardT } from "../../store/State";
 import { useSkill } from "../skills/useSkill";
-import { sequence } from "../../helpers/remoteData";
+import { onSuccess, sequence } from "../../helpers/remoteData";
 import { useRole } from "../../hooks/useRole";
 import { Button } from "../../components/Button";
 import { createArrayOfIndex } from "../../helpers/array";
@@ -19,14 +19,31 @@ type Props = {
   table: CardT[];
 };
 
-function Page({ deck, hand, table, isMJ, maxCardNb }: Props) {
-  const { reset, drawACard, playACard, clearCardTable } = useDeck();
+const getCardNumber = (level?: number) => Math.floor((level ?? 10) / 10);
 
+function Page({ deck, hand, table, isMJ, maxCardNb }: Props) {
+  const {
+    deck: cards,
+    reset,
+    drawACard,
+    playACard,
+    clearCardTable,
+  } = useDeck();
   useEffect(() => {
     if (isMJ && deck.length === 0) {
       reset();
     }
   }, [isMJ, deck]);
+
+  console.log("table", table);
+  useEffect(() => {
+    pipe(
+      cards,
+      onSuccess((cards) => {
+        console.log("next deck card", cards[0]);
+      })
+    );
+  }, [deck]);
 
   return (
     <div className="w-full grid gap-4">
@@ -64,9 +81,14 @@ function Page({ deck, hand, table, isMJ, maxCardNb }: Props) {
               </div>
             ))}
             {isMJ && (
-              <Button type="secondary" onClick={clearCardTable}>
-                Clear
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button type="secondary" onClick={clearCardTable}>
+                  Clear
+                </Button>
+                <Button type="tertiary" onClick={reset}>
+                  RESET
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -113,9 +135,7 @@ export function CardsPage() {
               isMJ={isMJ}
               deck={deck}
               hand={hand}
-              maxCardNb={Math.floor(
-                (skills["Combat"]?.currentLevel ?? 10) / 10
-              )}
+              maxCardNb={getCardNumber(skills["Combat"]?.currentLevel)}
               table={table}
             />
           )}
