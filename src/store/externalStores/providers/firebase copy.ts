@@ -68,7 +68,13 @@ export const getFirebaseStore = <T extends IO.Mixed>(
 
     create: (name) =>
       getCollection()
-        .then((collection) => addDoc(collection, { name, value: "" }))
+        .then((collection) =>
+          addDoc(collection, {
+            name,
+            value: "",
+            updatedAt: new Date().toISOString(),
+          })
+        )
         .then(constVoid),
 
     delete: (name) =>
@@ -82,7 +88,12 @@ export const getFirebaseStore = <T extends IO.Mixed>(
     update: (name, state) =>
       getDoc(name).then(
         Option.fold(constant(""), (doc) => {
-          setDoc(doc.ref, { name, value: state });
+          const now = new Date();
+          setDoc(doc.ref, {
+            name,
+            value: state,
+            updatedAt: now.toISOString(),
+          });
           return state;
         })
       ),
