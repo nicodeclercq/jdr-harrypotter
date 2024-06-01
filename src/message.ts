@@ -2,7 +2,7 @@ import * as IO from "io-ts";
 import { formatValidationErrors } from "io-ts-reporters";
 import { pipe, constVoid } from "fp-ts/function";
 import * as Either from "fp-ts/Either";
-import { cardDecoder } from "./store/v12/v12";
+import { cardDecoder } from "./store/v14/v14";
 
 const hasAlreadyJoinMessageDecoder = IO.type({
   type: IO.literal("hasAlreadyJoined"),
@@ -123,37 +123,24 @@ export type SetBattleMapTokensPosition = IO.TypeOf<
   typeof setBattleMapTokensPositionDecoder
 >;
 
-const resetCardsDecoder = IO.type({
-  type: IO.literal("resetCards"),
-  cards: IO.type({
-    deck: IO.array(cardDecoder),
-    table: IO.array(cardDecoder),
-    drop: IO.array(cardDecoder),
-    hand: IO.array(cardDecoder),
-  }),
-});
-export type ResetCardsMessage = IO.TypeOf<typeof resetCardsDecoder>;
-const drawACardDecoder = IO.type({
-  type: IO.literal("drawCard"),
-});
-export type DrawACardMessage = IO.TypeOf<typeof drawACardDecoder>;
-const giveACardDecoder = IO.type({
-  type: IO.literal("giveACard"),
-  payload: IO.type({
-    recipient: IO.string,
-    card: cardDecoder,
-  }),
-});
-export type GiveACardMessage = IO.TypeOf<typeof giveACardDecoder>;
-const playACardDecoder = IO.type({
-  type: IO.literal("playACard"),
-  payload: cardDecoder,
-});
 export type PlayACardMessage = IO.TypeOf<typeof playACardDecoder>;
 const clearCardTableDecoder = IO.type({
   type: IO.literal("clearCardTable"),
 });
 export type ClearCardTableCardMessage = IO.TypeOf<typeof clearCardTableDecoder>;
+
+const playACardDecoder = IO.type({
+  type: IO.literal("setCardsTable"),
+  payload: IO.array(
+    IO.type({
+      card: cardDecoder,
+      user: IO.type({
+        name: IO.string,
+        imageUrl: IO.union([IO.string, IO.undefined, IO.null]),
+      }),
+    })
+  ),
+});
 
 const messageDecoder = IO.type({
   author: IO.type({
@@ -173,10 +160,7 @@ const messageDecoder = IO.type({
     playMusicDecoder,
     stopMusicDecoder,
     setBattleMapTokensPositionDecoder,
-    resetCardsDecoder,
-    drawACardDecoder,
     playACardDecoder,
-    giveACardDecoder,
     clearCardTableDecoder,
   ]),
 });
@@ -245,17 +229,8 @@ export const fold =
         payload: SetBattleMapTokensPosition["payload"],
         author: Message["author"]
       ) => void;
-      resetCards: (
-        payload: ResetCardsMessage["cards"],
-        author: Message["author"]
-      ) => void;
-      drawACard: (payload: undefined, author: Message["author"]) => void;
       playACard: (
         payload: PlayACardMessage["payload"],
-        author: Message["author"]
-      ) => void;
-      giveACard: (
-        payload: GiveACardMessage["payload"],
         author: Message["author"]
       ) => void;
       clearCardTable: (payload: undefined, author: Message["author"]) => void;
@@ -313,17 +288,8 @@ export const fold =
         if (setBattleMapTokensPositionDecoder.is(data.message)) {
           fns.setBattleMapTokensPosition(data.message.payload, data.author);
         }
-        if (resetCardsDecoder.is(data.message)) {
-          fns.resetCards(data.message.cards, data.author);
-        }
-        if (drawACardDecoder.is(data.message)) {
-          fns.drawACard(undefined, data.author);
-        }
         if (playACardDecoder.is(data.message)) {
           fns.playACard(data.message.payload, data.author);
-        }
-        if (giveACardDecoder.is(data.message)) {
-          fns.giveACard(data.message.payload, data.author);
         }
         if (clearCardTableDecoder.is(data.message)) {
           fns.clearCardTable(undefined, data.author);

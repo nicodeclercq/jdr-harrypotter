@@ -1,117 +1,93 @@
 import { pipe } from "fp-ts/lib/function";
 import { Layout } from "../../components/Layout";
 import { Card } from "./Card";
-import { useDeck } from "./useDeck";
+import { useFightDeck } from "./useFightDeck";
 import { RemoteDataFold } from "../../components/RemoteDataFold";
-import { Card as CardT } from "../../store/State";
 import { useSkill } from "../skills/useSkill";
-import { onSuccess, sequence } from "../../helpers/remoteData";
+import { sequence } from "../../helpers/remoteData";
 import { useRole } from "../../hooks/useRole";
 import { Button } from "../../components/Button";
-import { createArrayOfIndex } from "../../helpers/array";
-import { useEffect } from "react";
+import { FightCard } from "./FightCard";
+import { Card as FightCardT } from "../../store/v14/fightCards";
+import { Avatar } from "../../components/Avatar";
 
 type Props = {
   isMJ: boolean;
-  maxCardNb: number;
-  deck: CardT[];
-  hand: CardT[];
-  table: CardT[];
+  hand: FightCardT[];
+  table: {
+    card: FightCardT;
+    user: { name: string; imageUrl: string | undefined | null };
+  }[];
+  pick: () => void;
+  playACard: (c: FightCardT) => void;
+  clearTable: () => void;
 };
 
-const getCardNumber = (level?: number) => Math.floor((level ?? 10) / 10);
-
-function Page({ deck, hand, table, isMJ, maxCardNb }: Props) {
-  const {
-    deck: cards,
-    reset,
-    drawACard,
-    playACard,
-    clearCardTable,
-  } = useDeck();
-  useEffect(() => {
-    if (isMJ && deck.length === 0) {
-      reset();
-    }
-  }, [isMJ, deck]);
-
-  console.log("table", table);
-  useEffect(() => {
-    pipe(
-      cards,
-      onSuccess((cards) => {
-        console.log("next deck card", cards[0]);
-      })
-    );
-  }, [deck]);
-
+function Page({ isMJ, hand, table, pick, playACard, clearTable }: Props) {
   return (
     <div className="w-full grid gap-4">
       <div className="w-full grid gap-8">
         <div className="flex flex-row gap-4 place-content-between">
           {/* DECK */}
-          <div
-            className={
-              hand.length < maxCardNb ? "cursor-pointer" : "cursor-not-allowed"
-            }
-          >
+          <div>
             <Card
               element="Pique"
               mean="Environnement"
               number="10"
               type="Attaque"
-              onClick={() => {
-                if (hand.length < maxCardNb) {
-                  drawACard();
-                }
-              }}
+              onClick={pick}
             />
           </div>
           {/* TABLE */}
-          <div className="flex flex-row gap-4 items-center justify-center overflow-auto max-w-full py-4">
-            {table.map(({ number, element, type, mean }) => (
-              <div key={`${number}_${element}_${type}_${mean}`}>
-                <Card
-                  number={number}
-                  element={element}
-                  type={type}
-                  mean={mean}
-                  isVisible
-                />
-              </div>
-            ))}
-            {isMJ && (
+          <div
+            className="flex flex-row gap-2 align-center w-full py-4"
+            style={{ height: "17rem" }}
+          >
+            <div className="flex flex-wrap flex-row gap-4 items-center justify-center overflow-auto w-full">
+              {table.map(({ card, user }, index) => (
+                <div
+                  key={`${card.id}_${user.name}_${index}`}
+                  style={{ position: "relative" }}
+                >
+                  <FightCard
+                    key={card.id}
+                    card={card}
+                    zIndex={index}
+                    isVisible
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: "50%",
+                      transform: "translateX(-50%) translateY(10%)",
+                    }}
+                  >
+                    <Avatar game="cards" text={user.name} url={user.imageUrl} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/*FIXME: when sync is alive only MJ can reset */}
+            {(isMJ || true) && (
               <div className="flex flex-col gap-2">
-                <Button type="secondary" onClick={clearCardTable}>
-                  Clear
-                </Button>
-                <Button type="tertiary" onClick={reset}>
-                  RESET
+                <Button type="tertiary" onClick={clearTable}>
+                  Vider
                 </Button>
               </div>
             )}
           </div>
         </div>
         {/* HAND */}
-        <div className="flex flex-row gap-4 items-center justify-center overflow-auto max-w-full py-4">
-          {createArrayOfIndex(maxCardNb).map((index) => (
-            <div key={index}>
-              {hand[index] ? (
-                <Card
-                  number={hand[index].number}
-                  element={hand[index].element}
-                  type={hand[index].type}
-                  mean={hand[index].mean}
-                  isVisible
-                  onClick={() => playACard(hand[index])}
-                />
-              ) : (
-                <div
-                  className="border border-dashed"
-                  style={{ width: "10rem", height: "15rem" }}
-                />
-              )}
-            </div>
+        <div className="flex flex-row flex-wrap gap-4 items-center justify-center overflow-auto max-w-full py-4">
+          {hand.map((card, index) => (
+            <FightCard
+              key={card.id}
+              card={card}
+              zIndex={index}
+              isVisible
+              onClick={() => playACard(card)}
+            />
           ))}
         </div>
       </div>
@@ -121,26 +97,24 @@ function Page({ deck, hand, table, isMJ, maxCardNb }: Props) {
 
 export function CardsPage() {
   const { isMJ } = useRole();
-  const { deck, hand, table } = useDeck();
+  const { hand, pick, playACard, clearTable, table } = useFightDeck();
   const { getSkills } = useSkill();
 
-  return pipe(
-    sequence({ deck, hand, table, isMJ, skills: getSkills() }),
-    (data) => (
-      <Layout>
-        <RemoteDataFold
-          data={data}
-          onSuccess={({ isMJ, deck, hand, table, skills }) => (
-            <Page
-              isMJ={isMJ}
-              deck={deck}
-              hand={hand}
-              maxCardNb={getCardNumber(skills["Combat"]?.currentLevel)}
-              table={table}
-            />
-          )}
-        />
-      </Layout>
-    )
-  );
+  return pipe(sequence({ table, hand, isMJ, skills: getSkills() }), (data) => (
+    <Layout>
+      <RemoteDataFold
+        data={data}
+        onSuccess={({ isMJ, hand, table }) => (
+          <Page
+            isMJ={isMJ}
+            hand={hand}
+            pick={pick}
+            playACard={playACard}
+            clearTable={clearTable}
+            table={table}
+          />
+        )}
+      />
+    </Layout>
+  ));
 }

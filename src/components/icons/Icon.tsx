@@ -55,6 +55,7 @@ import { BoxTrap } from "./components/box-trap";
 import { LightBackpack } from "./components/light-backpack";
 import { Helmet } from "./components/helmet";
 import { ExitDoor } from "./components/exitDoor";
+import { Walk } from "./components/walk";
 
 export const ICONS = {
   SORCERER: <Sorcerer />,
@@ -114,6 +115,7 @@ export const ICONS = {
   LIGHT_BACKPACK: <LightBackpack />,
   HELMET: <Helmet />,
   EXIT_DOOR: <ExitDoor />,
+  WALK: <Walk />,
 } as const;
 
 export type IconName = keyof typeof ICONS;
