@@ -60,6 +60,8 @@ export const COMMAND_MESSAGE = {
   GIVE_BENNY: "[giveBenny]",
   UNLOCK: /^\[unlock\]:(.+)$/,
   LOCK: /^\[lock\]:(.+)$/,
+  INCREMENT_CARDS_NUMBER: "[incrementCardsNumber]",
+  DECREMENT_CARDS_NUMBER: "[decrementCardsNumber]",
 } as const;
 
 const alertDecoder = IO.type({
@@ -142,6 +144,20 @@ const playACardDecoder = IO.type({
   ),
 });
 
+const incrementCardsNumberDecoder = IO.type({
+  type: IO.literal("incrementCardsNumber"),
+});
+export type IncrementCardsNumberMessage = IO.TypeOf<
+  typeof incrementCardsNumberDecoder
+>;
+
+const decrementCardsNumberDecoder = IO.type({
+  type: IO.literal("decrementCardsNumber"),
+});
+export type DecrementCardsNumberMessage = IO.TypeOf<
+  typeof decrementCardsNumberDecoder
+>;
+
 const messageDecoder = IO.type({
   author: IO.type({
     name: IO.string,
@@ -162,6 +178,8 @@ const messageDecoder = IO.type({
     setBattleMapTokensPositionDecoder,
     playACardDecoder,
     clearCardTableDecoder,
+    incrementCardsNumberDecoder,
+    decrementCardsNumberDecoder,
   ]),
 });
 
@@ -234,6 +252,14 @@ export const fold =
         author: Message["author"]
       ) => void;
       clearCardTable: (payload: undefined, author: Message["author"]) => void;
+      incrementCardsNumber: (
+        payload: undefined,
+        author: Message["author"]
+      ) => void;
+      decrementCardsNumber: (
+        payload: undefined,
+        author: Message["author"]
+      ) => void;
     }
   ) =>
   (message: unknown) =>
@@ -293,6 +319,12 @@ export const fold =
         }
         if (clearCardTableDecoder.is(data.message)) {
           fns.clearCardTable(undefined, data.author);
+        }
+        if (incrementCardsNumberDecoder.is(data.message)) {
+          fns.incrementCardsNumber(undefined, data.author);
+        }
+        if (decrementCardsNumberDecoder.is(data.message)) {
+          fns.decrementCardsNumber(undefined, data.author);
         }
       })
     );

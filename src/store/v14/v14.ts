@@ -39,6 +39,7 @@ export const stateDecoder = IO.intersection([
       table: IO.array(playedCardDecoder),
       hand: IO.array(cardDecoder),
     }),
+    cardNb: IO.number,
   }),
 ]);
 
@@ -52,6 +53,7 @@ function update(promise: Promise<LastState.State>): Promise<State> {
       drop: [],
       hand: [],
     },
+    cardNb: 3,
   }));
 }
 

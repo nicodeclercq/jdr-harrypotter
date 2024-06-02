@@ -13,11 +13,11 @@ import { stateLens } from "../../store/State";
 import { useStore } from "../../hooks/useStore";
 import { useUser } from "../home/useUser";
 import { useSocket } from "../../hooks/useSocket";
-
-const CARDS_NB_IN_HAND = 5;
+import { set } from "firebase/database";
 
 const tableLens = stateLens.fromPath(["cards", "table"]);
 const handLens = stateLens.fromPath(["cards", "hand"]);
+const cardsNbLens = stateLens.fromPath(["cardNb"]);
 
 const getRandomCard = (hand: FightCard[], deck: FightCard[]): FightCard => {
   const newCard = deck[random(0, deck.length - 1)];
@@ -51,12 +51,13 @@ export const useFightDeck = () => {
   const { user } = useUser();
   const { getSkills } = useSkill();
   const [hand, setHand] = useStore(handLens);
+  const [cardsNb, setCardsNb] = useStore(cardsNbLens);
   const [table, setTable] = useStore(tableLens);
 
   const getHand = () =>
     pipe(
-      deck,
-      RemoteData.map((deck) => getNRandomFromArray(CARDS_NB_IN_HAND, deck))
+      sequence({ cardsNb, deck }),
+      RemoteData.map(({ deck, cardsNb }) => getNRandomFromArray(cardsNb, deck))
     );
 
   const [deck, setDeck] = useState(reset(getSkills()));
@@ -113,16 +114,38 @@ export const useFightDeck = () => {
   const resetAll = () => {
     pipe(getSkills(), reset, setDeck);
     setTable([]);
+    pick();
   };
+
+  const setCardsNumber = (nb: number) => {
+    const newNb = nb > 0 ? nb : 1;
+    setCardsNb(newNb);
+    setHand([]);
+  };
+
+  const incrementCardsNumber = () =>
+    pipe(
+      cardsNb,
+      RemoteData.map((cardsNb) => setCardsNumber(cardsNb + 1))
+    );
+  const decrementCardsNumber = () =>
+    pipe(
+      cardsNb,
+      RemoteData.map((cardsNb) => setCardsNumber(cardsNb - 1))
+    );
 
   return {
     table,
     deck,
     hand,
+    cardsNb,
     playACard,
     pick,
     clearTable,
     changeTable,
     reset: resetAll,
+    setCardsNumber,
+    incrementCardsNumber,
+    decrementCardsNumber,
   };
 };

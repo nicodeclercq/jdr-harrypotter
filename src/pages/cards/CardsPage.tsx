@@ -21,22 +21,78 @@ type Props = {
   pick: () => void;
   playACard: (c: FightCardT) => void;
   clearTable: () => void;
+  incrementCardsNumber: () => void;
+  decrementCardsNumber: () => void;
 };
 
-function Page({ isMJ, hand, table, pick, playACard, clearTable }: Props) {
+function Page({
+  isMJ,
+  hand,
+  table,
+  pick,
+  playACard,
+  clearTable,
+  incrementCardsNumber,
+  decrementCardsNumber,
+}: Props) {
   return (
     <div className="w-full grid gap-4">
       <div className="w-full grid gap-8">
         <div className="flex flex-row gap-4 place-content-between">
           {/* DECK */}
           <div>
-            <Card
-              element="Pique"
-              mean="Environnement"
-              number="10"
-              type="Attaque"
-              onClick={pick}
-            />
+            <div
+              className="flex flex-col items-center gap-2 h-full"
+              style={{ alignContent: "stretch" }}
+            >
+              <button
+                type="button"
+                style={{
+                  color: "white",
+                  width: "2rem",
+                  border: "2px dashed rgba(255, 255, 255, 0.25)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "1rem",
+                  height: "2rem",
+                  background: "transparent",
+                }}
+                onClick={incrementCardsNumber}
+              >
+                +
+              </button>
+              <FightCard
+                card={{
+                  id: "deck",
+                  condition: "",
+                  category: "Analyse",
+                  consequences: "",
+                  relatedSkill: "",
+                  score: 0,
+                  title: "",
+                }}
+                zIndex={1}
+                onClick={pick}
+              />
+              <button
+                type="button"
+                style={{
+                  width: "2rem",
+                  color: "white",
+                  border: "2px dashed rgba(255, 255, 255, 0.25)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "1rem",
+                  background: "transparent",
+                  height: "2rem",
+                }}
+                onClick={decrementCardsNumber}
+              >
+                -
+              </button>
+            </div>
           </div>
           {/* TABLE */}
           <div
@@ -97,7 +153,15 @@ function Page({ isMJ, hand, table, pick, playACard, clearTable }: Props) {
 
 export function CardsPage() {
   const { isMJ } = useRole();
-  const { hand, pick, playACard, clearTable, table } = useFightDeck();
+  const {
+    hand,
+    pick,
+    playACard,
+    clearTable,
+    table,
+    incrementCardsNumber,
+    decrementCardsNumber,
+  } = useFightDeck();
   const { getSkills } = useSkill();
 
   return pipe(sequence({ table, hand, isMJ, skills: getSkills() }), (data) => (
@@ -112,6 +176,8 @@ export function CardsPage() {
             playACard={playACard}
             clearTable={clearTable}
             table={table}
+            incrementCardsNumber={incrementCardsNumber}
+            decrementCardsNumber={decrementCardsNumber}
           />
         )}
       />

@@ -43,7 +43,14 @@ let runNb = 20;
 export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
   const { unlock, lock } = useLockKey();
   const { setTokens } = useTokens();
-  const { changeTable, table } = useFightDeck();
+  const {
+    changeTable,
+    table,
+    hand,
+    incrementCardsNumber,
+    cardsNb,
+    decrementCardsNumber,
+  } = useFightDeck();
   const {
     connectedUsers,
     add: connectUser,
@@ -156,6 +163,10 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
               lock(result[1]);
             }
           }
+        } else if (COMMAND_MESSAGE.INCREMENT_CARDS_NUMBER === message) {
+          incrementCardsNumber();
+        } else if (COMMAND_MESSAGE.DECREMENT_CARDS_NUMBER === message) {
+          decrementCardsNumber();
         } else {
           notify({
             id: `chat_${recipient}${message}`,
@@ -167,7 +178,17 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         }
       }
     },
-    [notify, addBenny, currentUserName, lock, play, unlock]
+    [
+      notify,
+      addBenny,
+      currentUserName,
+      lock,
+      play,
+      unlock,
+      incrementCardsNumber,
+      decrementCardsNumber,
+      hand,
+    ]
   );
 
   const roll = useCallback(
@@ -268,6 +289,15 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
     },
     [changeTable, table]
   );
+
+  const incrementCardsNumberInHand = useCallback(() => {
+    incrementCardsNumber();
+  }, [incrementCardsNumber, cardsNb]);
+
+  const decrementCardsNumberInHand = useCallback(() => {
+    decrementCardsNumber();
+  }, [decrementCardsNumber, cardsNb]);
+
   const dropAllCardsFromTable = useCallback(() => {
     changeTable([]);
   }, [changeTable, table]);
@@ -327,6 +357,8 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
         setBattleMapTokensPosition,
         playACard,
         clearCardTable: dropAllCardsFromTable,
+        incrementCardsNumber: incrementCardsNumberInHand,
+        decrementCardsNumber: decrementCardsNumberInHand,
       })(message);
     },
     [
@@ -343,6 +375,8 @@ export function SocketMessageHandler({ currentUserName, stream, emit }: Props) {
       setBattleMapTokensPosition,
       changeTable,
       dropAllCardsFromTable,
+      incrementCardsNumberInHand,
+      decrementCardsNumberInHand,
     ]
   );
 
