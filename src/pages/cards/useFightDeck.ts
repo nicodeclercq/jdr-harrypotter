@@ -13,7 +13,6 @@ import { stateLens } from "../../store/State";
 import { useStore } from "../../hooks/useStore";
 import { useUser } from "../home/useUser";
 import { useSocket } from "../../hooks/useSocket";
-import { set } from "firebase/database";
 
 const tableLens = stateLens.fromPath(["cards", "table"]);
 const handLens = stateLens.fromPath(["cards", "hand"]);

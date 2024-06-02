@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { identity } from "fp-ts/function";
 import {
   isMessageType,
   NotificationService,
@@ -7,7 +6,7 @@ import {
 } from "../NotificationService";
 import { useStore } from "../hooks/useStore";
 import { Button } from "./Button";
-import { State, stateLens } from "../store/State";
+import { stateLens } from "../store/State";
 import { Avatar } from "./Avatar";
 import { RichText } from "./font/RichText";
 import { useGame } from "../hooks/useGame";

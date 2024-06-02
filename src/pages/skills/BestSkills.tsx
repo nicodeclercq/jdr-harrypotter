@@ -2,28 +2,23 @@ import { pipe, flow } from "fp-ts/function";
 import * as Record from "fp-ts/Record";
 
 import { fromRemoteData } from "../../helpers/remoteData";
-import { Skills, State } from "../../store/State";
+import { Skills, stateLens } from "../../store/State";
 import { useStore } from "../../hooks/useStore";
 import { MySkills } from "./MySkills";
 import { Card } from "../../components/Card";
 import { Button } from "../../components/Button";
 import { useRouter } from "../../hooks/useRouter";
-import { identity } from "io-ts";
 
-const stateLens = [identity, (_state: State, newState: State) => newState] as [
-  (state: State) => State,
-  (state: State, newState: State) => State
-];
+const skillsLens = stateLens.fromProperty("skills");
 
 export function BestSkills() {
   const { goTo } = useRouter();
-  const [state] = useStore(stateLens);
+  const [skills] = useStore(skillsLens);
 
   return pipe(
-    state,
+    skills,
     fromRemoteData(
       flow(
-        ({ skills }: State) => skills,
         Record.toArray,
         (skills) =>
           skills.sort(([, a], [, b]) =>

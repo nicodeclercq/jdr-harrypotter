@@ -1,12 +1,6 @@
 import * as IO from "io-ts";
 import * as Record from "fp-ts/Record";
 
-const isTypeC = (value: IO.Mixed): value is IO.TypeC<IO.Props> =>
-  "props" in value;
-const isIntersectionC = (
-  value: IO.Mixed
-): value is IO.IntersectionC<[IO.Mixed, IO.Mixed]> => "props" in value;
-
 function getProps<T extends IO.HasProps>(codec: T): IO.TypeOf<T> {
   switch (codec._tag) {
     case "RefinementType":

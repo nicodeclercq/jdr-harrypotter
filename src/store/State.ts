@@ -14,4 +14,3 @@ export type Skills = CurrentState["skills"];
 export type UserSpell = ValueOf<CurrentState["userSpells"]>;
 export type Trait = KeyOf<CurrentState["traits"]>;
 export type User = State["user"];
-export type Card = State["cards"]["deck"][number];

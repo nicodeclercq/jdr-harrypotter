@@ -1,6 +1,5 @@
 import { pipe } from "fp-ts/lib/function";
 import { Layout } from "../../components/Layout";
-import { Card } from "./Card";
 import { useFightDeck } from "./useFightDeck";
 import { RemoteDataFold } from "../../components/RemoteDataFold";
 import { useSkill } from "../skills/useSkill";
