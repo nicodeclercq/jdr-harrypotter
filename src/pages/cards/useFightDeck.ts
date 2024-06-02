@@ -102,14 +102,17 @@ export const useFightDeck = () => {
   };
 
   const pick = () => pipe(getHand(), RemoteData.map(setHand));
-  const clearTable = () => setTable([]);
-  const resetAll = () => {
-    pipe(getSkills(), reset, setDeck);
+  const clearTable = () => {
     setTable([]);
     emit({
       type: "setCardsTable",
       payload: [],
     });
+  };
+
+  const resetAll = () => {
+    pipe(getSkills(), reset, setDeck);
+    setTable([]);
   };
 
   return {

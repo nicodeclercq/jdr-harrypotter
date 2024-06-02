@@ -69,7 +69,7 @@ function Page({ isMJ, hand, table, pick, playACard, clearTable }: Props) {
               ))}
             </div>
             {/*FIXME: when sync is alive only MJ can reset */}
-            {(isMJ || true) && (
+            {isMJ && (
               <div className="flex flex-col gap-2">
                 <Button type="tertiary" onClick={clearTable}>
                   Vider
