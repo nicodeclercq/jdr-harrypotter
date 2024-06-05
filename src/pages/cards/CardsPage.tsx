@@ -66,7 +66,6 @@ function Page({
                   id: "deck",
                   condition: "",
                   category: "Analyse",
-                  consequences: "",
                   relatedSkill: "",
                   score: 0,
                   title: "",

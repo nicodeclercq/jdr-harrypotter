@@ -20,7 +20,6 @@ export const cardDecoder = IO.type({
   title: IO.string,
   condition: IO.string,
   relatedSkill: IO.string,
-  consequences: IO.string,
   score: IO.number,
 });
 
