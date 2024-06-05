@@ -114,10 +114,15 @@ function Page({
                       position: "absolute",
                       top: 0,
                       left: "50%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "0.5rem",
                       transform: "translateX(-50%) translateY(10%)",
                     }}
                   >
                     <Avatar game="cards" text={user.name} url={user.imageUrl} />
+                    <span>{user.name}</span>
                   </div>
                 </div>
               ))}
