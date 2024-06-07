@@ -117,12 +117,22 @@ function Page({
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
-                      gap: "0.5rem",
+                      gap: "0.125rem",
                       transform: "translateX(-50%) translateY(10%)",
                     }}
                   >
                     <Avatar game="cards" text={user.name} url={user.imageUrl} />
-                    <span>{user.name}</span>
+                    <span
+                      style={{
+                        fontSize: "0.5rem",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        maxWidth: "8rem",
+                      }}
+                    >
+                      {user.name}
+                    </span>
                   </div>
                 </div>
               ))}
